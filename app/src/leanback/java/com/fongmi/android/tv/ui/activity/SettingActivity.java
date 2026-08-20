@@ -50,6 +50,7 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
 
     private ActivitySettingBinding mBinding;
     private String[] size;
+    private final String[] modes = new String[3];
 
     public static void start(Activity activity) {
         activity.startActivity(new Intent(activity, SettingActivity.class));
@@ -85,6 +86,10 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
         mBinding.dohText.setText(getDohList()[getDohIndex()]);
         mBinding.incognitoText.setText(Setting.getSwitch(Setting.isIncognito()));
         mBinding.sizeText.setText((size = ResUtil.getStringArray(R.array.select_size))[PlayerSetting.getSize()]);
+        modes[Setting.MODE_DEFAULT] = ResUtil.getString(R.string.setting_mode_default);
+        modes[Setting.MODE_ELDER] = ResUtil.getString(R.string.setting_mode_elder);
+        modes[Setting.MODE_CHILD] = ResUtil.getString(R.string.setting_mode_child);
+        mBinding.modeText.setText(modes[Setting.getMode()]);
     }
 
     private void setCacheText() {
@@ -115,6 +120,7 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
         mBinding.liveHome.setOnClickListener(this::onLiveHome);
         mBinding.wall.setOnLongClickListener(this::onWallEdit);
         mBinding.incognito.setOnClickListener(this::setIncognito);
+        mBinding.mode.setOnClickListener(this::setMode);
         mBinding.vodHistory.setOnClickListener(this::onVodHistory);
         mBinding.liveHistory.setOnClickListener(this::onLiveHistory);
         mBinding.wallDefault.setOnClickListener(this::setWallDefault);
@@ -251,6 +257,17 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
     private void setIncognito(View view) {
         Setting.putIncognito(!Setting.isIncognito());
         mBinding.incognitoText.setText(Setting.getSwitch(Setting.isIncognito()));
+    }
+
+    private void setMode(View view) {
+        int next = (Setting.getMode() + 1) % 3;
+        if (next == Setting.MODE_CHILD) {
+            Notify.show(R.string.setting_mode_coming_soon);
+            return;
+        }
+        Setting.putMode(next);
+        mBinding.modeText.setText(modes[next]);
+        RefreshEvent.mode();
     }
 
     private void setSize(View view) {

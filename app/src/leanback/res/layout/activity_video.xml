@@ -127,10 +127,24 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/lineName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/row1"
+        android:layout_alignStart="@+id/name"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="24dp"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:visibility="gone"
+        tools:text="线路：默认线路" />
+
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/director"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/row1"
+        android:layout_below="@+id/lineName"
         android:layout_alignStart="@+id/name"
         android:layout_marginTop="6dp"
         android:layout_marginEnd="24dp"

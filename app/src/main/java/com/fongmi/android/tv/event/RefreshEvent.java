@@ -30,6 +30,10 @@ public class RefreshEvent {
         EventBus.getDefault().post(new RefreshEvent(Type.SIZE));
     }
 
+    public static void mode() {
+        EventBus.getDefault().post(new RefreshEvent(Type.MODE));
+    }
+
     public static void theme() {
         EventBus.getDefault().post(new RefreshEvent(Type.THEME));
     }
@@ -85,6 +89,6 @@ public class RefreshEvent {
     }
 
     public enum Type {
-        HOME, CATEGORY, HISTORY, KEEP, SIZE, THEME, LIVE, DETAIL, PLAYER, SUBTITLE, DANMAKU, VOD
+        HOME, CATEGORY, HISTORY, KEEP, SIZE, THEME, LIVE, DETAIL, PLAYER, SUBTITLE, DANMAKU, VOD, MODE
     }
 }

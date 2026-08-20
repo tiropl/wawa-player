@@ -9,3 +9,6 @@
 lib-*.aar
 /Release
 /docs
+
+.key
+.claude

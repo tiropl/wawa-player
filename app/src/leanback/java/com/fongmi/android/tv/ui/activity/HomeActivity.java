@@ -42,6 +42,7 @@ import com.fongmi.android.tv.event.CastEvent;
 import com.fongmi.android.tv.event.ConfigEvent;
 import com.fongmi.android.tv.event.RefreshEvent;
 import com.fongmi.android.tv.event.ServerEvent;
+import com.fongmi.android.tv.setting.Setting;
 import com.fongmi.android.tv.impl.Callback;
 import com.fongmi.android.tv.model.SiteViewModel;
 import com.fongmi.android.tv.player.extractor.Source;
@@ -272,7 +273,9 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         if (LiveConfig.hasUrl()) items.add(Func.create(R.string.home_live));
         items.add(Func.create(R.string.home_search));
         items.add(Func.create(R.string.home_keep));
-        items.add(Func.create(R.string.home_push));
+        if (!Setting.isElderMode()) {
+            items.add(Func.create(R.string.home_push));
+        }
         items.add(Func.create(R.string.home_setting));
         mFuncAdapter.setItems(items, new BaseDiffCallback<Func>());
     }
@@ -346,6 +349,9 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
             case SIZE:
                 getVideo();
                 getHistory(true);
+                break;
+            case MODE:
+                setFunc();
                 break;
         }
     }
@@ -431,6 +437,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     @Override
     public void showDialog() {
+        if (Setting.isElderMode()) return;
         SiteDialog.create().show(this);
     }
 

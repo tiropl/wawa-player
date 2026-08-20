@@ -250,6 +250,12 @@
     <string name="push">推送</string>
 
     <!-- Setting -->
+    <string name="setting_mode">模式切换</string>
+    <string name="setting_mode_default">默认</string>
+    <string name="setting_mode_elder">长辈模式</string>
+    <string name="setting_mode_child">儿童模式</string>
+    <string name="setting_mode_coming_soon">敬请期待</string>
+    <string name="setting_line_name">线路：<xliff:g name="name">%s</xliff:g></string>
     <string name="setting_vod">点播</string>
     <string name="setting_live">直播</string>
     <string name="setting_wall">壁纸</string>

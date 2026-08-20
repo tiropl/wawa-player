@@ -63,6 +63,7 @@ import com.fongmi.android.tv.player.media.PlaySpec;
 import com.fongmi.android.tv.service.PlaybackService;
 import com.fongmi.android.tv.setting.DanmakuSetting;
 import com.fongmi.android.tv.setting.PlayerSetting;
+import com.fongmi.android.tv.setting.Setting;
 import com.fongmi.android.tv.setting.SpeedSetting;
 import com.fongmi.android.tv.ui.adapter.ArrayAdapter;
 import com.fongmi.android.tv.ui.adapter.EpisodeAdapter;
@@ -364,6 +365,35 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
         setActionFocusBoundary(mBinding.control.action.getRoot());
         PlayerEngineDialog.setText(mBinding.control.action.player);
         mBinding.control.action.danmaku.setVisibility(DanmakuSetting.isLoad() ? View.VISIBLE : View.GONE);
+        updateElderModeUI();
+    }
+
+    private void updateElderModeUI() {
+        boolean elder = Setting.isElderMode();
+        mBinding.change.setVisibility(elder ? View.GONE : View.VISIBLE);
+        mBinding.lineName.setVisibility(elder ? View.VISIBLE : View.GONE);
+        updateControlBarForElderMode();
+    }
+
+    private void updateControlBarForElderMode() {
+        boolean elder = Setting.isElderMode();
+        mBinding.control.action.next.setVisibility(View.VISIBLE);
+        mBinding.control.action.prev.setVisibility(View.VISIBLE);
+        mBinding.control.action.reset.setVisibility(View.VISIBLE);
+        mBinding.control.action.audio.setVisibility(elder ? View.VISIBLE : View.GONE);
+        mBinding.control.action.video.setVisibility(elder ? View.VISIBLE : View.GONE);
+        mBinding.control.action.player.setVisibility(elder ? View.GONE : View.VISIBLE);
+        mBinding.control.action.decode.setVisibility(elder ? View.GONE : View.VISIBLE);
+        mBinding.control.action.replay.setVisibility(elder ? View.GONE : View.VISIBLE);
+        mBinding.control.action.repeat.setVisibility(elder ? View.GONE : View.VISIBLE);
+        mBinding.control.action.speed.setVisibility(elder ? View.GONE : View.VISIBLE);
+        mBinding.control.action.scale.setVisibility(elder ? View.GONE : View.VISIBLE);
+        mBinding.control.action.text.setVisibility(elder ? View.GONE : View.VISIBLE);
+        mBinding.control.action.danmaku.setVisibility(elder ? View.GONE : View.VISIBLE);
+        mBinding.control.action.edition.setVisibility(elder ? View.GONE : View.VISIBLE);
+        mBinding.control.action.chapter.setVisibility(elder ? View.GONE : View.VISIBLE);
+        mBinding.control.action.opening.setVisibility(elder ? View.GONE : View.VISIBLE);
+        mBinding.control.action.ending.setVisibility(elder ? View.GONE : View.VISIBLE);
     }
 
     private void setPlaybackMode() {
@@ -606,6 +636,16 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
     public void renderFlagSelection(Flag item) {
         mBinding.flag.setSelectedPosition(mFlagAdapter.indexOf(item));
         notifyItemChanged(mBinding.flag, mFlagAdapter);
+        updateLineName(item);
+    }
+
+    private void updateLineName(Flag item) {
+        if (!Setting.isElderMode() || item == null) {
+            mBinding.lineName.setVisibility(View.GONE);
+            return;
+        }
+        mBinding.lineName.setVisibility(View.VISIBLE);
+        mBinding.lineName.setText(ResUtil.getString(R.string.setting_line_name, item.getName()));
     }
 
     @Override
@@ -1277,6 +1317,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
         else if (event.getType() == RefreshEvent.Type.VOD) mVod.updateVod(event.getVod());
         else if (event.getType() == RefreshEvent.Type.SUBTITLE) player().setSub(Sub.from(event.getPath()));
         else if (event.getType() == RefreshEvent.Type.DANMAKU) player().setDanmaku(Danmaku.from(event.getPath()));
+        else if (event.getType() == RefreshEvent.Type.MODE) updateElderModeUI();
     }
 
     @Override
@@ -1343,6 +1384,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
     }
 
     private View getFocus2() {
+        if (Setting.isElderMode()) return mBinding.control.seek;
         return mFocus2 == null || mFocus2.getVisibility() != View.VISIBLE || mFocus2 == mBinding.control.action.opening || mFocus2 == mBinding.control.action.ending ? mBinding.control.action.next : mFocus2;
     }
 

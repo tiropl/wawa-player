@@ -15,6 +15,10 @@ public class Setting {
     private static final int MIN_SYNC_MODE = 0;
     private static final int MAX_SYNC_MODE = 2;
 
+    public static final int MODE_DEFAULT = 0;
+    public static final int MODE_ELDER = 1;
+    public static final int MODE_CHILD = 2;
+
     public static String getSwitch(boolean value) {
         return ResUtil.getString(value ? R.string.setting_on : R.string.setting_off);
     }
@@ -135,5 +139,21 @@ public class Setting {
 
     public static void putZhuyin(boolean zhuyin) {
         Prefers.put("zhuyin", zhuyin);
+    }
+
+    public static int getMode() {
+        return Math.clamp(Prefers.getInt("mode"), MODE_DEFAULT, MODE_CHILD);
+    }
+
+    public static void putMode(int mode) {
+        Prefers.put("mode", Math.clamp(mode, MODE_DEFAULT, MODE_CHILD));
+    }
+
+    public static boolean isElderMode() {
+        return getMode() == MODE_ELDER;
+    }
+
+    public static boolean isChildMode() {
+        return getMode() == MODE_CHILD;
     }
 }
