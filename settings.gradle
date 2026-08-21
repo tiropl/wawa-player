@@ -24,4 +24,33 @@ include ':app'
 include ':catvod'
 include ':chaquo'
 include ':quickjs'
+
+// media3 modules
+include ':lib-common'
+include ':lib-container'
+include ':lib-database'
+include ':lib-datasource'
+include ':lib-datasource-okhttp'
+include ':lib-decoder'
+include ':lib-decoder-ffmpeg'
+include ':lib-exoplayer'
+include ':lib-extractor'
+include ':lib-mpvplayer'
+include ':lib-ui-danmaku'
+include ':lib-ui'
+
 rootProject.name = "TV"
+
+// Map module names to directories
+project(':lib-common').projectDir = file('media3/libraries/common')
+project(':lib-container').projectDir = file('media3/libraries/container')
+project(':lib-database').projectDir = file('media3/libraries/database')
+project(':lib-datasource').projectDir = file('media3/libraries/datasource')
+project(':lib-datasource-okhttp').projectDir = file('media3/libraries/datasource_okhttp')
+project(':lib-decoder').projectDir = file('media3/libraries/decoder')
+project(':lib-decoder-ffmpeg').projectDir = file('media3/libraries/decoder_ffmpeg')
+project(':lib-exoplayer').projectDir = file('media3/libraries/exoplayer')
+project(':lib-extractor').projectDir = file('media3/libraries/extractor')
+project(':lib-mpvplayer').projectDir = file('media3/libraries/mpvplayer')
+project(':lib-ui-danmaku').projectDir = file('media3/libraries/ui_danmaku')
+project(':lib-ui').projectDir = file('media3/libraries/ui')

@@ -645,7 +645,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
             return;
         }
         mBinding.lineName.setVisibility(View.VISIBLE);
-        mBinding.lineName.setText(ResUtil.getString(R.string.setting_line_name, item.getName()));
+        mBinding.lineName.setText(ResUtil.getString(R.string.setting_line_name, item.getShow()));
     }
 
     @Override

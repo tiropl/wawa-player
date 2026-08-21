@@ -136,4 +136,38 @@ dependencies {
     annotationProcessor libs.eventbus.annotation.processor
     annotationProcessor libs.glide.compiler
     coreLibraryDesugaring libs.desugar
+
+    // media3 本地模块
+    implementation project(':lib-common')
+    implementation project(':lib-exoplayer')
+    implementation project(':lib-decoder')
+    implementation project(':lib-decoder-ffmpeg')
+    implementation project(':lib-container')
+    implementation project(':lib-datasource')
+    implementation project(':lib-datasource-okhttp')
+    implementation project(':lib-database')
+    implementation project(':lib-ui-danmaku')
+    implementation project(':lib-ui')
+    implementation project(':lib-extractor')
+    implementation project(':lib-mpvplayer')
+
+    // media3 Maven 依赖（未拷贝源码的模块）。排除官方 media3 的传递依赖，避免与本地源码模块重复。
+    implementation('androidx.media3:media3-session:1.11.0') {
+        exclude group: 'androidx.media3'
+    }
+    implementation('androidx.media3:media3-effect:1.11.0') {
+        exclude group: 'androidx.media3'
+    }
+    implementation('androidx.media3:media3-exoplayer-dash:1.11.0') {
+        exclude group: 'androidx.media3'
+    }
+    implementation('androidx.media3:media3-exoplayer-hls:1.11.0') {
+        exclude group: 'androidx.media3'
+    }
+    implementation('androidx.media3:media3-exoplayer-rtsp:1.11.0') {
+        exclude group: 'androidx.media3'
+    }
+    implementation('androidx.media3:media3-exoplayer-smoothstreaming:1.11.0') {
+        exclude group: 'androidx.media3'
+    }
 }
