@@ -31,6 +31,7 @@ import com.fongmi.android.tv.ui.dialog.ConfigDialog;
 import com.fongmi.android.tv.ui.dialog.DohDialog;
 import com.fongmi.android.tv.ui.dialog.HistoryDialog;
 import com.fongmi.android.tv.ui.dialog.LiveDialog;
+import com.fongmi.android.tv.ui.dialog.ModeDialog;
 import com.fongmi.android.tv.ui.dialog.RestoreDialog;
 import com.fongmi.android.tv.ui.dialog.SiteDialog;
 import com.fongmi.android.tv.utils.FileUtil;
@@ -46,7 +47,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SettingActivity extends BaseActivity implements ConfigListener, SiteListener, LiveListener, DohDialog.Listener {
+public class SettingActivity extends BaseActivity implements ConfigListener, SiteListener, LiveListener, DohDialog.Listener, ModeDialog.Listener {
 
     private ActivitySettingBinding mBinding;
     private String[] size;
@@ -260,13 +261,17 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
     }
 
     private void setMode(View view) {
-        int next = (Setting.getMode() + 1) % 3;
-        if (next == Setting.MODE_CHILD) {
+        ModeDialog.create().index(Setting.getMode()).show(this);
+    }
+
+    @Override
+    public void setMode(int mode) {
+        if (mode == Setting.MODE_CHILD) {
             Notify.show(R.string.setting_mode_coming_soon);
             return;
         }
-        Setting.putMode(next);
-        mBinding.modeText.setText(modes[next]);
+        Setting.putMode(mode);
+        mBinding.modeText.setText(modes[mode]);
         RefreshEvent.mode();
     }
 

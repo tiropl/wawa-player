@@ -1326,7 +1326,11 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
     }
 
     private void setTrackVisible() {
-        PlaybackAction.setTracks(player(), mBinding.control.action.text, mBinding.control.action.audio, mBinding.control.action.video);
+        if (Setting.isElderMode()) {
+            mBinding.control.action.text.setVisibility(View.GONE);
+        } else {
+            PlaybackAction.setTracks(player(), mBinding.control.action.text, mBinding.control.action.audio, mBinding.control.action.video);
+        }
     }
 
     private void setMediaOptionVisible() {
