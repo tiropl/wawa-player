@@ -1,4 +1,7 @@
 pluginManagement {
+    // Media3 modules use convention plugins provided by these included builds.
+    includeBuild("media3/build-logic-settings")
+    includeBuild("media3/build-logic")
     repositories {
         gradlePluginPortal()
         mavenCentral()
@@ -36,8 +39,18 @@ include ':lib-decoder-ffmpeg'
 include ':lib-exoplayer'
 include ':lib-extractor'
 include ':lib-mpvplayer'
+include ':lib-effect'
+include ':lib-effect-ndk'
+include ':lib-muxer'
+include ':lib-exoplayer-dash'
+include ':lib-inspector'
+include ':lib-inspector-frame'
 include ':lib-ui-danmaku'
 include ':lib-ui'
+include ':test-data'
+include ':test-utils'
+include ':test-utils-robolectric'
+include ':lib-transformer'
 
 rootProject.name = "TV"
 
@@ -52,5 +65,15 @@ project(':lib-decoder-ffmpeg').projectDir = file('media3/libraries/decoder_ffmpe
 project(':lib-exoplayer').projectDir = file('media3/libraries/exoplayer')
 project(':lib-extractor').projectDir = file('media3/libraries/extractor')
 project(':lib-mpvplayer').projectDir = file('media3/libraries/mpvplayer')
+project(':lib-effect').projectDir = file('media3/libraries/effect')
+project(':lib-effect-ndk').projectDir = file('media3/libraries/effect_ndk')
+project(':lib-muxer').projectDir = file('media3/libraries/muxer')
+project(':lib-exoplayer-dash').projectDir = file('media3/libraries/exoplayer_dash')
+project(':lib-inspector').projectDir = file('media3/libraries/inspector')
+project(':lib-inspector-frame').projectDir = file('media3/libraries/inspector_frame')
 project(':lib-ui-danmaku').projectDir = file('media3/libraries/ui_danmaku')
 project(':lib-ui').projectDir = file('media3/libraries/ui')
+project(':test-data').projectDir = file('media3/libraries/test_data')
+project(':test-utils').projectDir = file('media3/libraries/test_utils')
+project(':test-utils-robolectric').projectDir = file('media3/libraries/test_utils_robolectric')
+project(':lib-transformer').projectDir = file('media3/libraries/transformer')

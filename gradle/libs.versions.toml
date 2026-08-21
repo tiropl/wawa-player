@@ -1,4 +1,30 @@
 [versions]
+releaseVersion = "1.11.0"
+compileSdkVersion = "36"
+minSdkVersion = "23"
+libTestTargetSdkVersion = "36"
+androidxTestOrchestratorVersion = "1.6.1"
+androidxTestCoreVersion = "1.5.0"
+androidxTestEspressoVersion = "3.5.1"
+androidxTestJUnitVersion = "1.1.5"
+androidxTestRunnerVersion = "1.6.2"
+androidxTestTruthVersion = "1.5.0"
+androidxExifInterfaceVersion = "1.3.6"
+dexmakerVersion = "2.28.3"
+kotlinxCoroutinesVersion = "1.9.0"
+androidxConcurrentFuturesVersion = "1.2.0"
+guavaVersion = "33.3.1-android"
+runnerVersion = "1.7.0"
+animalSnifferAnnotationsVersion = "1.21"
+junitVersion = "4.13.2"
+mockitoVersion = "3.12.4"
+mockitoMpvplayerVersion = "5.23.0"
+androidxTestUiAutomatorVersion = "2.3.0"
+androidxWindowVersion = "1.3.0"
+androidxRecyclerViewVersion = "1.3.0"
+robolectricVersion = "4.16"
+testParameterInjectorVersion = "1.22"
+truthVersion = "1.4.0"
 agp = "9.3.1"
 python = "17.0.0"
 minSdk = "24"
@@ -59,6 +85,36 @@ zxingAndroidEmbedded = "4.3.0"
 zxingCore = "3.5.4"
 
 [libraries]
+androidx-test-orchestrator = { group = "androidx.test", name = "orchestrator", version.ref = "androidxTestOrchestratorVersion" }
+androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
+androidx-exifinterface = { group = "androidx.exifinterface", name = "exifinterface", version.ref = "androidxExifInterfaceVersion" }
+dexmaker-mockito = { group = "com.linkedin.dexmaker", name = "dexmaker-mockito", version.ref = "dexmakerVersion" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.9.0" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesVersion" }
+androidx-concurrent-futures = { group = "androidx.concurrent", name = "concurrent-futures", version.ref = "androidxConcurrentFuturesVersion" }
+androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runnerVersion" }
+kotlinx-coroutines-guava = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-guava", version.ref = "kotlinxCoroutinesVersion" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesVersion" }
+okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okhttp" }
+okhttp-urlconnection = { group = "com.squareup.okhttp3", name = "okhttp-urlconnection", version.ref = "okhttp" }
+brotli-dec = { group = "org.brotli", name = "dec", version.ref = "brotli" }
+androidx-annotation-experimental = { group = "androidx.annotation", name = "annotation-experimental", version.ref = "annotationExperimental" }
+androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidxTestCoreVersion" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestJUnitVersion" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTestRunnerVersion" }
+androidx-test-truth = { group = "androidx.test.ext", name = "truth", version.ref = "androidxTestTruthVersion" }
+androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxTestEspressoVersion" }
+junit = { group = "junit", name = "junit", version.ref = "junitVersion" }
+mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockitoVersion" }
+mockito-mpvplayer = { group = "org.mockito", name = "mockito-core", version.ref = "mockitoMpvplayerVersion" }
+androidx-test-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "androidxTestUiAutomatorVersion" }
+androidx-window = { group = "androidx.window", name = "window", version.ref = "androidxWindowVersion" }
+androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "androidxRecyclerViewVersion" }
+robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectricVersion" }
+test-parameter-injector = { group = "com.google.testparameterinjector", name = "test-parameter-injector", version.ref = "testParameterInjectorVersion" }
+truth = { group = "com.google.truth", name = "truth", version.ref = "truthVersion" }
+guava-testlib = { group = "com.google.guava", name = "guava-testlib", version.ref = "guava" }
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test" }
 annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 annotation-experimental = { group = "androidx.annotation", name = "annotation-experimental", version.ref = "annotationExperimental" }
 exifinterface = { group = "androidx.exifinterface", name = "exifinterface", version.ref = "exifinterface" }

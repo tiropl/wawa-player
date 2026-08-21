@@ -12,13 +12,3 @@ lib-*.aar
 
 .key
 .claude
-
-# media3 构建产物（源码保留，构建产物排除）
-media3/**/build/
-media3/**/buildout/
-media3/**/.cxx/
-media3/**/.externalNativeBuild/
-
-# Media3 source metadata required by the FFmpeg module
-!media3/**/src/main/resources/**/*.properties
-!media3/**/src/main/resources/**/LICENSE*
