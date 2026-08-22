@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 
 import com.fongmi.android.tv.databinding.ViewEmptyBinding;
 import com.fongmi.android.tv.databinding.ViewProgressBinding;
+import com.fongmi.android.tv.utils.LoadingSound;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,16 +102,19 @@ public class ProgressLayout extends RelativeLayout {
         mState = state;
         switch (state) {
             case CONTENT:
+                LoadingSound.stop();
                 mEmptyView.setVisibility(GONE);
                 mProgressView.setVisibility(GONE);
                 setContentVisibility(true);
                 break;
             case PROGRESS:
+                LoadingSound.start(getContext());
                 mEmptyView.setVisibility(GONE);
                 mProgressView.setVisibility(VISIBLE);
                 setContentVisibility(false);
                 break;
             case EMPTY:
+                LoadingSound.stop();
                 mEmptyView.setVisibility(VISIBLE);
                 mProgressView.setVisibility(GONE);
                 setContentVisibility(false);

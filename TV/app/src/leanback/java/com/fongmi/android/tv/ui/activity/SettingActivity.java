@@ -86,6 +86,7 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
     private void setOtherText() {
         mBinding.dohText.setText(getDohList()[getDohIndex()]);
         mBinding.incognitoText.setText(Setting.getSwitch(Setting.isIncognito()));
+        mBinding.soundText.setText(Setting.getSwitch(Setting.isSound()));
         mBinding.sizeText.setText((size = ResUtil.getStringArray(R.array.select_size))[PlayerSetting.getSize()]);
         modes[Setting.MODE_DEFAULT] = ResUtil.getString(R.string.setting_mode_default);
         modes[Setting.MODE_ELDER] = ResUtil.getString(R.string.setting_mode_elder);
@@ -121,6 +122,7 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
         mBinding.liveHome.setOnClickListener(this::onLiveHome);
         mBinding.wall.setOnLongClickListener(this::onWallEdit);
         mBinding.incognito.setOnClickListener(this::setIncognito);
+        mBinding.sound.setOnClickListener(this::setSound);
         mBinding.mode.setOnClickListener(this::setMode);
         mBinding.vodHistory.setOnClickListener(this::onVodHistory);
         mBinding.liveHistory.setOnClickListener(this::onLiveHistory);
@@ -258,6 +260,11 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
     private void setIncognito(View view) {
         Setting.putIncognito(!Setting.isIncognito());
         mBinding.incognitoText.setText(Setting.getSwitch(Setting.isIncognito()));
+    }
+
+    private void setSound(View view) {
+        Setting.putSound(!Setting.isSound());
+        mBinding.soundText.setText(Setting.getSwitch(Setting.isSound()));
     }
 
     private void setMode(View view) {

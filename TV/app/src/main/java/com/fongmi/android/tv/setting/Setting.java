@@ -117,6 +117,14 @@ public class Setting {
         Prefers.put("incognito", incognito);
     }
 
+    public static boolean isSound() {
+        return Prefers.getBoolean("sound", true);
+    }
+
+    public static void putSound(boolean sound) {
+        Prefers.put("sound", sound);
+    }
+
     public static boolean getUpdate() {
         return Prefers.getBoolean("update", true);
     }
