@@ -144,6 +144,7 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
             @Override
             public void error(String msg) {
                 checkAction(getIntent());
+                LoadingSound.stop();
                 StateEvent.empty();
                 Notify.show(msg);
             }

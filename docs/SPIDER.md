@@ -1,93 +1,93 @@
-# 爬蟲 API 規格說明
+# 爬虫 API 规格说明
 
-本文件說明如何實作一個 Spider 爬蟲，包含所有方法的參數、回傳格式及 JSON 結構定義。
+本文件说明如何实作一个 Spider 爬虫，包含所有方法的参数、回传格式及 JSON 结构定义。
 
 ---
 
-## 目錄
+## 目录
 
-- [概覽](#概覽)
-- [爬蟲類型與載入方式](#爬蟲類型與載入方式)
-- [Spider 抽象類別](#spider-抽象類別)
+- [概览](#概览)
+- [爬虫类型与载入方式](#爬虫类型与载入方式)
+- [Spider 抽象类别](#spider-抽象类别)
     - [init — 初始化](#init--初始化)
-    - [homeContent — 首頁分類](#homecontent--首頁分類)
-    - [homeVideoContent — 首頁推薦影片](#homevideocontent--首頁推薦影片)
-    - [categoryContent — 分類列表](#categorycontent--分類列表)
-    - [detailContent — 影片詳情](#detailcontent--影片詳情)
-    - [searchContent — 搜尋](#searchcontent--搜尋)
+    - [homeContent — 首页分类](#homecontent--首页分类)
+    - [homeVideoContent — 首页推荐影片](#homevideocontent--首页推荐影片)
+    - [categoryContent — 分类列表](#categorycontent--分类列表)
+    - [detailContent — 影片详情](#detailcontent--影片详情)
+    - [searchContent — 搜寻](#searchcontent--搜寻)
     - [playerContent — 播放解析](#playercontent--播放解析)
-    - [liveContent — 直播頻道列表](#livecontent--直播頻道列表)
+    - [liveContent — 直播频道列表](#livecontent--直播频道列表)
     - [proxy — 本地代理](#proxy--本地代理)
-    - [action — 自定義動作](#action--自定義動作)
-    - [manualVideoCheck / isVideoFormat — 影片格式判斷](#manualvideocheck--isvideoformat--影片格式判斷)
-    - [destroy — 銷毀](#destroy--銷毀)
-- [回傳資料結構](#回傳資料結構)
-    - [Result — 通用回傳物件](#result--通用回傳物件)
+    - [action — 自定义动作](#action--自定义动作)
+    - [manualVideoCheck / isVideoFormat — 影片格式判断](#manualvideocheck--isvideoformat--影片格式判断)
+    - [destroy — 销毁](#destroy--销毁)
+- [回传资料结构](#回传资料结构)
+    - [Result — 通用回传物件](#result--通用回传物件)
     - [Vod — 影片卡片物件](#vod--影片卡片物件)
-    - [Class — 分類物件](#class--分類物件)
-    - [Filter — 篩選器物件](#filter--篩選器物件)
-    - [Danmaku — 彈幕物件](#danmaku--彈幕物件)
+    - [Class — 分类物件](#class--分类物件)
+    - [Filter — 筛选器物件](#filter--筛选器物件)
+    - [Danmaku — 弹幕物件](#danmaku--弹幕物件)
     - [Sub — 字幕物件](#sub--字幕物件)
-    - [Drm — DRM 設定物件](#drm--drm-設定物件)
-    - [播放集數格式（vod_play_from / vod_play_url）](#播放集數格式vod_play_from--vod_play_url)
-- [完整 JSON 範例](#完整-json-範例)
-    - [homeContent 回傳範例](#homecontent-回傳範例)
-    - [homeVideoContent / categoryContent 回傳範例](#homevideocontent--categorycontent-回傳範例)
-    - [detailContent 回傳範例](#detailcontent-回傳範例)
-    - [playerContent 回傳範例](#playercontent-回傳範例)
-    - [searchContent 回傳範例](#searchcontent-回傳範例)
-    - [liveContent 回傳範例](#livecontent-回傳範例)
-- [爬蟲本地代理 URL](#爬蟲本地代理-url)
+    - [Drm — DRM 设定物件](#drm--drm-设定物件)
+    - [播放集数格式（vod_play_from / vod_play_url）](#播放集数格式vod_play_from--vod_play_url)
+- [完整 JSON 范例](#完整-json-范例)
+    - [homeContent 回传范例](#homecontent-回传范例)
+    - [homeVideoContent / categoryContent 回传范例](#homevideocontent--categorycontent-回传范例)
+    - [detailContent 回传范例](#detailcontent-回传范例)
+    - [playerContent 回传范例](#playercontent-回传范例)
+    - [searchContent 回传范例](#searchcontent-回传范例)
+    - [liveContent 回传范例](#livecontent-回传范例)
+- [爬虫本地代理 URL](#爬虫本地代理-url)
 
 ---
 
-## 概覽
+## 概览
 
-Spider 是應用程式爬蟲的抽象基底類別，位於 `com.github.catvod.crawler.Spider`。每個影片來源（`Site`）對應一個 Spider 實例。
+Spider 是应用程式爬虫的抽象基底类别，位于 `com.github.catvod.crawler.Spider`。每个影片来源（`Site`）对应一个 Spider 实例。
 
-**生命週期：**
+**生命周期：**
 
 ```
 init(context, ext)
     │
-    ├─► homeContent(filter)          首頁分類
-    ├─► homeVideoContent()           首頁推薦
-    ├─► categoryContent(...)         分類瀏覽
-    ├─► detailContent(ids)           影片詳情
-    ├─► searchContent(key, quick)    搜尋
+    ├─► homeContent(filter)          首页分类
+    ├─► homeVideoContent()           首页推荐
+    ├─► categoryContent(...)         分类浏览
+    ├─► detailContent(ids)           影片详情
+    ├─► searchContent(key, quick)    搜寻
     ├─► playerContent(flag, id, ...) 播放解析
     ├─► liveContent(url)             直播解析
-    └─► destroy()                    清理資源
+    └─► destroy()                    清理资源
 ```
 
-**欄位：**
+**栏位：**
 
-| 欄位        | 類型       | 說明                             |
+| 栏位        | 类型       | 说明                             |
 |-----------|----------|--------------------------------|
-| `siteKey` | `String` | 由載入器注入，標識此 Spider 服務的來源 `key`。 |
+| `siteKey` | `String` | 由载入器注入，标识此 Spider 服务的来源 `key`。 |
 
 ---
 
-## 爬蟲類型與載入方式
+## 爬虫类型与载入方式
 
-在 `sites` 配置中，`type` 欄位決定呼叫方式，`api` 欄位決定載入哪種引擎：
+在 `sites` 配置中，`type` 栏位决定呼叫方式，`api` 栏位决定载入哪种引擎：
 
-| `type` | `api` 格式        | 引擎                  | 說明                                                         |
+| `type` | `api` 格式        | 引擎                  | 说明                                                         |
 |--------|-----------------|---------------------|------------------------------------------------------------|
-| `0`    | HTTP URL        | 內建 XML 解析           | 直接 GET 請求，回傳 XML 格式。                                       |
-| `1`    | HTTP URL        | 內建 JSON+Filter      | 直接 GET 請求，回傳 JSON 格式，篩選參數以 `f=` 傳遞。                        |
-| `3`    | `csp_ClassName` | JAR（DexClassLoader） | 從 `jar` 指定的 .jar 檔載入 `com.github.catvod.spider.ClassName`。 |
-| `3`    | `xxx.js`        | JavaScript（QuickJS） | 載入 `.js` 檔作為 Spider。                                       |
-| `3`    | `xxx.py`        | Python（Chaquopy）    | 載入 `.py` 檔作為 Spider。                                       |
-| `4`    | HTTP URL        | 內建 JSON+Base64 ext  | 同 `1`，擴充參數以 Base64 編碼傳遞（`ext=`）。                           |
+| `0`    | HTTP URL        | 内建 XML 解析           | 直接 GET 请求，回传 XML 格式。                                       |
+| `1`    | HTTP URL        | 内建 JSON+Filter      | 直接 GET 请求，回传 JSON 格式，筛选参数以 `f=` 传递。                        |
+| `3`    | `csp_ClassName` | JAR（DexClassLoader） | 从 `jar` 指定的 .jar 档载入 `com.github.catvod.spider.ClassName`。 |
+| `3`    | `xxx.js`        | JavaScript（QuickJS） | 载入 `.js` 档作为 Spider。                                       |
+| `3`    | `xxx.py`        | Python（Chaquopy）    | 载入 `.py` 档作为 Spider。                                       |
+| `4`    | HTTP URL        | 内建 JSON+Base64 ext  | 同 `1`，扩充参数以 Base64 编码传递（`ext=`）。                           |
 
-> 本文件主要說明 `type=3`（Spider 直接呼叫）的情境。
+> 本文件主要说明 `type=3`（Spider 直接呼叫）的情境。
 
 ---
 
-## Spider 抽象類別
+## Spider 抽象类别
 
-所有方法預設回傳空字串 `""`，子類別僅需覆寫所需功能。
+所有方法预设回传空字串 `""`，子类别仅需覆写所需功能。
 
 ---
 
@@ -97,89 +97,89 @@ init(context, ext)
 public void init(Context context, String extend) throws Exception
 ```
 
-**觸發時機：** Spider 實例建立後呼叫一次，用於初始化連線、載入設定等。
+**触发时机：** Spider 实例建立后呼叫一次，用于初始化连线、载入设定等。
 
-| 參數        | 類型        | 說明                                                    |
+| 参数        | 类型        | 说明                                                    |
 |-----------|-----------|-------------------------------------------------------|
-| `context` | `Context` | Android Context，可取得應用資源、路徑等。                          |
-| `extend`  | `String`  | 對應 `Site.ext` 欄位的額外擴充資料，內容由爬蟲自行定義（可為 URL、JSON 字串或路徑）。 |
+| `context` | `Context` | Android Context，可取得应用资源、路径等。                          |
+| `extend`  | `String`  | 对应 `Site.ext` 栏位的额外扩充资料，内容由爬虫自行定义（可为 URL、JSON 字串或路径）。 |
 
-**回傳：** 無（`void`）
+**回传：** 无（`void`）
 
 ---
 
-### homeContent — 首頁分類
+### homeContent — 首页分类
 
 ```java
 public String homeContent(boolean filter) throws Exception
 ```
 
-**觸發時機：** 使用者進入首頁時呼叫，取得分類列表（及可選的篩選器）。
+**触发时机：** 使用者进入首页时呼叫，取得分类列表（及可选的筛选器）。
 
-| 參數       | 類型        | 說明                                |
+| 参数       | 类型        | 说明                                |
 |----------|-----------|-----------------------------------|
-| `filter` | `boolean` | `true` 表示需要回傳篩選器資料（`filters` 欄位）。 |
+| `filter` | `boolean` | `true` 表示需要回传筛选器资料（`filters` 栏位）。 |
 
-**回傳：** JSON 字串，結構為 [Result](#result--通用回傳物件)。
+**回传：** JSON 字串，结构为 [Result](#result--通用回传物件)。
 
-`class`（分類列表）為主要回傳欄位，`filters`（各分類的篩選器定義）為選填。
+`class`（分类列表）为主要回传栏位，`filters`（各分类的筛选器定义）为选填。
 
 ---
 
-### homeVideoContent — 首頁推薦影片
+### homeVideoContent — 首页推荐影片
 
 ```java
 public String homeVideoContent() throws Exception
 ```
 
-**觸發時機：** 首頁分類載入完成後呼叫，取得首頁推薦影片列表。
+**触发时机：** 首页分类载入完成后呼叫，取得首页推荐影片列表。
 
-**回傳：** JSON 字串，結構為 [Result](#result--通用回傳物件)。
+**回传：** JSON 字串，结构为 [Result](#result--通用回传物件)。
 
-主要回傳欄位為 `list`（推薦影片列表）。
+主要回传栏位为 `list`（推荐影片列表）。
 
 ---
 
-### categoryContent — 分類列表
+### categoryContent — 分类列表
 
 ```java
 public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception
 ```
 
-**觸發時機：** 使用者點擊分類或切換篩選條件時呼叫。
+**触发时机：** 使用者点击分类或切换筛选条件时呼叫。
 
-| 參數       | 類型                        | 說明                                                   |
+| 参数       | 类型                        | 说明                                                   |
 |----------|---------------------------|------------------------------------------------------|
-| `tid`    | `String`                  | 分類 ID，對應 `Class.typeId`。                             |
-| `pg`     | `String`                  | 頁碼，從 `"1"` 開始。                                       |
-| `filter` | `boolean`                 | 是否啟用篩選器。                                             |
-| `extend` | `HashMap<String, String>` | 使用者選擇的篩選條件，key 為篩選器 ID，value 為選項 key。為空 `{}` 時表示無篩選。 |
+| `tid`    | `String`                  | 分类 ID，对应 `Class.typeId`。                             |
+| `pg`     | `String`                  | 页码，从 `"1"` 开始。                                       |
+| `filter` | `boolean`                 | 是否启用筛选器。                                             |
+| `extend` | `HashMap<String, String>` | 使用者选择的筛选条件，key 为筛选器 ID，value 为选项 key。为空 `{}` 时表示无筛选。 |
 
-**回傳：** JSON 字串，結構為 [Result](#result--通用回傳物件)。
+**回传：** JSON 字串，结构为 [Result](#result--通用回传物件)。
 
-主要回傳欄位為 `list`（影片列表），選填 `pagecount`（總頁數，用於分頁控制）。
+主要回传栏位为 `list`（影片列表），选填 `pagecount`（总页数，用于分页控制）。
 
 ---
 
-### detailContent — 影片詳情
+### detailContent — 影片详情
 
 ```java
 public String detailContent(List<String> ids) throws Exception
 ```
 
-**觸發時機：** 使用者點擊影片卡片時呼叫，取得完整詳情與播放集數。
+**触发时机：** 使用者点击影片卡片时呼叫，取得完整详情与播放集数。
 
-| 參數    | 類型             | 說明                                |
+| 参数    | 类型             | 说明                                |
 |-------|----------------|-----------------------------------|
-| `ids` | `List<String>` | 影片 ID 清單，通常只含一個元素，對應 `Vod.vodId`。 |
+| `ids` | `List<String>` | 影片 ID 清单，通常只含一个元素，对应 `Vod.vodId`。 |
 
-**回傳：** JSON 字串，結構為 [Result](#result--通用回傳物件)，`list` 陣列中有一個完整的 `Vod` 物件。
+**回传：** JSON 字串，结构为 [Result](#result--通用回传物件)，`list` 阵列中有一个完整的 `Vod` 物件。
 
-主要 Vod 欄位：`vod_id`、`vod_name`、`vod_play_from`、`vod_play_url`。
+主要 Vod 栏位：`vod_id`、`vod_name`、`vod_play_from`、`vod_play_url`。
 
 ---
 
-### searchContent — 搜尋
+### searchContent — 搜寻
 
 ```java
 public String searchContent(String key, boolean quick) throws Exception
@@ -187,19 +187,19 @@ public String searchContent(String key, boolean quick) throws Exception
 public String searchContent(String key, boolean quick, String pg) throws Exception
 ```
 
-**觸發時機：** 使用者輸入關鍵字搜尋時呼叫。
+**触发时机：** 使用者输入关键字搜寻时呼叫。
 
-| 參數      | 類型        | 說明                                     |
+| 参数      | 类型        | 说明                                     |
 |---------|-----------|----------------------------------------|
-| `key`   | `String`  | 搜尋關鍵字。框架會自動進行繁→簡轉換以提升相容性。              |
-| `quick` | `boolean` | `true` 表示快速搜尋（只傳回基本資訊），`false` 表示完整搜尋。 |
-| `pg`    | `String`  | 頁碼（僅分頁版本），從 `"1"` 開始。                  |
+| `key`   | `String`  | 搜寻关键字。框架会自动进行繁→简转换以提升相容性。              |
+| `quick` | `boolean` | `true` 表示快速搜寻（只传回基本资讯），`false` 表示完整搜寻。 |
+| `pg`    | `String`  | 页码（仅分页版本），从 `"1"` 开始。                  |
 
-**回傳：** JSON 字串，結構為 [Result](#result--通用回傳物件)。
+**回传：** JSON 字串，结构为 [Result](#result--通用回传物件)。
 
-主要回傳欄位為 `list`（搜尋結果影片列表）。
+主要回传栏位为 `list`（搜寻结果影片列表）。
 
-> 若 `Site.quickSearch = 0`，快速搜尋會被跳過，直接回傳空結果。
+> 若 `Site.quickSearch = 0`，快速搜寻会被跳过，直接回传空结果。
 
 ---
 
@@ -209,59 +209,59 @@ public String searchContent(String key, boolean quick, String pg) throws Excepti
 public String playerContent(String flag, String id, List<String> vipFlags) throws Exception
 ```
 
-**觸發時機：** 使用者選擇集數準備播放時呼叫，需解析出實際的媒體 URL。
+**触发时机：** 使用者选择集数准备播放时呼叫，需解析出实际的媒体 URL。
 
-| 參數         | 類型             | 說明                                                     |
+| 参数         | 类型             | 说明                                                     |
 |------------|----------------|--------------------------------------------------------|
-| `flag`     | `String`       | 播放來源名稱，對應 `vod_play_from` 中的一項（如 `"youku"`、`"iqiyi"`）。 |
-| `id`       | `String`       | 集數 URL 或 ID，對應 `vod_play_url` 中某集數的 value 部分。          |
-| `vipFlags` | `List<String>` | 全局 VIP 平台旗標清單，對應配置中的 `flags` 欄位（如 `["qq", "youku"]`）。  |
+| `flag`     | `String`       | 播放来源名称，对应 `vod_play_from` 中的一项（如 `"youku"`、`"iqiyi"`）。 |
+| `id`       | `String`       | 集数 URL 或 ID，对应 `vod_play_url` 中某集数的 value 部分。          |
+| `vipFlags` | `List<String>` | 全局 VIP 平台旗标清单，对应配置中的 `flags` 栏位（如 `["qq", "youku"]`）。  |
 
-**回傳：** JSON 字串，結構為 [Result](#result--通用回傳物件)（播放解析結果）。
+**回传：** JSON 字串，结构为 [Result](#result--通用回传物件)（播放解析结果）。
 
-主要回傳欄位為 `url`（實際可播放的媒體 URL）。
+主要回传栏位为 `url`（实际可播放的媒体 URL）。
 
-選填欄位：
+选填栏位：
 
-| 欄位         | 說明                                                                  |
+| 栏位         | 说明                                                                  |
 |------------|---------------------------------------------------------------------|
-| `parse`    | `0` = 直接播放，`1` = 需進一步解析（預設 `0`）。`jx=1` 效果相同。                        |
-| `jx`       | 同 `parse=1`，需進一步解析。                                                 |
-| `playUrl`  | 解析器前綴或指定。`json:…` 傳入 JSON 解析器，`parse:解析器名稱` 指定具名解析器，其他值作為解析 URL 前綴。 | |
-| `click`    | 點擊攔截處理 URL，傳遞給解析器 WebView。                                          |
-| `code`     | 非零時抑制 `msg` 顯示。                                                     |
-| `header`   | 播放請求所需的 HTTP 標頭（鍵值對）。                                               |
-| `flag`     | 覆蓋來源旗標，傳入 VIP 解析器時使用。                                               |
-| `jxFrom`   | 強制指定解析器旗標（覆蓋 `flag` 的解析器比對結果）。                                      |
-| `format`   | 媒體 MIME type（如 `"application/x-mpegURL"`），指定後播放器跳過格式自動偵測。           |
-| `danmaku`  | 彈幕資料列表，詳見 [Danmaku](#danmaku--彈幕物件)。                                |
-| `subs`     | 字幕列表，詳見 [Sub](#sub--字幕物件)。                                          |
-| `drm`      | DRM 版權保護設定，詳見 [Drm](#drm--drm-設定物件)。                                |
-| `artwork`  | 播放頁面封面圖 URL。                                                        |
-| `desc`     | 播放頁面描述文字。                                                           |
-| `position` | 播放恢復位置（毫秒）。                                                         |
+| `parse`    | `0` = 直接播放，`1` = 需进一步解析（预设 `0`）。`jx=1` 效果相同。                        |
+| `jx`       | 同 `parse=1`，需进一步解析。                                                 |
+| `playUrl`  | 解析器前缀或指定。`json:…` 传入 JSON 解析器，`parse:解析器名称` 指定具名解析器，其他值作为解析 URL 前缀。 | |
+| `click`    | 点击拦截处理 URL，传递给解析器 WebView。                                          |
+| `code`     | 非零时抑制 `msg` 显示。                                                     |
+| `header`   | 播放请求所需的 HTTP 标头（键值对）。                                               |
+| `flag`     | 覆盖来源旗标，传入 VIP 解析器时使用。                                               |
+| `jxFrom`   | 强制指定解析器旗标（覆盖 `flag` 的解析器比对结果）。                                      |
+| `format`   | 媒体 MIME type（如 `"application/x-mpegURL"`），指定后播放器跳过格式自动侦测。           |
+| `danmaku`  | 弹幕资料列表，详见 [Danmaku](#danmaku--弹幕物件)。                                |
+| `subs`     | 字幕列表，详见 [Sub](#sub--字幕物件)。                                          |
+| `drm`      | DRM 版权保护设定，详见 [Drm](#drm--drm-设定物件)。                                |
+| `artwork`  | 播放页面封面图 URL。                                                        |
+| `desc`     | 播放页面描述文字。                                                           |
+| `position` | 播放恢复位置（毫秒）。                                                         |
 
 ---
 
-### liveContent — 直播頻道列表
+### liveContent — 直播频道列表
 
 ```java
 public String liveContent(String url) throws Exception
 ```
 
-**觸發時機：** 載入直播來源時呼叫，爬蟲回傳頻道列表的原始文字，框架再依格式解析（支援 TXT、M3U、JSON）。
+**触发时机：** 载入直播来源时呼叫，爬虫回传频道列表的原始文字，框架再依格式解析（支援 TXT、M3U、JSON）。
 
-| 參數    | 類型       | 說明                     |
+| 参数    | 类型       | 说明                     |
 |-------|----------|------------------------|
-| `url` | `String` | 來源配置中的 `Live.url` 欄位值。 |
+| `url` | `String` | 来源配置中的 `Live.url` 栏位值。 |
 
-**回傳：** 頻道列表的原始文字字串（非 JSON Result），格式可為：
+**回传：** 频道列表的原始文字字串（非 JSON Result），格式可为：
 
-| 格式   | 說明                                    |
+| 格式   | 说明                                    |
 |------|---------------------------------------|
-| TXT  | 每行 `頻道名稱,URL#URL2...`，以 `#genre#` 分組。 |
-| M3U  | 標準 `#EXTM3U`/`#EXTINF` 格式。            |
-| JSON | `Group` 物件陣列，結構與配置的 `groups` 欄位相同。    |
+| TXT  | 每行 `频道名称,URL#URL2...`，以 `#genre#` 分组。 |
+| M3U  | 标准 `#EXTM3U`/`#EXTINF` 格式。            |
+| JSON | `Group` 物件阵列，结构与配置的 `groups` 栏位相同。    |
 
 ---
 
@@ -271,50 +271,50 @@ public String liveContent(String url) throws Exception
 public Object[] proxy(Map<String, String> params) throws Exception
 ```
 
-**觸發時機：** 應用程式內建本地 HTTP 代理伺服器收到請求時呼叫。
+**触发时机：** 应用程式内建本地 HTTP 代理伺服器收到请求时呼叫。
 
-| 參數       | 類型                    | 說明                                                           |
+| 参数       | 类型                    | 说明                                                           |
 |----------|-----------------------|--------------------------------------------------------------|
-| `params` | `Map<String, String>` | 代理請求參數，從本地代理 URL 的 query string 解析而來。通常含有 `do`、`url` 等自定義參數。 |
+| `params` | `Map<String, String>` | 代理请求参数，从本地代理 URL 的 query string 解析而来。通常含有 `do`、`url` 等自定义参数。 |
 
-**回傳：** `Object[]`（注意：非 JSON 字串），格式為：
+**回传：** `Object[]`（注意：非 JSON 字串），格式为：
 
 ```
-// 200 正常回應
+// 200 正常回应
 Object[] {
-  Integer    statusCode,   // HTTP 狀態碼（200）
+  Integer    statusCode,   // HTTP 状态码（200）
   String     mimeType,     // Content-Type（如 "video/mp2t"）
-  InputStream body         // 回應內容
+  InputStream body         // 回应内容
 }
 
 // 302 重定向
 Object[] {
   Integer              statusCode,   // 302
   String               mimeType,     // "text/plain"
-  InputStream          body,         // 通常為空或提示文字
-  Map<String, String>  headers       // 含 "Location" key 的重定向標頭
+  InputStream          body,         // 通常为空或提示文字
+  Map<String, String>  headers       // 含 "Location" key 的重定向标头
 }
 ```
 
 ---
 
-### action — 自定義動作
+### action — 自定义动作
 
 ```java
 public String action(String action) throws Exception
 ```
 
-**觸發時機：** UI 層呼叫特定自定義指令時呼叫（如登入、重新整理 Token 等）。`action` 字串格式由爬蟲自行定義，框架不解析其內容。
+**触发时机：** UI 层呼叫特定自定义指令时呼叫（如登入、重新整理 Token 等）。`action` 字串格式由爬虫自行定义，框架不解析其内容。
 
-| 參數       | 類型       | 說明                |
+| 参数       | 类型       | 说明                |
 |----------|----------|-------------------|
-| `action` | `String` | 動作指令字串，格式由爬蟲自行定義。 |
+| `action` | `String` | 动作指令字串，格式由爬虫自行定义。 |
 
-**回傳：** JSON 字串，結構為 [Result](#result--通用回傳物件)。
+**回传：** JSON 字串，结构为 [Result](#result--通用回传物件)。
 
 ---
 
-### manualVideoCheck / isVideoFormat — 影片格式判斷
+### manualVideoCheck / isVideoFormat — 影片格式判断
 
 ```java
 public boolean manualVideoCheck() throws Exception
@@ -322,130 +322,130 @@ public boolean manualVideoCheck() throws Exception
 public boolean isVideoFormat(String url) throws Exception
 ```
 
-| 方法                   | 說明                                                             |
+| 方法                   | 说明                                                             |
 |----------------------|----------------------------------------------------------------|
-| `manualVideoCheck()` | 回傳 `true` 時，框架在 WebView 中攔截 URL 後會呼叫 `isVideoFormat()` 進行人工判斷。 |
-| `isVideoFormat(url)` | 判斷指定 URL 是否為有效的直接媒體 URL。回傳 `true` 表示可直接播放。                     |
+| `manualVideoCheck()` | 回传 `true` 时，框架在 WebView 中拦截 URL 后会呼叫 `isVideoFormat()` 进行人工判断。 |
+| `isVideoFormat(url)` | 判断指定 URL 是否为有效的直接媒体 URL。回传 `true` 表示可直接播放。                     |
 
-| 參數（`isVideoFormat`） | 類型       | 說明        |
+| 参数（`isVideoFormat`） | 类型       | 说明        |
 |---------------------|----------|-----------|
-| `url`               | `String` | 待判斷的 URL。 |
+| `url`               | `String` | 待判断的 URL。 |
 
 ---
 
-### destroy — 銷毀
+### destroy — 销毁
 
 ```java
 public void destroy()
 ```
 
-**觸發時機：** 配置重新載入或應用程式清理快取時呼叫，釋放資源（連線、執行緒等）。
+**触发时机：** 配置重新载入或应用程式清理快取时呼叫，释放资源（连线、执行绪等）。
 
-**回傳：** 無（`void`）
-
----
-
-## 回傳資料結構
-
-所有方法（`proxy` 除外）的回傳值均為 JSON 字串，解析後對應以下物件。
+**回传：** 无（`void`）
 
 ---
 
-### Result — 通用回傳物件
+## 回传资料结构
 
-不同方法使用的欄位不同，以下按方法分組說明。
+所有方法（`proxy` 除外）的回传值均为 JSON 字串，解析后对应以下物件。
+
+---
+
+### Result — 通用回传物件
+
+不同方法使用的栏位不同，以下按方法分组说明。
 
 **homeContent：**
 
-| JSON 欄位   | 類型             | 說明                                                                     |
+| JSON 栏位   | 类型             | 说明                                                                     |
 |-----------|----------------|------------------------------------------------------------------------|
-| `class`   | `array<Class>` | 分類列表。詳見 [Class](#class--分類物件)。                                         |
-| `filters` | `object`       | 篩選器定義，key 為 `type_id`，value 為 `Filter` 陣列。詳見 [Filter](#filter--篩選器物件)。 |
+| `class`   | `array<Class>` | 分类列表。详见 [Class](#class--分类物件)。                                         |
+| `filters` | `object`       | 筛选器定义，key 为 `type_id`，value 为 `Filter` 阵列。详见 [Filter](#filter--筛选器物件)。 |
 
 **homeVideoContent / categoryContent / detailContent / searchContent：**
 
-| JSON 欄位     | 類型           | 說明                                         |
+| JSON 栏位     | 类型           | 说明                                         |
 |-------------|--------------|--------------------------------------------|
-| `list`      | `array<Vod>` | 影片卡片列表。詳見 [Vod](#vod--影片卡片物件)。             |
-| `pagecount` | `integer`    | 總頁數（`categoryContent`、`searchContent` 使用）。 |
+| `list`      | `array<Vod>` | 影片卡片列表。详见 [Vod](#vod--影片卡片物件)。             |
+| `pagecount` | `integer`    | 总页数（`categoryContent`、`searchContent` 使用）。 |
 
 **playerContent：**
 
-| JSON 欄位    | 類型               | 說明                                                                                 |
+| JSON 栏位    | 类型               | 说明                                                                                 |
 |------------|------------------|------------------------------------------------------------------------------------|
-| `url`      | `string`         | 實際播放媒體 URL。                                                                        |
-| `parse`    | `integer`        | `0` = 直接播放，`1` = 需進一步解析（預設 `0`）。`jx=1` 效果相同。                                       |
-| `jx`       | `integer`        | 同 `parse=1`，需進一步解析（兩者任一為 `1` 即觸發解析流程）。                                             |
-| `playUrl`  | `string`         | 解析器前綴或指定。`json:…` 傳入 JSON 解析器，`parse:解析器名稱` 指定具名解析器，其他值作為解析 URL 前綴。                |
-| `key`      | `string`         | 來源 `key`，用於從配置查找對應 `Site.click`。當爬蟲未回傳 `click` 時，框架以此 key 從 VodConfig 取得 click。    |
-| `click`    | `string`         | 點擊攔截處理 URL，傳遞給解析器 WebView 執行點擊動作。                                                  |
-| `code`     | `integer`        | 非零時抑制 `msg` 顯示（通常用於錯誤狀態碼）。                                                         |
-| `header`   | `object`         | 播放請求的額外 HTTP 標頭，鍵值對格式。                                                             |
-| `flag`     | `string`         | 播放來源旗標名稱，覆蓋原始 `flag` 參數。                                                           |
-| `jxFrom`   | `string`         | 強制指定解析器旗標（覆蓋 `flag` 的解析器比對結果）。                                                     |
-| `format`   | `string`         | 媒體 MIME type（如 `"application/x-mpegURL"`、`"application/dash+xml"`），指定後播放器跳過格式自動偵測。 |
-| `danmaku`  | `array<Danmaku>` | 彈幕資料列表，詳見 [Danmaku](#danmaku--彈幕物件)。                                               |
-| `subs`     | `array<Sub>`     | 字幕列表，詳見 [Sub](#sub--字幕物件)。                                                         |
-| `drm`      | `Drm`            | DRM 版權保護設定，詳見 [Drm](#drm--drm-設定物件)。                                               |
-| `artwork`  | `string`         | 播放頁面封面圖 URL。                                                                       |
-| `desc`     | `string`         | 播放頁面描述文字。                                                                          |
-| `position` | `long`           | 播放恢復位置（毫秒）。                                                                        |
-| `lrc`      | `string`         | 歌詞 URL（音樂類來源使用）。                                                                   |
+| `url`      | `string`         | 实际播放媒体 URL。                                                                        |
+| `parse`    | `integer`        | `0` = 直接播放，`1` = 需进一步解析（预设 `0`）。`jx=1` 效果相同。                                       |
+| `jx`       | `integer`        | 同 `parse=1`，需进一步解析（两者任一为 `1` 即触发解析流程）。                                             |
+| `playUrl`  | `string`         | 解析器前缀或指定。`json:…` 传入 JSON 解析器，`parse:解析器名称` 指定具名解析器，其他值作为解析 URL 前缀。                |
+| `key`      | `string`         | 来源 `key`，用于从配置查找对应 `Site.click`。当爬虫未回传 `click` 时，框架以此 key 从 VodConfig 取得 click。    |
+| `click`    | `string`         | 点击拦截处理 URL，传递给解析器 WebView 执行点击动作。                                                  |
+| `code`     | `integer`        | 非零时抑制 `msg` 显示（通常用于错误状态码）。                                                         |
+| `header`   | `object`         | 播放请求的额外 HTTP 标头，键值对格式。                                                             |
+| `flag`     | `string`         | 播放来源旗标名称，覆盖原始 `flag` 参数。                                                           |
+| `jxFrom`   | `string`         | 强制指定解析器旗标（覆盖 `flag` 的解析器比对结果）。                                                     |
+| `format`   | `string`         | 媒体 MIME type（如 `"application/x-mpegURL"`、`"application/dash+xml"`），指定后播放器跳过格式自动侦测。 |
+| `danmaku`  | `array<Danmaku>` | 弹幕资料列表，详见 [Danmaku](#danmaku--弹幕物件)。                                               |
+| `subs`     | `array<Sub>`     | 字幕列表，详见 [Sub](#sub--字幕物件)。                                                         |
+| `drm`      | `Drm`            | DRM 版权保护设定，详见 [Drm](#drm--drm-设定物件)。                                               |
+| `artwork`  | `string`         | 播放页面封面图 URL。                                                                       |
+| `desc`     | `string`         | 播放页面描述文字。                                                                          |
+| `position` | `long`           | 播放恢复位置（毫秒）。                                                                        |
+| `lrc`      | `string`         | 歌词 URL（音乐类来源使用）。                                                                   |
 
-**通用欄位（所有 JSON 回傳方法）：**
+**通用栏位（所有 JSON 回传方法）：**
 
-| JSON 欄位 | 類型       | 說明       |
+| JSON 栏位 | 类型       | 说明       |
 |---------|----------|----------|
-| `msg`   | `string` | 錯誤或提示訊息。 |
+| `msg`   | `string` | 错误或提示讯息。 |
 
 ---
 
 ### Vod — 影片卡片物件
 
-`list` 陣列中的每個元素。
+`list` 阵列中的每个元素。
 
-| JSON 欄位         | 類型        | 說明                                                                                            |
+| JSON 栏位         | 类型        | 说明                                                                                            |
 |-----------------|-----------|-----------------------------------------------------------------------------------------------|
-| `vod_id`        | `string`  | **影片唯一 ID**，傳入 `detailContent` 的 `ids` 參數。                                                    |
-| `vod_name`      | `string`  | 影片顯示名稱（支援 HTML 編碼）。                                                                           |
-| `vod_pic`       | `string`  | 縮圖 URL。                                                                                       |
-| `vod_remarks`   | `string`  | 備註標籤，顯示在縮圖上（如 `"更新至12集"`、`"HD"`）。                                                             |
-| `type_name`     | `string`  | 所屬分類名稱（用於分類過濾）。                                                                               |
+| `vod_id`        | `string`  | **影片唯一 ID**，传入 `detailContent` 的 `ids` 参数。                                                    |
+| `vod_name`      | `string`  | 影片显示名称（支援 HTML 编码）。                                                                           |
+| `vod_pic`       | `string`  | 缩图 URL。                                                                                       |
+| `vod_remarks`   | `string`  | 备注标签，显示在缩图上（如 `"更新至12集"`、`"HD"`）。                                                             |
+| `type_name`     | `string`  | 所属分类名称（用于分类过滤）。                                                                               |
 | `vod_year`      | `string`  | 年份。                                                                                           |
-| `vod_area`      | `string`  | 地區。                                                                                           |
-| `vod_director`  | `string`  | 導演。                                                                                           |
-| `vod_actor`     | `string`  | 演員。                                                                                           |
-| `vod_content`   | `string`  | 簡介/描述。                                                                                        |
-| `vod_play_from` | `string`  | 播放來源名稱，多個來源以 `$$$` 分隔。                                                                        |
-| `vod_play_url`  | `string`  | 播放集數 URL，格式詳見[下方說明](#播放集數格式vod_play_from--vod_play_url)。                                      |
-| `vod_tag`       | `string`  | 特殊標記。`"folder"` 表示此項為資料夾，點擊後以 `vod_id` 作為 `tid` 呼叫 `categoryContent` 取得子列表。                   |
-| `action`        | `string`  | 自訂動作字串，點擊時優先於資料夾行為觸發。type==3 呼叫 `Spider.action(action)`，type==4 發送 HTTP 請求，結果以 Toast 顯示。      |
-| `cate`          | `Cate`    | 資料夾顯示樣式物件，包含 `land`、`circle`、`ratio` 三個子欄位（含義同下方三欄）。設定此欄位等同於 `vod_tag: "folder"`，即自動將此項視為資料夾。 |
-| `land`          | `integer` | 橫向顯示旗標，覆蓋 [Class](#class--分類物件) 層級的 `land` 設定。                                                |
-| `circle`        | `integer` | 圓形顯示旗標，覆蓋 [Class](#class--分類物件) 層級的 `circle` 設定。                                              |
-| `ratio`         | `float`   | 卡片寬高比，覆蓋 [Class](#class--分類物件) 層級的 `ratio` 設定。                                                |
-| `style`         | `Style`   | 此影片卡片的顯示樣式覆蓋，詳見 [CONFIG.md](CONFIG.md)。                                                       |
+| `vod_area`      | `string`  | 地区。                                                                                           |
+| `vod_director`  | `string`  | 导演。                                                                                           |
+| `vod_actor`     | `string`  | 演员。                                                                                           |
+| `vod_content`   | `string`  | 简介/描述。                                                                                        |
+| `vod_play_from` | `string`  | 播放来源名称，多个来源以 `$$$` 分隔。                                                                        |
+| `vod_play_url`  | `string`  | 播放集数 URL，格式详见[下方说明](#播放集数格式vod_play_from--vod_play_url)。                                      |
+| `vod_tag`       | `string`  | 特殊标记。`"folder"` 表示此项为资料夹，点击后以 `vod_id` 作为 `tid` 呼叫 `categoryContent` 取得子列表。                   |
+| `action`        | `string`  | 自订动作字串，点击时优先于资料夹行为触发。type==3 呼叫 `Spider.action(action)`，type==4 发送 HTTP 请求，结果以 Toast 显示。      |
+| `cate`          | `Cate`    | 资料夹显示样式物件，包含 `land`、`circle`、`ratio` 三个子栏位（含义同下方三栏）。设定此栏位等同于 `vod_tag: "folder"`，即自动将此项视为资料夹。 |
+| `land`          | `integer` | 横向显示旗标，覆盖 [Class](#class--分类物件) 层级的 `land` 设定。                                                |
+| `circle`        | `integer` | 圆形显示旗标，覆盖 [Class](#class--分类物件) 层级的 `circle` 设定。                                              |
+| `ratio`         | `float`   | 卡片宽高比，覆盖 [Class](#class--分类物件) 层级的 `ratio` 设定。                                                |
+| `style`         | `Style`   | 此影片卡片的显示样式覆盖，详见 [CONFIG.md](CONFIG.md)。                                                       |
 
 ---
 
-### Class — 分類物件
+### Class — 分类物件
 
-`class` 陣列中的每個元素。
+`class` 阵列中的每个元素。
 
-| JSON 欄位     | 類型        | 說明                                                 |
+| JSON 栏位     | 类型        | 说明                                                 |
 |-------------|-----------|----------------------------------------------------|
-| `type_id`   | `string`  | 分類唯一 ID，傳入 `categoryContent` 的 `tid` 參數。可縮寫為 `id`。 |
-| `type_name` | `string`  | 分類顯示名稱。可縮寫為 `name`。                                |
-| `type_flag` | `string`  | `"1"` 表示此分類為資料夾類型。                                 |
-| `land`      | `integer` | 此分類下影片的橫向顯示旗標。                                     |
-| `circle`    | `integer` | 此分類下影片的圓形顯示旗標。                                     |
-| `ratio`     | `float`   | 此分類下影片卡片的寬高比。                                      |
+| `type_id`   | `string`  | 分类唯一 ID，传入 `categoryContent` 的 `tid` 参数。可缩写为 `id`。 |
+| `type_name` | `string`  | 分类显示名称。可缩写为 `name`。                                |
+| `type_flag` | `string`  | `"1"` 表示此分类为资料夹类型。                                 |
+| `land`      | `integer` | 此分类下影片的横向显示旗标。                                     |
+| `circle`    | `integer` | 此分类下影片的圆形显示旗标。                                     |
+| `ratio`     | `float`   | 此分类下影片卡片的宽高比。                                      |
 
 ---
 
-### Filter — 篩選器物件
+### Filter — 筛选器物件
 
-`filters` 為一個物件，key 為 `type_id`，value 為 `Filter` 陣列，每個 `Filter` 定義一個篩選維度。
+`filters` 为一个物件，key 为 `type_id`，value 为 `Filter` 阵列，每个 `Filter` 定义一个筛选维度。
 
 ```json
 {
@@ -453,11 +453,11 @@ public void destroy()
     "1": [
       {
         "key": "area",
-        "name": "地區",
+        "name": "地区",
         "value": [
           {"n": "全部", "v": ""},
-          {"n": "大陸", "v": "大陸"},
-          {"n": "美國", "v": "美國"}
+          {"n": "大陆", "v": "大陆"},
+          {"n": "美国", "v": "美国"}
         ]
       },
       {
@@ -473,133 +473,133 @@ public void destroy()
 }
 ```
 
-**Filter 欄位：**
+**Filter 栏位：**
 
-| JSON 欄位 | 類型       | 說明                                              |
+| JSON 栏位 | 类型       | 说明                                              |
 |---------|----------|-------------------------------------------------|
-| `key`   | `string` | 篩選器 ID，作為 `categoryContent` 的 `extend` 參數的 key。 |
-| `name`  | `string` | 篩選器顯示名稱。                                        |
-| `init`  | `string` | 預設選中的選項 value（選填）。                              |
-| `value` | `array`  | 可選項目列表，每項含 `n`（顯示名稱）與 `v`（傳入值）。                 |
+| `key`   | `string` | 筛选器 ID，作为 `categoryContent` 的 `extend` 参数的 key。 |
+| `name`  | `string` | 筛选器显示名称。                                        |
+| `init`  | `string` | 预设选中的选项 value（选填）。                              |
+| `value` | `array`  | 可选项目列表，每项含 `n`（显示名称）与 `v`（传入值）。                 |
 
-使用者選擇後，`extend` 傳入格式為：
+使用者选择后，`extend` 传入格式为：
 
 ```json
 {
-  "area": "大陸",
+  "area": "大陆",
   "year": "2024"
 }
 ```
 
 ---
 
-### Danmaku — 彈幕物件
+### Danmaku — 弹幕物件
 
-`danmaku` 陣列中的每個元素。
+`danmaku` 阵列中的每个元素。
 
-| JSON 欄位 | 類型       | 說明                           |
+| JSON 栏位 | 类型       | 说明                           |
 |---------|----------|------------------------------|
-| `url`   | `string` | 彈幕來源 URL（必填），支援本地路徑（`/` 開頭）。 |
-| `name`  | `string` | 顯示名稱（選填），省略時使用 `url`。        |
+| `url`   | `string` | 弹幕来源 URL（必填），支援本地路径（`/` 开头）。 |
+| `name`  | `string` | 显示名称（选填），省略时使用 `url`。        |
 
 ---
 
 ### Sub — 字幕物件
 
-`subs` 陣列中的每個元素。
+`subs` 阵列中的每个元素。
 
-| JSON 欄位  | 類型        | 說明                                                                                                                         |
+| JSON 栏位  | 类型        | 说明                                                                                                                         |
 |----------|-----------|----------------------------------------------------------------------------------------------------------------------------|
-| `url`    | `string`  | 字幕檔 URL（必填）。                                                                                                               |
-| `name`   | `string`  | 顯示名稱（選填）。                                                                                                                  |
-| `lang`   | `string`  | 語言代碼（選填，如 `"zh-tw"`、`"en"`）。                                                                                               |
-| `format` | `string`  | MIME 類型（選填），常用值：`"text/x-ssa"`、`"application/x-subrip"`。省略時框架依副檔名自動偵測。                                                     |
-| `flag`   | `integer` | ExoPlayer `C.SELECTION_FLAG_*` 常數（選填）。`0` 或省略時預設為 `SELECTION_FLAG_DEFAULT`（自動選擇）；`2` = `SELECTION_FLAG_FORCED`（強制顯示，不可關閉）。 |
+| `url`    | `string`  | 字幕档 URL（必填）。                                                                                                               |
+| `name`   | `string`  | 显示名称（选填）。                                                                                                                  |
+| `lang`   | `string`  | 语言代码（选填，如 `"zh-tw"`、`"en"`）。                                                                                               |
+| `format` | `string`  | MIME 类型（选填），常用值：`"text/x-ssa"`、`"application/x-subrip"`。省略时框架依副档名自动侦测。                                                     |
+| `flag`   | `integer` | ExoPlayer `C.SELECTION_FLAG_*` 常数（选填）。`0` 或省略时预设为 `SELECTION_FLAG_DEFAULT`（自动选择）；`2` = `SELECTION_FLAG_FORCED`（强制显示，不可关闭）。 |
 
 ---
 
-### Drm — DRM 設定物件
+### Drm — DRM 设定物件
 
-`drm` 物件欄位。
+`drm` 物件栏位。
 
-| JSON 欄位    | 類型        | 說明                                                     |
+| JSON 栏位    | 类型        | 说明                                                     |
 |------------|-----------|--------------------------------------------------------|
-| `type`     | `string`  | DRM 類型：`"widevine"`、`"playready"`、`"clearkey"`。        |
-| `key`      | `string`  | License Server URL（Widevine/PlayReady）或 ClearKey 金鑰字串。 |
-| `header`   | `object`  | License 請求的額外 HTTP 標頭，鍵值對格式（選填）。                       |
-| `forceKey` | `boolean` | `true` = 強制使用預設 License URI（選填，預設 `false`）。            |
+| `type`     | `string`  | DRM 类型：`"widevine"`、`"playready"`、`"clearkey"`。        |
+| `key`      | `string`  | License Server URL（Widevine/PlayReady）或 ClearKey 金钥字串。 |
+| `header`   | `object`  | License 请求的额外 HTTP 标头，键值对格式（选填）。                       |
+| `forceKey` | `boolean` | `true` = 强制使用预设 License URI（选填，预设 `false`）。            |
 
 ---
 
-### 播放集數格式（vod_play_from / vod_play_url）
+### 播放集数格式（vod_play_from / vod_play_url）
 
-`detailContent` 回傳的 `Vod` 物件中，集數資訊以特定分隔符號編碼在兩個字串欄位中。
+`detailContent` 回传的 `Vod` 物件中，集数资讯以特定分隔符号编码在两个字串栏位中。
 
-| 符號    | 用途              |
+| 符号    | 用途              |
 |-------|-----------------|
-| `$$$` | 分隔多個播放來源（group） |
-| `#`   | 分隔同一來源下的集數      |
-| `$`   | 分隔集數名稱與集數 URL   |
+| `$$$` | 分隔多个播放来源（group） |
+| `#`   | 分隔同一来源下的集数      |
+| `$`   | 分隔集数名称与集数 URL   |
 
-**範例：**
+**范例：**
 
 ```
-vod_play_from: "線路一$$$線路二"
+vod_play_from: "线路一$$$线路二"
 
 vod_play_url:  "第01集$https://cdn1.example.com/ep1.m3u8#第02集$https://cdn1.example.com/ep2.m3u8$$$第01集$https://cdn2.example.com/ep1.m3u8#第02集$https://cdn2.example.com/ep2.m3u8"
 ```
 
-對應解析結果：
+对应解析结果：
 
 ```
-線路一:
+线路一:
   - 第01集 → https://cdn1.example.com/ep1.m3u8
   - 第02集 → https://cdn1.example.com/ep2.m3u8
 
-線路二:
+线路二:
   - 第01集 → https://cdn2.example.com/ep1.m3u8
   - 第02集 → https://cdn2.example.com/ep2.m3u8
 ```
 
-集數 URL 的 value 部分即為 `playerContent` 的 `id` 參數。
+集数 URL 的 value 部分即为 `playerContent` 的 `id` 参数。
 
 ---
 
-## 完整 JSON 範例
+## 完整 JSON 范例
 
-### homeContent 回傳範例
+### homeContent 回传范例
 
 ```json
 {
   "class": [
     {
       "type_id": "1",
-      "type_name": "電影"
+      "type_name": "电影"
     },
     {
       "type_id": "2",
-      "type_name": "電視劇"
+      "type_name": "电视剧"
     },
     {
       "type_id": "3",
-      "type_name": "綜藝"
+      "type_name": "综艺"
     },
     {
       "type_id": "4",
-      "type_name": "動漫"
+      "type_name": "动漫"
     }
   ],
   "filters": {
     "1": [
       {
         "key": "area",
-        "name": "地區",
+        "name": "地区",
         "value": [
           {"n": "全部", "v": ""},
-          {"n": "大陸", "v": "大陸"},
+          {"n": "大陆", "v": "大陆"},
           {"n": "香港", "v": "香港"},
-          {"n": "台灣", "v": "台灣"},
-          {"n": "美國", "v": "美國"}
+          {"n": "台湾", "v": "台湾"},
+          {"n": "美国", "v": "美国"}
         ]
       },
       {
@@ -618,26 +618,26 @@ vod_play_url:  "第01集$https://cdn1.example.com/ep1.m3u8#第02集$https://cdn1
 
 ---
 
-### homeVideoContent / categoryContent 回傳範例
+### homeVideoContent / categoryContent 回传范例
 
-> `categoryContent` 和 `searchContent` 可額外回傳 `pagecount`；`homeVideoContent` 無此欄位。
+> `categoryContent` 和 `searchContent` 可额外回传 `pagecount`；`homeVideoContent` 无此栏位。
 
 ```json
 {
   "list": [
     {
       "vod_id": "12345",
-      "vod_name": "範例電影",
+      "vod_name": "范例电影",
       "vod_pic": "https://example.com/pic/12345.jpg",
       "vod_remarks": "HD",
-      "type_name": "電影"
+      "type_name": "电影"
     },
     {
       "vod_id": "67890",
-      "vod_name": "範例電視劇",
+      "vod_name": "范例电视剧",
       "vod_pic": "https://example.com/pic/67890.jpg",
       "vod_remarks": "更新至12集",
-      "type_name": "電視劇"
+      "type_name": "电视剧"
     }
   ],
   "pagecount": 10
@@ -646,38 +646,38 @@ vod_play_url:  "第01集$https://cdn1.example.com/ep1.m3u8#第02集$https://cdn1
 
 ---
 
-### detailContent 回傳範例
+### detailContent 回传范例
 
 ```json
 {
   "list": [
     {
       "vod_id": "12345",
-      "vod_name": "範例電影",
+      "vod_name": "范例电影",
       "vod_pic": "https://example.com/pic/12345.jpg",
       "vod_year": "2024",
-      "vod_area": "大陸",
-      "vod_director": "張三",
+      "vod_area": "大陆",
+      "vod_director": "张三",
       "vod_actor": "李四, 王五",
-      "vod_content": "這是一部精彩的電影...",
+      "vod_content": "这是一部精彩的电影...",
       "vod_remarks": "HD",
-      "type_name": "電影",
-      "vod_play_from": "線路一$$$線路二",
+      "type_name": "电影",
+      "vod_play_from": "线路一$$$线路二",
       "vod_play_url": "正片$https://cdn1.example.com/movie.m3u8$$$正片$https://cdn2.example.com/movie.m3u8"
     }
   ]
 }
 ```
 
-**多集電視劇範例：**
+**多集电视剧范例：**
 
 ```json
 {
   "list": [
     {
       "vod_id": "67890",
-      "vod_name": "範例電視劇",
-      "vod_play_from": "主線路$$$備用線路",
+      "vod_name": "范例电视剧",
+      "vod_play_from": "主线路$$$备用线路",
       "vod_play_url": "第01集$https://cdn1.example.com/ep1.m3u8#第02集$https://cdn1.example.com/ep2.m3u8$$$第01集$https://cdn2.example.com/ep1.m3u8#第02集$https://cdn2.example.com/ep2.m3u8"
     }
   ]
@@ -686,9 +686,9 @@ vod_play_url:  "第01集$https://cdn1.example.com/ep1.m3u8#第02集$https://cdn1
 
 ---
 
-### playerContent 回傳範例
+### playerContent 回传范例
 
-**直接播放（無需解析）：**
+**直接播放（无需解析）：**
 
 ```json
 {
@@ -701,7 +701,7 @@ vod_play_url:  "第01集$https://cdn1.example.com/ep1.m3u8#第02集$https://cdn1
 }
 ```
 
-**需要進一步解析（VIP 影片）：**
+**需要进一步解析（VIP 影片）：**
 
 ```json
 {
@@ -711,7 +711,7 @@ vod_play_url:  "第01集$https://cdn1.example.com/ep1.m3u8#第02集$https://cdn1
 }
 ```
 
-**含字幕與彈幕：**
+**含字幕与弹幕：**
 
 ```json
 {
@@ -722,7 +722,7 @@ vod_play_url:  "第01集$https://cdn1.example.com/ep1.m3u8#第02集$https://cdn1
   },
   "subs": [
     {
-      "name": "繁體中文",
+      "name": "繁体中文",
       "url": "https://cdn.example.com/sub/ep1.zh-tw.srt",
       "lang": "zh-tw"
     },
@@ -742,17 +742,17 @@ vod_play_url:  "第01集$https://cdn1.example.com/ep1.m3u8#第02集$https://cdn1
 
 ---
 
-### searchContent 回傳範例
+### searchContent 回传范例
 
 ```json
 {
   "list": [
     {
       "vod_id": "12345",
-      "vod_name": "範例電影",
+      "vod_name": "范例电影",
       "vod_pic": "https://example.com/pic/12345.jpg",
       "vod_remarks": "HD",
-      "type_name": "電影"
+      "type_name": "电影"
     }
   ]
 }
@@ -760,15 +760,15 @@ vod_play_url:  "第01集$https://cdn1.example.com/ep1.m3u8#第02集$https://cdn1
 
 ---
 
-### liveContent 回傳範例
+### liveContent 回传范例
 
 **TXT 格式：**
 
 ```
-央視頻道,#genre#
+央视频道,#genre#
 CCTV1,http://example.com/cctv1.m3u8#http://cdn2.example.com/cctv1.m3u8
 CCTV2,http://example.com/cctv2.m3u8
-台灣頻道,#genre#
+台湾频道,#genre#
 TVBS,http://example.com/tvbs.m3u8
 ```
 
@@ -776,7 +776,7 @@ TVBS,http://example.com/tvbs.m3u8
 
 ```
 #EXTM3U
-#EXTINF:-1 tvg-name="CCTV1" group-title="央視頻道",CCTV1
+#EXTINF:-1 tvg-name="CCTV1" group-title="央视频道",CCTV1
 http://example.com/cctv1.m3u8
 ```
 
@@ -785,7 +785,7 @@ http://example.com/cctv1.m3u8
 ```json
 [
   {
-    "name": "央視頻道",
+    "name": "央视频道",
     "channel": [
       {
         "name": "CCTV1",
@@ -800,22 +800,22 @@ http://example.com/cctv1.m3u8
 
 ---
 
-## 爬蟲本地代理 URL
+## 爬虫本地代理 URL
 
-爬蟲可在回傳的媒體 URL 中使用 `proxy://` 協議，將請求導向本地代理伺服器，由對應語言的 `proxy()`
-方法處理。這樣可以在播放器無法直接存取來源時，讓爬蟲居中轉發資料。
+爬虫可在回传的媒体 URL 中使用 `proxy://` 协议，将请求导向本地代理伺服器，由对应语言的 `proxy()`
+方法处理。这样可以在播放器无法直接存取来源时，让爬虫居中转发资料。
 
-| 語言         | 回傳 URL 前綴        | 取得代理 URL 的方法                  |
+| 语言         | 回传 URL 前缀        | 取得代理 URL 的方法                  |
 |------------|------------------|-------------------------------|
 | Java（JAR）  | `proxy://`       | `Proxy.getUrl(boolean local)` |
 | Python     | `proxy://?do=py` | `getProxyUrl(boolean local)`  |
 | JavaScript | `proxy://?do=js` | `getProxy(boolean local)`     |
 
-> `local` 參數：`true` 取得本地（`127.0.0.1`）代理位址，`false` 取得可對外存取的 LAN IP 位址。
+> `local` 参数：`true` 取得本地（`127.0.0.1`）代理位址，`false` 取得可对外存取的 LAN IP 位址。
 
-完整端點說明見 [LOCAL.md — /proxy](LOCAL.md#proxy--爬蟲代理)。
+完整端点说明见 [LOCAL.md — /proxy](LOCAL.md#proxy--爬虫代理)。
 
-**使用範例（Java）：**
+**使用范例（Java）：**
 
 ```java
 @Override
