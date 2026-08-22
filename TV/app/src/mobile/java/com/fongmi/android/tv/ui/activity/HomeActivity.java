@@ -39,6 +39,7 @@ import com.fongmi.android.tv.ui.custom.FragmentStateManager;
 import com.fongmi.android.tv.ui.fragment.SettingDanmakuFragment;
 import com.fongmi.android.tv.ui.fragment.SettingDecodeFragment;
 import com.fongmi.android.tv.ui.fragment.SettingFragment;
+import com.fongmi.android.tv.ui.fragment.SettingMoreFragment;
 import com.fongmi.android.tv.ui.fragment.SettingPlayerFragment;
 import com.fongmi.android.tv.ui.fragment.SettingPreloadFragment;
 import com.fongmi.android.tv.ui.fragment.VodFragment;
@@ -59,6 +60,7 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
     private FragmentStateManager mManager;
     private ActivityHomeBinding mBinding;
     private int orientation;
+    private int mPreviousPosition = -1;
 
     @Override
     protected ViewBinding getBinding() {
@@ -120,6 +122,7 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
             case 3 -> SettingDanmakuFragment.newInstance();
             case 4 -> SettingPreloadFragment.newInstance();
             case 5 -> SettingDecodeFragment.newInstance();
+            case 6 -> SettingMoreFragment.newInstance();
             default -> null;
         });
         if (savedInstanceState == null) change(0);
@@ -175,8 +178,15 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
     }
 
     public void change(int position) {
-        if (position < 2) mBinding.navigation.setSelectedItemId(position == 0 ? R.id.vod : R.id.setting);
-        else mManager.change(position);
+        if (position < 2) {
+            mBinding.navigation.setSelectedItemId(position == 0 ? R.id.vod : R.id.setting);
+        } else {
+            if (position == 2 || position == 3) {
+                if (mManager.isVisible(6)) mPreviousPosition = 6;
+                else if (mManager.isVisible(1)) mPreviousPosition = 1;
+            }
+            mManager.change(position);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -233,6 +243,14 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
         } else if (mManager.isVisible(4) || mManager.isVisible(5)) {
             change(2);
         } else if (mManager.isVisible(3) || mManager.isVisible(2)) {
+            if (mPreviousPosition == 6) {
+                mPreviousPosition = -1;
+                change(6);
+            } else {
+                change(1);
+            }
+        } else if (mManager.isVisible(6)) {
+            mPreviousPosition = -1;
             change(1);
         } else if (mManager.isVisible(1)) {
             change(0);

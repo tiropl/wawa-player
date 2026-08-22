@@ -258,6 +258,8 @@
     <string name="setting_incognito">無痕模式</string>
 
     <string name="setting_sound">提示音</string>
+
+    <string name="setting_more">更多設置</string>
     <string name="setting_theme_color">主題色彩</string>
     <string name="setting_auto">自動</string>
     <string name="setting_custom">自訂</string>

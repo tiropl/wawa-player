@@ -265,6 +265,8 @@
     <string name="setting_incognito">Incognito mode</string>
 
     <string name="setting_sound">Sound</string>
+
+    <string name="setting_more">More settings</string>
     <string name="setting_theme_color">Theme color</string>
     <string name="setting_auto">Auto</string>
     <string name="setting_custom">Custom</string>
