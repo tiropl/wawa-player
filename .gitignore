@@ -1,14 +1,23 @@
 .idea
 .vscode
-.gradle
-.github
+TV/.gradle
 .settings
 *build
-*.jks
-*.properties
+local.properties
 lib-*.aar
 /Release
-/docs
 
-.key
+# AI
 .claude
+
+# 签名
+*.jks
+
+# APK输出目录
+TV/app/arm64_v8a
+TV/app/armeabi_v7a
+TV/app/mobileArm64_v8a
+TV/app/mobileArmeabi_v7a
+TV/app/leanbackArm64_v8a
+TV/app/leanbackArmeabi_v7a
+**/*.apk

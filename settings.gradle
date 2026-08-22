@@ -1,5 +1,5 @@
 pluginManagement {
-    // Media3 modules use convention plugins provided by these included builds.
+    // media3 modules use convention plugins provided by these included builds.
     includeBuild("media3/build-logic-settings")
     includeBuild("media3/build-logic")
     repositories {
@@ -23,10 +23,17 @@ dependencyResolutionManagement {
     }
 }
 
+rootProject.name = "TV"
+
+// project modules
 include ':app'
 include ':catvod'
 include ':chaquo'
 include ':quickjs'
+project(':app').projectDir = file('TV/app')
+project(':catvod').projectDir = file('TV/catvod')
+project(':chaquo').projectDir = file('TV/chaquo')
+project(':quickjs').projectDir = file('TV/quickjs')
 
 // media3 modules
 include ':lib-common'
@@ -52,9 +59,6 @@ include ':test-utils'
 include ':test-utils-robolectric'
 include ':lib-transformer'
 
-rootProject.name = "TV"
-
-// Map module names to directories
 project(':lib-common').projectDir = file('media3/libraries/common')
 project(':lib-container').projectDir = file('media3/libraries/container')
 project(':lib-database').projectDir = file('media3/libraries/database')
