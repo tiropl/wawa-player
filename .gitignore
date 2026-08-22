@@ -1,6 +1,6 @@
 .idea
 .vscode
-TV/.gradle
+.gradle
 .settings
 *build
 local.properties

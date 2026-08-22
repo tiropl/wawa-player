@@ -42,6 +42,7 @@ import com.fongmi.android.tv.event.CastEvent;
 import com.fongmi.android.tv.event.ConfigEvent;
 import com.fongmi.android.tv.event.RefreshEvent;
 import com.fongmi.android.tv.event.ServerEvent;
+import com.fongmi.android.tv.setting.ModePolicy;
 import com.fongmi.android.tv.setting.Setting;
 import com.fongmi.android.tv.impl.Callback;
 import com.fongmi.android.tv.model.SiteViewModel;
@@ -273,7 +274,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         if (LiveConfig.hasUrl()) items.add(Func.create(R.string.home_live));
         items.add(Func.create(R.string.home_search));
         items.add(Func.create(R.string.home_keep));
-        if (!Setting.isElderMode()) {
+        if (ModePolicy.showPush()) {
             items.add(Func.create(R.string.home_push));
         }
         items.add(Func.create(R.string.home_setting));
@@ -437,7 +438,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     @Override
     public void showDialog() {
-        if (Setting.isElderMode()) return;
+        if (!ModePolicy.showSiteSwitch()) return;
         SiteDialog.create().show(this);
     }
 

@@ -28,7 +28,7 @@ import com.fongmi.android.tv.bean.Track;
 import com.fongmi.android.tv.databinding.DialogTrackBinding;
 import com.fongmi.android.tv.player.PlayerManager;
 import com.fongmi.android.tv.player.track.TrackUtil;
-import com.fongmi.android.tv.setting.Setting;
+import com.fongmi.android.tv.setting.ModePolicy;
 import com.fongmi.android.tv.ui.adapter.TrackAdapter;
 import com.fongmi.android.tv.ui.custom.SpaceItemDecoration;
 import com.fongmi.android.tv.utils.FileChooser;
@@ -85,7 +85,7 @@ public final class TrackDialog extends BaseBottomSheetDialog implements TrackAda
     }
 
     private boolean hasSetting() {
-        if (Setting.isElderMode()) return false;
+        if (!ModePolicy.showTrackSetting()) return false;
         return type == C.TRACK_TYPE_AUDIO || type == C.TRACK_TYPE_VIDEO || type == C.TRACK_TYPE_TEXT;
     }
 
