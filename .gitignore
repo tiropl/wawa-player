@@ -14,10 +14,10 @@ lib-*.aar
 *.jks
 
 # APK输出目录
-TV/app/arm64_v8a
-TV/app/armeabi_v7a
-TV/app/mobileArm64_v8a
-TV/app/mobileArmeabi_v7a
-TV/app/leanbackArm64_v8a
-TV/app/leanbackArmeabi_v7a
+wawa_player/app/arm64_v8a
+wawa_player/app/armeabi_v7a
+wawa_player/app/mobileArm64_v8a
+wawa_player/app/mobileArmeabi_v7a
+wawa_player/app/leanbackArm64_v8a
+wawa_player/app/leanbackArmeabi_v7a
 **/*.apk

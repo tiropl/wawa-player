@@ -30,10 +30,10 @@ include ':app'
 include ':catvod'
 include ':chaquo'
 include ':quickjs'
-project(':app').projectDir = file('TV/app')
-project(':catvod').projectDir = file('TV/catvod')
-project(':chaquo').projectDir = file('TV/chaquo')
-project(':quickjs').projectDir = file('TV/quickjs')
+project(':app').projectDir = file('wawa_player/app')
+project(':catvod').projectDir = file('wawa_player/catvod')
+project(':chaquo').projectDir = file('wawa_player/chaquo')
+project(':quickjs').projectDir = file('wawa_player/quickjs')
 
 // media3 modules
 include ':lib-common'
