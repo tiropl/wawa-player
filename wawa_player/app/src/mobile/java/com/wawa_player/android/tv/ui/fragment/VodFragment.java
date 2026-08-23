@@ -16,9 +16,11 @@ import androidx.viewbinding.ViewBinding;
 import androidx.viewpager.widget.ViewPager;
 
 import com.wawa_player.android.tv.R;
+import com.wawa_player.android.tv.api.config.LineConfig;
 import com.wawa_player.android.tv.api.config.VodConfig;
 import com.wawa_player.android.tv.bean.Class;
 import com.wawa_player.android.tv.bean.Config;
+import com.wawa_player.android.tv.bean.Depot;
 import com.wawa_player.android.tv.bean.Result;
 import com.wawa_player.android.tv.bean.Site;
 import com.wawa_player.android.tv.bean.Value;
@@ -30,6 +32,7 @@ import com.wawa_player.android.tv.event.StateEvent;
 import com.wawa_player.android.tv.impl.Callback;
 import com.wawa_player.android.tv.impl.ConfigListener;
 import com.wawa_player.android.tv.impl.FilterListener;
+import com.wawa_player.android.tv.impl.LineListener;
 import com.wawa_player.android.tv.impl.SiteListener;
 import com.wawa_player.android.tv.model.SiteViewModel;
 import com.wawa_player.android.tv.ui.activity.HistoryActivity;
@@ -38,7 +41,7 @@ import com.wawa_player.android.tv.ui.activity.SearchActivity;
 import com.wawa_player.android.tv.ui.adapter.TypeAdapter;
 import com.wawa_player.android.tv.ui.base.BaseFragment;
 import com.wawa_player.android.tv.ui.dialog.FilterDialog;
-import com.wawa_player.android.tv.ui.dialog.HistoryDialog;
+import com.wawa_player.android.tv.ui.dialog.LineDialog;
 import com.wawa_player.android.tv.ui.dialog.LinkDialog;
 import com.wawa_player.android.tv.ui.dialog.ReceiveDialog;
 import com.wawa_player.android.tv.ui.dialog.SiteDialog;
@@ -54,7 +57,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class VodFragment extends BaseFragment implements ConfigListener, SiteListener, FilterListener, TypeAdapter.OnClickListener {
+public class VodFragment extends BaseFragment implements ConfigListener, SiteListener, FilterListener, LineListener, TypeAdapter.OnClickListener {
 
     private FragmentVodBinding mBinding;
     private SiteViewModel mViewModel;
@@ -173,7 +176,27 @@ public class VodFragment extends BaseFragment implements ConfigListener, SiteLis
     }
 
     private void onLogo(View view) {
-        HistoryDialog.create().vod().readOnly().show(this);
+        if (LineConfig.getLines(0).isEmpty()) Notify.show(getString(R.string.line_empty));
+        else LineDialog.create().show(this);
+    }
+
+    @Override
+    public void setLine(Depot item) {
+        Notify.show(getString(R.string.line_switching, item.getName()));
+        VodConfig.switchLine(item, new Callback() {
+            @Override
+            public void start() {
+                showProgress();
+                hideContent();
+                setTitle();
+                setLogo();
+            }
+
+            @Override
+            public void error(String msg) {
+                showContent();
+            }
+        });
     }
 
     private void onSite(View view) {

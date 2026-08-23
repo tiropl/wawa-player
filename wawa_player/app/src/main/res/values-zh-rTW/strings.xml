@@ -380,6 +380,13 @@
     <string name="dialog_config_name">請輸入名稱…</string>
     <string name="dialog_config_url">請輸入網址…</string>
 
+    <!-- Line -->
+    <string name="line_title">點播線路</string>
+    <string name="line_empty">暫無其它線路</string>
+    <string name="line_switching">正在切換線路至：%1$s</string>
+    <string name="line_update_fail">配置更新失敗</string>
+    <string name="line_load_fail">線路載入失敗</string>
+
     <!-- Error -->
     <string name="error_config_get">配置取得失敗</string>
     <string name="error_play_next">已經是最後一集了！</string>

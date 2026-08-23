@@ -127,10 +127,10 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
     private void load(Config config) {
         switch (config.getType()) {
             case 0:
-                VodConfig.load(config, getCallback());
+                VodConfig.load(config, getCallback(), true);
                 break;
             case 1:
-                LiveConfig.load(config, getCallback());
+                LiveConfig.load(config, getCallback(), true);
                 break;
             case 2:
                 Setting.putWall(0);

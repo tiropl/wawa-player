@@ -3,6 +3,7 @@ package com.wawa_player.android.tv.api.config;
 import android.text.TextUtils;
 
 import com.wawa_player.android.tv.App;
+import com.wawa_player.android.tv.R;
 import com.wawa_player.android.tv.api.Decoder;
 import com.wawa_player.android.tv.api.loader.BaseLoader;
 import com.wawa_player.android.tv.bean.Config;
@@ -13,6 +14,7 @@ import com.wawa_player.android.tv.bean.Site;
 import com.wawa_player.android.tv.event.ConfigEvent;
 import com.wawa_player.android.tv.event.RefreshEvent;
 import com.wawa_player.android.tv.impl.Callback;
+import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.UrlUtil;
 import com.github.catvod.bean.Doh;
 import com.github.catvod.bean.Header;
@@ -40,6 +42,7 @@ public class VodConfig extends BaseConfig {
     private List<String> ads;
     private List<String> flags;
     private List<Parse> parses;
+    private boolean configuring;
 
     public static VodConfig get() {
         return Loader.INSTANCE;
@@ -66,7 +69,33 @@ public class VodConfig extends BaseConfig {
     }
 
     public static void load(Config config, Callback callback) {
-        get().clear().config(config).load(callback);
+        load(config, callback, false);
+    }
+
+    public static void load(Config config, Callback callback, boolean configuring) {
+        get().clear().config(config).configuring(configuring).load(callback);
+    }
+
+    public static void switchLine(Depot line, Callback callback) {
+        Config prev = get().getConfig();
+        load(Config.find(line.getUrl(), line.getName(), VOD), new Callback() {
+            @Override
+            public void start() {
+                callback.start();
+            }
+
+            @Override
+            public void success() {
+                callback.success();
+            }
+
+            @Override
+            public void error(String msg) {
+                App.post(() -> Notify.show(R.string.line_load_fail));
+                load(prev, new Callback());
+                callback.error(msg);
+            }
+        });
     }
 
     public VodConfig init() {
@@ -75,6 +104,11 @@ public class VodConfig extends BaseConfig {
 
     public VodConfig config(Config config) {
         this.config = config;
+        return this;
+    }
+
+    public VodConfig configuring(boolean configuring) {
+        this.configuring = configuring;
         return this;
     }
 
@@ -88,6 +122,7 @@ public class VodConfig extends BaseConfig {
         flags = null;
         rules = null;
         parses = null;
+        configuring = false;
         BaseLoader.get().clear();
         RuleConfig.get().invalidate();
         return this;
@@ -126,16 +161,18 @@ public class VodConfig extends BaseConfig {
         } else if (object.has("urls")) {
             parseDepot(config, object);
         } else {
+            if (configuring) LineConfig.clear(VOD);
+            configuring = false;
             parseConfig(config, object);
         }
     }
 
     private void parseDepot(Config config, JsonObject object) throws Throwable {
         List<Depot> items = Depot.arrayFrom(object.getAsJsonArray("urls").toString());
-        List<Config> configs = new ArrayList<>();
-        for (Depot item : items) configs.add(Config.find(item, VOD));
-        if (configs.isEmpty()) throw new Exception("Depot urls is empty");
-        load(this.config = configs.get(0));
+        if (items.isEmpty()) throw new Exception("Depot urls is empty");
+        configuring = false;
+        LineConfig.save(VOD, config.getUrl(), items);
+        load(this.config = Config.find(items.get(0), VOD));
         Config.delete(config.getUrl());
     }
 

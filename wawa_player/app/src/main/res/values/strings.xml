@@ -387,6 +387,13 @@
     <string name="dialog_config_name">Please enter the name…</string>
     <string name="dialog_config_url">Please enter the url…</string>
 
+    <!-- Line -->
+    <string name="line_title">VOD Lines</string>
+    <string name="line_empty">No other lines</string>
+    <string name="line_switching">Switching line to: %1$s</string>
+    <string name="line_update_fail">Config update failed</string>
+    <string name="line_load_fail">Line load failed</string>
+
     <!-- Error -->
     <string name="error_config_get">Configuration get failed</string>
     <string name="error_play_next">It\'s the last episode!</string>

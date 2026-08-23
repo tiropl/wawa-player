@@ -19,6 +19,7 @@ import androidx.viewbinding.ViewBinding;
 import com.wawa_player.android.tv.App;
 import com.wawa_player.android.tv.R;
 import com.wawa_player.android.tv.Updater;
+import com.wawa_player.android.tv.api.config.LineConfig;
 import com.wawa_player.android.tv.api.config.LiveConfig;
 import com.wawa_player.android.tv.api.config.VodConfig;
 import com.wawa_player.android.tv.api.config.WallConfig;
@@ -136,6 +137,8 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
         VodConfig.get().init().load(getCallback());
         LiveConfig.get().init().load();
         WallConfig.get().init();
+        LineConfig.refresh(0);
+        LineConfig.refresh(1);
     }
 
     private Callback getCallback() {

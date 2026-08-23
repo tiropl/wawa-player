@@ -25,11 +25,13 @@ import com.wawa_player.android.tv.App;
 import com.wawa_player.android.tv.Product;
 import com.wawa_player.android.tv.R;
 import com.wawa_player.android.tv.Updater;
+import com.wawa_player.android.tv.api.config.LineConfig;
 import com.wawa_player.android.tv.api.config.LiveConfig;
 import com.wawa_player.android.tv.api.config.VodConfig;
 import com.wawa_player.android.tv.api.config.WallConfig;
 import com.wawa_player.android.tv.bean.Cache;
 import com.wawa_player.android.tv.bean.Config;
+import com.wawa_player.android.tv.bean.Depot;
 import com.wawa_player.android.tv.bean.Func;
 import com.wawa_player.android.tv.bean.History;
 import com.wawa_player.android.tv.bean.Result;
@@ -47,6 +49,7 @@ import com.wawa_player.android.tv.setting.PasswordLock;
 import com.wawa_player.android.tv.setting.Setting;
 import com.wawa_player.android.tv.utils.LoadingSound;
 import com.wawa_player.android.tv.impl.Callback;
+import com.wawa_player.android.tv.impl.LineListener;
 import com.wawa_player.android.tv.impl.LockListener;
 import com.wawa_player.android.tv.model.SiteViewModel;
 import com.wawa_player.android.tv.player.extractor.Source;
@@ -59,6 +62,7 @@ import com.wawa_player.android.tv.ui.custom.CustomRowPresenter;
 import com.wawa_player.android.tv.ui.custom.CustomSelector;
 import com.wawa_player.android.tv.ui.custom.CustomTitleView;
 import com.wawa_player.android.tv.ui.dialog.SiteDialog;
+import com.wawa_player.android.tv.ui.dialog.LineDialog;
 import com.wawa_player.android.tv.ui.dialog.LockVerifyDialog;
 import com.wawa_player.android.tv.ui.presenter.FuncPresenter;
 import com.wawa_player.android.tv.ui.presenter.HeaderPresenter;
@@ -85,7 +89,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class HomeActivity extends BaseActivity implements CustomTitleView.Listener, VodPresenter.OnClickListener, FuncPresenter.OnClickListener, HistoryPresenter.OnClickListener {
+public class HomeActivity extends BaseActivity implements CustomTitleView.Listener, VodPresenter.OnClickListener, FuncPresenter.OnClickListener, HistoryPresenter.OnClickListener, LineListener {
 
     private ActivityHomeBinding mBinding;
     private ArrayObjectAdapter mHistoryAdapter;
@@ -141,6 +145,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     @Override
     protected void initEvent() {
         mBinding.title.setListener(this);
+        mBinding.logo.setOnClickListener(this::onLogo);
         mBinding.recycler.addOnChildViewHolderSelectedListener(new OnChildViewHolderSelectedListener() {
             @Override
             public void onChildViewHolderSelected(@NonNull RecyclerView parent, @Nullable RecyclerView.ViewHolder child, int position, int subposition) {
@@ -208,6 +213,8 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         VodConfig.get().init().load(getCallback());
         LiveConfig.get().init().load();
         WallConfig.get().init();
+        LineConfig.refresh(0);
+        LineConfig.refresh(1);
     }
 
     private Callback getCallback() {
@@ -323,6 +330,22 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     private void setLogo() {
         ImgUtil.logo(mBinding.logo);
+    }
+
+    private void onLogo(View view) {
+        if (LineConfig.getLines(0).isEmpty()) Notify.show(R.string.line_empty);
+        else LineDialog.create().show(this);
+    }
+
+    @Override
+    public void setLine(Depot item) {
+        Notify.show(getString(R.string.line_switching, item.getName()));
+        VodConfig.switchLine(item, new Callback() {
+            @Override
+            public void success() {
+                showContent();
+            }
+        });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -39,6 +39,7 @@ public class LiveConfig extends BaseConfig {
     private List<Live> lives;
     private List<Rule> rules;
     private List<String> ads;
+    private boolean configuring;
 
     public static LiveConfig get() {
         return Loader.INSTANCE;
@@ -73,7 +74,11 @@ public class LiveConfig extends BaseConfig {
     }
 
     public static void load(Config config, Callback callback) {
-        get().clear().config(config).load(callback);
+        load(config, callback, false);
+    }
+
+    public static void load(Config config, Callback callback, boolean configuring) {
+        get().clear().config(config).configuring(configuring).load(callback);
     }
 
     public LiveConfig init() {
@@ -87,11 +92,17 @@ public class LiveConfig extends BaseConfig {
         return this;
     }
 
+    public LiveConfig configuring(boolean configuring) {
+        this.configuring = configuring;
+        return this;
+    }
+
     public LiveConfig clear() {
         ads = null;
         home = null;
         lives = null;
         rules = null;
+        configuring = false;
         RuleConfig.get().invalidate();
         return this;
     }
@@ -142,6 +153,8 @@ public class LiveConfig extends BaseConfig {
     }
 
     private void parseText(Config config, String text) {
+        if (configuring) LineConfig.clear(LIVE);
+        configuring = false;
         Live live = new Live(UrlUtil.getName(config.getUrl()), config.getUrl()).sync();
         lives = new ArrayList<>(List.of(live));
         LiveParser.text(live, text);
@@ -154,16 +167,18 @@ public class LiveConfig extends BaseConfig {
         } else if (object.has("urls")) {
             parseDepot(config, object);
         } else {
+            if (configuring) LineConfig.clear(LIVE);
+            configuring = false;
             parseConfig(config, object);
         }
     }
 
     private void parseDepot(Config config, JsonObject object) throws Throwable {
         List<Depot> items = Depot.arrayFrom(object.getAsJsonArray("urls").toString());
-        List<Config> configs = new ArrayList<>();
-        for (Depot item : items) configs.add(Config.find(item, LIVE));
-        if (configs.isEmpty()) throw new Exception("Depot urls is empty");
-        load(this.config = configs.get(0));
+        if (items.isEmpty()) throw new Exception("Depot urls is empty");
+        configuring = false;
+        LineConfig.save(LIVE, config.getUrl(), items);
+        load(this.config = Config.find(items.get(0), LIVE));
         Config.delete(config.getUrl());
     }
 
