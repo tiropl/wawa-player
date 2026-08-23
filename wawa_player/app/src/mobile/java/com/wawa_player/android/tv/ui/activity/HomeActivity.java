@@ -30,12 +30,15 @@ import com.wawa_player.android.tv.event.RefreshEvent;
 import com.wawa_player.android.tv.event.ServerEvent;
 import com.wawa_player.android.tv.event.StateEvent;
 import com.wawa_player.android.tv.impl.Callback;
+import com.wawa_player.android.tv.impl.LockListener;
 import com.wawa_player.android.tv.player.extractor.Source;
 import com.wawa_player.android.tv.receiver.ShortcutReceiver;
 import com.wawa_player.android.tv.server.Server;
 import com.wawa_player.android.tv.service.PlaybackService;
+import com.wawa_player.android.tv.setting.PasswordLock;
 import com.wawa_player.android.tv.ui.base.BaseActivity;
 import com.wawa_player.android.tv.ui.custom.FragmentStateManager;
+import com.wawa_player.android.tv.ui.dialog.LockVerifyDialog;
 import com.wawa_player.android.tv.ui.fragment.SettingDanmakuFragment;
 import com.wawa_player.android.tv.ui.fragment.SettingDecodeFragment;
 import com.wawa_player.android.tv.ui.fragment.SettingFragment;
@@ -61,6 +64,7 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
     private ActivityHomeBinding mBinding;
     private int orientation;
     private int mPreviousPosition = -1;
+    private boolean lockVerified;
 
     @Override
     protected ViewBinding getBinding() {
@@ -218,9 +222,27 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.setting) return mManager.change(1);
+        if (item.getItemId() == R.id.setting) return openSetting();
         if (item.getItemId() == R.id.vod) return mManager.change(0);
         if (item.getItemId() == R.id.live) return openLive();
+        return false;
+    }
+
+    private boolean openSetting() {
+        boolean inSettingFlow = lockVerified || mManager.isVisible(1) || mManager.isVisible(2) || mManager.isVisible(3) || mManager.isVisible(4) || mManager.isVisible(5) || mManager.isVisible(6);
+        lockVerified = false;
+        if (inSettingFlow || !PasswordLock.isSet()) return mManager.change(1);
+        LockVerifyDialog.create().listener(new LockListener() {
+            @Override
+            public void onLockVerified() {
+                lockVerified = true;
+                mBinding.navigation.setSelectedItemId(R.id.setting);
+            }
+
+            @Override
+            public void onLockCancelled() {
+            }
+        }).show(this);
         return false;
     }
 

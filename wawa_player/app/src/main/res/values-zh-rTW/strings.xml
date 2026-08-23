@@ -260,6 +260,22 @@
     <string name="setting_sound">提示音</string>
 
     <string name="setting_more">更多設置</string>
+    <string name="setting_lock">密碼鎖</string>
+    <string name="lock_title_set">設定密碼</string>
+    <string name="lock_title_verify">驗證密碼</string>
+    <string name="lock_title_change">修改密碼</string>
+    <string name="lock_hint_old">舊密碼</string>
+    <string name="lock_hint_new">新密碼</string>
+    <string name="lock_hint_confirm">確認新密碼</string>
+    <string name="lock_error_length">密碼長度需為3-8位</string>
+    <string name="lock_error_mismatch">兩次輸入的密碼不一致</string>
+    <string name="lock_error_wrong">密碼錯誤</string>
+    <string name="lock_error_old">舊密碼錯誤</string>
+    <string name="lock_action_change">修改密碼</string>
+    <string name="lock_action_clear">清除密碼鎖</string>
+    <string name="lock_set_success">密碼設定成功</string>
+    <string name="lock_change_success">密碼修改成功</string>
+    <string name="lock_clear_success">密碼鎖已清除</string>
     <string name="setting_theme_color">主題色彩</string>
     <string name="setting_auto">自動</string>
     <string name="setting_custom">自訂</string>

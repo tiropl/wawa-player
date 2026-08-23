@@ -266,6 +266,22 @@
     <string name="setting_sound">提示音</string>
 
     <string name="setting_more">更多设置</string>
+    <string name="setting_lock">密码锁</string>
+    <string name="lock_title_set">设置密码</string>
+    <string name="lock_title_verify">验证密码</string>
+    <string name="lock_title_change">修改密码</string>
+    <string name="lock_hint_old">旧密码</string>
+    <string name="lock_hint_new">新密码</string>
+    <string name="lock_hint_confirm">确认新密码</string>
+    <string name="lock_error_length">密码长度需为3-8位</string>
+    <string name="lock_error_mismatch">两次输入的密码不一致</string>
+    <string name="lock_error_wrong">密码错误</string>
+    <string name="lock_error_old">旧密码错误</string>
+    <string name="lock_action_change">修改密码</string>
+    <string name="lock_action_clear">清除密码锁</string>
+    <string name="lock_set_success">密码设置成功</string>
+    <string name="lock_change_success">密码修改成功</string>
+    <string name="lock_clear_success">密码锁已清除</string>
     <string name="setting_theme_color">主题色彩</string>
     <string name="setting_auto">自动</string>
     <string name="setting_custom">自定义</string>

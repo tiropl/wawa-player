@@ -43,9 +43,11 @@ import com.wawa_player.android.tv.event.ConfigEvent;
 import com.wawa_player.android.tv.event.RefreshEvent;
 import com.wawa_player.android.tv.event.ServerEvent;
 import com.wawa_player.android.tv.setting.ModePolicy;
+import com.wawa_player.android.tv.setting.PasswordLock;
 import com.wawa_player.android.tv.setting.Setting;
 import com.wawa_player.android.tv.utils.LoadingSound;
 import com.wawa_player.android.tv.impl.Callback;
+import com.wawa_player.android.tv.impl.LockListener;
 import com.wawa_player.android.tv.model.SiteViewModel;
 import com.wawa_player.android.tv.player.extractor.Source;
 import com.wawa_player.android.tv.server.Server;
@@ -57,6 +59,7 @@ import com.wawa_player.android.tv.ui.custom.CustomRowPresenter;
 import com.wawa_player.android.tv.ui.custom.CustomSelector;
 import com.wawa_player.android.tv.ui.custom.CustomTitleView;
 import com.wawa_player.android.tv.ui.dialog.SiteDialog;
+import com.wawa_player.android.tv.ui.dialog.LockVerifyDialog;
 import com.wawa_player.android.tv.ui.presenter.FuncPresenter;
 import com.wawa_player.android.tv.ui.presenter.HeaderPresenter;
 import com.wawa_player.android.tv.ui.presenter.HistoryPresenter;
@@ -401,7 +404,24 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         else if (item.getResId() == R.string.home_keep) KeepActivity.start(this);
         else if (item.getResId() == R.string.home_push) PushActivity.start(this);
         else if (item.getResId() == R.string.home_search) SearchActivity.start(this);
-        else if (item.getResId() == R.string.home_setting) SettingActivity.start(this);
+        else if (item.getResId() == R.string.home_setting) openSetting();
+    }
+
+    private void openSetting() {
+        if (!PasswordLock.isSet()) {
+            SettingActivity.start(this);
+            return;
+        }
+        LockVerifyDialog.create().listener(new LockListener() {
+            @Override
+            public void onLockVerified() {
+                SettingActivity.start(HomeActivity.this);
+            }
+
+            @Override
+            public void onLockCancelled() {
+            }
+        }).show(this);
     }
 
     @Override

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:singleLine="true"
+            android:text="@string/lock_title_verify"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <com.wawa_player.android.tv.ui.custom.CustomEditText
+            android:id="@+id/pass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/live_pass"
+            android:imeOptions="actionDone"
+            android:importantForAutofill="no"
+            android:inputType="numberPassword"
+            android:maxLength="8"
+            android:nextFocusDown="@id/positive"
+            android:singleLine="true"
+            android:textSize="18sp" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="?attr/colorError"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/positive"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_button"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="@string/dialog_positive"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/negative"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_button"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="@string/dialog_negative"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.core.widget.NestedScrollView>

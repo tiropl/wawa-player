@@ -267,6 +267,22 @@
     <string name="setting_sound">Sound</string>
 
     <string name="setting_more">More settings</string>
+    <string name="setting_lock">Password lock</string>
+    <string name="lock_title_set">Set password</string>
+    <string name="lock_title_verify">Enter password</string>
+    <string name="lock_title_change">Change password</string>
+    <string name="lock_hint_old">Old password</string>
+    <string name="lock_hint_new">New password</string>
+    <string name="lock_hint_confirm">Confirm new password</string>
+    <string name="lock_error_length">Password must be 3-8 characters</string>
+    <string name="lock_error_mismatch">Passwords do not match</string>
+    <string name="lock_error_wrong">Incorrect password</string>
+    <string name="lock_error_old">Incorrect old password</string>
+    <string name="lock_action_change">Change password</string>
+    <string name="lock_action_clear">Remove password lock</string>
+    <string name="lock_set_success">Password has been set</string>
+    <string name="lock_change_success">Password has been changed</string>
+    <string name="lock_clear_success">Password lock removed</string>
     <string name="setting_theme_color">Theme color</string>
     <string name="setting_auto">Auto</string>
     <string name="setting_custom">Custom</string>
