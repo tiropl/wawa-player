@@ -289,6 +289,13 @@
     <string name="setting_choose">選擇</string>
     <string name="setting_off">關</string>
     <string name="setting_on">開</string>
+    <string name="setting_sound_state">提示音：%s</string>
+    <string name="setting_size_changed">圖片尺寸：%s</string>
+    <string name="setting_wall_changed">桌布已切換</string>
+    <string name="setting_incognito_state">無痕模式：%s</string>
+    <string name="setting_cache_cleared">快取已清理</string>
+    <string name="setting_theme_changed">主題色彩：%s</string>
+    <string name="setting_doh_changed">DoH：%s</string>
 
     <!-- Backup & Restore -->
     <string name="restore_select">選擇備份</string>
@@ -327,12 +334,35 @@
     <string name="player_mpv_vulkan">vulkan</string>
     <string name="player_mpv_conf_import_success">已匯入 mpv.conf</string>
     <string name="player_ua">User-Agent</string>
+    <string name="player_engine_state">播放引擎：%s</string>
+    <string name="player_render_state">渲染方式：%s</string>
+    <string name="player_scale_state">縮放比例：%s</string>
+    <string name="player_background_state">背景播放：%s</string>
+    <string name="player_adblock_state">智慧去廣：%s</string>
+    <string name="player_buffer_state">緩衝時間：%d</string>
+    <string name="player_mpv_vulkan_state">vulkan：%s</string>
+    <string name="player_mpv_gpu_next_state">gpu-next：%s</string>
+    <string name="player_ua_updated">User-Agent 已更新</string>
+    <string name="player_decode_aac_state">AAC優先：%s</string>
+    <string name="player_decode_tunnel_state">隧道模式：%s</string>
+    <string name="player_decode_audio_state">音訊軟解：%s</string>
+    <string name="player_decode_video_state">視訊軟解：%s</string>
+    <string name="player_decode_dolby_state">杜比視界：%s</string>
+    <string name="player_decode_audio_pass_state">音訊直通：%s</string>
+    <string name="player_preload_state">預載：%s</string>
+    <string name="player_preload_next_state">預載下集：%s</string>
+    <string name="player_preload_threads_state">預載線程：%1$d 條</string>
+    <string name="player_preload_size_state">預載容量：%s</string>
+    <string name="player_preload_time_state">預載時間：%1$d 秒</string>
 
     <!-- Danmaku -->
     <string name="danmaku_load">彈幕載入</string>
     <string name="danmaku_api">搜尋接口</string>
     <string name="danmaku_auto_load">自動搜尋</string>
     <string name="danmaku_spider_first">爬蟲優先</string>
+    <string name="danmaku_load_state">彈幕載入：%s</string>
+    <string name="danmaku_auto_state">自動搜尋：%s</string>
+    <string name="danmaku_spider_state">爬蟲優先：%s</string>
 
     <!-- Search -->
     <string name="search_keyword">關鍵字…</string>

@@ -21,6 +21,7 @@ import com.wawa_player.android.tv.ui.dialog.RestoreDialog;
 import com.wawa_player.android.tv.utils.FileUtil;
 import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.PermissionUtil;
+import com.wawa_player.android.tv.utils.ResUtil;
 import com.github.catvod.bean.Doh;
 import com.github.catvod.net.OkHttp;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -70,22 +71,12 @@ public class SettingMoreFragment extends BaseFragment {
 
     @Override
     protected void initEvent() {
-        mBinding.player.setOnClickListener(this::onPlayer);
-        mBinding.danmaku.setOnClickListener(this::onDanmaku);
         mBinding.incognito.setOnClickListener(this::setIncognito);
         mBinding.doh.setOnClickListener(this::setDoh);
         mBinding.cache.setOnClickListener(this::onCache);
         mBinding.backup.setOnClickListener(this::onBackup);
         mBinding.restore.setOnClickListener(this::onRestore);
         mBinding.version.setOnClickListener(this::onVersion);
-    }
-
-    private void onPlayer(View view) {
-        ((com.wawa_player.android.tv.ui.activity.HomeActivity) requireActivity()).change(2);
-    }
-
-    private void onDanmaku(View view) {
-        ((com.wawa_player.android.tv.ui.activity.HomeActivity) requireActivity()).change(3);
     }
 
     private void onVersion(View view) {
@@ -95,6 +86,7 @@ public class SettingMoreFragment extends BaseFragment {
     private void setIncognito(View view) {
         Setting.putIncognito(!Setting.isIncognito());
         mBinding.incognitoText.setText(Setting.getSwitch(Setting.isIncognito()));
+        Notify.show(ResUtil.getString(R.string.setting_incognito_state, Setting.getSwitch(Setting.isIncognito())));
     }
 
     private void setDoh(View view) {
@@ -103,6 +95,7 @@ public class SettingMoreFragment extends BaseFragment {
             OkHttp.dns().setDoh(doh);
             Setting.putDoh(doh.toString());
             mBinding.dohText.setText(doh.getName());
+            Notify.show(ResUtil.getString(R.string.setting_doh_changed, doh.getName()));
             dialog.dismiss();
         }).show();
     }
@@ -112,6 +105,7 @@ public class SettingMoreFragment extends BaseFragment {
             @Override
             public void success() {
                 setCacheText();
+                Notify.show(R.string.setting_cache_cleared);
             }
         });
     }

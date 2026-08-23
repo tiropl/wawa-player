@@ -21,6 +21,7 @@ import com.wawa_player.android.tv.ui.dialog.RestoreDialog;
 import com.wawa_player.android.tv.utils.FileUtil;
 import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.PermissionUtil;
+import com.wawa_player.android.tv.utils.ResUtil;
 import com.github.catvod.bean.Doh;
 import com.github.catvod.net.OkHttp;
 
@@ -54,7 +55,7 @@ public class SettingMoreActivity extends BaseActivity implements DohDialog.Liste
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        mBinding.player.requestFocus();
+        mBinding.incognito.requestFocus();
         mBinding.versionText.setText(BuildConfig.VERSION_NAME);
         mBinding.dohText.setText(getDohList()[getDohIndex()]);
         mBinding.incognitoText.setText(Setting.getSwitch(Setting.isIncognito()));
@@ -72,22 +73,12 @@ public class SettingMoreActivity extends BaseActivity implements DohDialog.Liste
 
     @Override
     protected void initEvent() {
-        mBinding.player.setOnClickListener(this::onPlayer);
-        mBinding.danmaku.setOnClickListener(this::onDanmaku);
         mBinding.incognito.setOnClickListener(this::setIncognito);
         mBinding.doh.setOnClickListener(this::setDoh);
         mBinding.backup.setOnClickListener(this::onBackup);
         mBinding.restore.setOnClickListener(this::onRestore);
         mBinding.cache.setOnClickListener(this::onCache);
         mBinding.version.setOnClickListener(this::onVersion);
-    }
-
-    private void onPlayer(View view) {
-        SettingPlayerActivity.start(this);
-    }
-
-    private void onDanmaku(View view) {
-        SettingDanmakuActivity.start(this);
     }
 
     private void onVersion(View view) {
@@ -97,6 +88,7 @@ public class SettingMoreActivity extends BaseActivity implements DohDialog.Liste
     private void setIncognito(View view) {
         Setting.putIncognito(!Setting.isIncognito());
         mBinding.incognitoText.setText(Setting.getSwitch(Setting.isIncognito()));
+        Notify.show(ResUtil.getString(R.string.setting_incognito_state, Setting.getSwitch(Setting.isIncognito())));
     }
 
     private void setDoh(View view) {
@@ -108,6 +100,7 @@ public class SettingMoreActivity extends BaseActivity implements DohDialog.Liste
         OkHttp.dns().setDoh(doh);
         Setting.putDoh(doh.toString());
         mBinding.dohText.setText(doh.getName());
+        Notify.show(ResUtil.getString(R.string.setting_doh_changed, doh.getName()));
     }
 
     private void onCache(View view) {
@@ -115,6 +108,7 @@ public class SettingMoreActivity extends BaseActivity implements DohDialog.Liste
             @Override
             public void success() {
                 setCacheText();
+                Notify.show(R.string.setting_cache_cleared);
             }
         });
     }

@@ -296,6 +296,13 @@
     <string name="setting_choose">Choose</string>
     <string name="setting_off">Off</string>
     <string name="setting_on">On</string>
+    <string name="setting_sound_state">Sound: %s</string>
+    <string name="setting_size_changed">Image size: %s</string>
+    <string name="setting_wall_changed">Wallpaper switched</string>
+    <string name="setting_incognito_state">Incognito mode: %s</string>
+    <string name="setting_cache_cleared">Cache cleared</string>
+    <string name="setting_theme_changed">Theme color: %s</string>
+    <string name="setting_doh_changed">DoH: %s</string>
 
     <!-- Backup & Restore -->
     <string name="restore_select">Select backup</string>
@@ -334,12 +341,35 @@
     <string name="player_mpv_vulkan">vulkan</string>
     <string name="player_mpv_conf_import_success">Imported mpv.conf</string>
     <string name="player_ua">User-Agent</string>
+    <string name="player_engine_state">Engine: %s</string>
+    <string name="player_render_state">Render: %s</string>
+    <string name="player_scale_state">Scale: %s</string>
+    <string name="player_background_state">Background play: %s</string>
+    <string name="player_adblock_state">Remove ads: %s</string>
+    <string name="player_buffer_state">Buffer time: %d</string>
+    <string name="player_mpv_vulkan_state">vulkan: %s</string>
+    <string name="player_mpv_gpu_next_state">gpu-next: %s</string>
+    <string name="player_ua_updated">User-Agent updated</string>
+    <string name="player_decode_aac_state">Prefer aac track: %s</string>
+    <string name="player_decode_tunnel_state">Tunnel mode: %s</string>
+    <string name="player_decode_audio_state">Audio software decode: %s</string>
+    <string name="player_decode_video_state">Video software decode: %s</string>
+    <string name="player_decode_dolby_state">Dolby Vision: %s</string>
+    <string name="player_decode_audio_pass_state">Audio passthrough: %s</string>
+    <string name="player_preload_state">Preload: %s</string>
+    <string name="player_preload_next_state">Preload next episode: %s</string>
+    <string name="player_preload_threads_state">Preload threads: %1$d</string>
+    <string name="player_preload_size_state">Preload size: %s</string>
+    <string name="player_preload_time_state">Preload time: %1$d seconds</string>
 
     <!-- Danmaku -->
     <string name="danmaku_load">Danmaku load</string>
     <string name="danmaku_api">Search API</string>
     <string name="danmaku_auto_load">Auto search</string>
     <string name="danmaku_spider_first">Spider first</string>
+    <string name="danmaku_load_state">Danmaku load: %s</string>
+    <string name="danmaku_auto_state">Auto search: %s</string>
+    <string name="danmaku_spider_state">Spider first: %s</string>
 
     <!-- Search -->
     <string name="search_keyword">Keywords…</string>

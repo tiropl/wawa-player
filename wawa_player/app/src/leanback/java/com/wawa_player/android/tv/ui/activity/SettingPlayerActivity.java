@@ -17,6 +17,7 @@ import com.wawa_player.android.tv.ui.base.BaseActivity;
 import com.wawa_player.android.tv.ui.dialog.BufferDialog;
 import com.wawa_player.android.tv.ui.dialog.MpvConfDialog;
 import com.wawa_player.android.tv.ui.dialog.UaDialog;
+import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.ResUtil;
 
 public class SettingPlayerActivity extends BaseActivity implements UaListener, BufferListener {
@@ -79,6 +80,7 @@ public class SettingPlayerActivity extends BaseActivity implements UaListener, B
         PlayerSetting.putEngine(index);
         setPlaybackModeText();
         setVisible();
+        Notify.show(ResUtil.getString(R.string.player_engine_state, engine[index]));
     }
 
     private void onMpvConf(View view) {
@@ -88,17 +90,20 @@ public class SettingPlayerActivity extends BaseActivity implements UaListener, B
     private void setMpvGpuNext(View view) {
         PlayerSetting.putMpvGpuNext(!PlayerSetting.isMpvGpuNext());
         mBinding.mpvGpuNextText.setText(Setting.getSwitch(PlayerSetting.isMpvGpuNext()));
+        Notify.show(ResUtil.getString(R.string.player_mpv_gpu_next_state, Setting.getSwitch(PlayerSetting.isMpvGpuNext())));
     }
 
     private void setMpvVulkan(View view) {
         PlayerSetting.putMpvVulkan(!PlayerSetting.isMpvVulkan());
         mBinding.mpvVulkanText.setText(Setting.getSwitch(PlayerSetting.isMpvVulkan()));
+        Notify.show(ResUtil.getString(R.string.player_mpv_vulkan_state, Setting.getSwitch(PlayerSetting.isMpvVulkan())));
     }
 
     private void setRender(View view) {
         int index = (PlayerSetting.getRender() + 1) % render.length;
         PlayerSetting.putRender(index);
         setPlaybackModeText();
+        Notify.show(ResUtil.getString(R.string.player_render_state, render[index]));
     }
 
     private void setPlaybackModeText() {
@@ -112,6 +117,7 @@ public class SettingPlayerActivity extends BaseActivity implements UaListener, B
         int index = (PlayerSetting.getScale() + 1) % scale.length;
         mBinding.scaleText.setText(scale[index]);
         PlayerSetting.putScale(index);
+        Notify.show(ResUtil.getString(R.string.player_scale_state, scale[index]));
     }
 
     private void onBuffer(View view) {
@@ -122,16 +128,19 @@ public class SettingPlayerActivity extends BaseActivity implements UaListener, B
     public void setBuffer(int times) {
         mBinding.bufferText.setText(String.valueOf(times));
         PlayerSetting.putBuffer(times);
+        Notify.show(ResUtil.getString(R.string.player_buffer_state, times));
     }
 
     private void onBackground(View view) {
         PlayerSetting.putBackground(PlayerSetting.isBackgroundOn() ? 0 : 1);
         mBinding.backgroundText.setText(Setting.getSwitch(PlayerSetting.isBackgroundOn()));
+        Notify.show(ResUtil.getString(R.string.player_background_state, Setting.getSwitch(PlayerSetting.isBackgroundOn())));
     }
 
     private void setAdblock(View view) {
         Setting.putAdblock(!Setting.isAdblock());
         mBinding.adblockText.setText(Setting.getSwitch(Setting.isAdblock()));
+        Notify.show(ResUtil.getString(R.string.player_adblock_state, Setting.getSwitch(Setting.isAdblock())));
     }
 
     private void onPreloadSetting(View view) {
@@ -149,6 +158,7 @@ public class SettingPlayerActivity extends BaseActivity implements UaListener, B
     @Override
     public void setUa(String ua) {
         Setting.putUa(ua);
+        Notify.show(R.string.player_ua_updated);
     }
 
     @Override

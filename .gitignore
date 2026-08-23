@@ -9,6 +9,7 @@ lib-*.aar
 
 # AI
 .claude
+.qoderignore
 
 # 签名
 *.jks

@@ -19,6 +19,7 @@ import com.wawa_player.android.tv.ui.base.BaseFragment;
 import com.wawa_player.android.tv.ui.dialog.BufferDialog;
 import com.wawa_player.android.tv.ui.dialog.MpvConfDialog;
 import com.wawa_player.android.tv.ui.dialog.UaDialog;
+import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.ResUtil;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -81,6 +82,7 @@ public class SettingPlayerFragment extends BaseFragment implements UaListener, B
         PlayerSetting.putEngine(index);
         setPlaybackModeText();
         setVisible();
+        Notify.show(ResUtil.getString(R.string.player_engine_state, engine[index]));
     }
 
     private void onMpvConf(View view) {
@@ -90,17 +92,20 @@ public class SettingPlayerFragment extends BaseFragment implements UaListener, B
     private void setMpvGpuNext(View view) {
         PlayerSetting.putMpvGpuNext(!PlayerSetting.isMpvGpuNext());
         mBinding.mpvGpuNextText.setText(Setting.getSwitch(PlayerSetting.isMpvGpuNext()));
+        Notify.show(ResUtil.getString(R.string.player_mpv_gpu_next_state, Setting.getSwitch(PlayerSetting.isMpvGpuNext())));
     }
 
     private void setMpvVulkan(View view) {
         PlayerSetting.putMpvVulkan(!PlayerSetting.isMpvVulkan());
         mBinding.mpvVulkanText.setText(Setting.getSwitch(PlayerSetting.isMpvVulkan()));
+        Notify.show(ResUtil.getString(R.string.player_mpv_vulkan_state, Setting.getSwitch(PlayerSetting.isMpvVulkan())));
     }
 
     private void setRender(View view) {
         int index = (PlayerSetting.getRender() + 1) % render.length;
         PlayerSetting.putRender(index);
         setPlaybackModeText();
+        Notify.show(ResUtil.getString(R.string.player_render_state, render[index]));
     }
 
     private void setPlaybackModeText() {
@@ -114,6 +119,7 @@ public class SettingPlayerFragment extends BaseFragment implements UaListener, B
         new MaterialAlertDialogBuilder(requireActivity()).setTitle(R.string.player_scale).setNegativeButton(R.string.dialog_negative, null).setSingleChoiceItems(scale, PlayerSetting.getScale(), (dialog, which) -> {
             mBinding.scaleText.setText(scale[which]);
             PlayerSetting.putScale(which);
+            Notify.show(ResUtil.getString(R.string.player_scale_state, scale[which]));
             dialog.dismiss();
         }).show();
     }
@@ -126,12 +132,14 @@ public class SettingPlayerFragment extends BaseFragment implements UaListener, B
     public void setBuffer(int times) {
         mBinding.bufferText.setText(String.valueOf(times));
         PlayerSetting.putBuffer(times);
+        Notify.show(ResUtil.getString(R.string.player_buffer_state, times));
     }
 
     private void onBackground(View view) {
         new MaterialAlertDialogBuilder(requireActivity()).setTitle(R.string.player_background).setNegativeButton(R.string.dialog_negative, null).setSingleChoiceItems(background, PlayerSetting.getBackground(), (dialog, which) -> {
             mBinding.backgroundText.setText(background[which]);
             PlayerSetting.putBackground(which);
+            Notify.show(ResUtil.getString(R.string.player_background_state, background[which]));
             dialog.dismiss();
         }).show();
     }
@@ -139,6 +147,7 @@ public class SettingPlayerFragment extends BaseFragment implements UaListener, B
     private void setAdblock(View view) {
         Setting.putAdblock(!Setting.isAdblock());
         mBinding.adblockText.setText(Setting.getSwitch(Setting.isAdblock()));
+        Notify.show(ResUtil.getString(R.string.player_adblock_state, Setting.getSwitch(Setting.isAdblock())));
     }
 
     private void onPreload(View view) {
@@ -156,6 +165,7 @@ public class SettingPlayerFragment extends BaseFragment implements UaListener, B
     @Override
     public void setUa(String ua) {
         Setting.putUa(ua);
+        Notify.show(R.string.player_ua_updated);
     }
 
     @Override

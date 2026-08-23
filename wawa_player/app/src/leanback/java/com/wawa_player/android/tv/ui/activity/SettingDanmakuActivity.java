@@ -15,6 +15,8 @@ import com.wawa_player.android.tv.setting.DanmakuSetting;
 import com.wawa_player.android.tv.setting.Setting;
 import com.wawa_player.android.tv.ui.base.BaseActivity;
 import com.wawa_player.android.tv.ui.dialog.DanmakuApiDialog;
+import com.wawa_player.android.tv.utils.Notify;
+import com.wawa_player.android.tv.utils.ResUtil;
 
 public class SettingDanmakuActivity extends BaseActivity implements DanmakuListener {
 
@@ -54,6 +56,7 @@ public class SettingDanmakuActivity extends BaseActivity implements DanmakuListe
     private void setDanmakuLoad(View view) {
         DanmakuSetting.putLoad(!DanmakuSetting.isLoad());
         mBinding.danmakuLoadText.setText(Setting.getSwitch(DanmakuSetting.isLoad()));
+        Notify.show(ResUtil.getString(R.string.danmaku_load_state, Setting.getSwitch(DanmakuSetting.isLoad())));
         updateApiVisibility();
     }
 
@@ -88,11 +91,13 @@ public class SettingDanmakuActivity extends BaseActivity implements DanmakuListe
     private void setDanmakuAuto(View view) {
         DanmakuSetting.putAuto(!DanmakuSetting.isAuto());
         mBinding.danmakuAutoText.setText(Setting.getSwitch(DanmakuSetting.isAuto()));
+        Notify.show(ResUtil.getString(R.string.danmaku_auto_state, Setting.getSwitch(DanmakuSetting.isAuto())));
         updateSpiderVisibility();
     }
 
     private void setDanmakuSpider(View view) {
         DanmakuSetting.putSpiderFirst(!DanmakuSetting.isSpiderFirst());
         mBinding.danmakuSpiderText.setText(Setting.getSwitch(DanmakuSetting.isSpiderFirst()));
+        Notify.show(ResUtil.getString(R.string.danmaku_spider_state, Setting.getSwitch(DanmakuSetting.isSpiderFirst())));
     }
 }

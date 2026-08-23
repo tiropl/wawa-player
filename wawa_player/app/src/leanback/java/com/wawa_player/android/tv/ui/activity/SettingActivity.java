@@ -102,6 +102,8 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
         mBinding.live.setOnLongClickListener(this::onLiveEdit);
         mBinding.liveHome.setOnClickListener(this::onLiveHome);
         mBinding.wall.setOnLongClickListener(this::onWallEdit);
+        mBinding.player.setOnClickListener(this::onPlayer);
+        mBinding.danmaku.setOnClickListener(this::onDanmaku);
         mBinding.sound.setOnClickListener(this::setSound);
         mBinding.mode.setOnClickListener(this::setMode);
         mBinding.more.setOnClickListener(this::onMore);
@@ -214,6 +216,14 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
         SettingMoreActivity.start(this);
     }
 
+    private void onDanmaku(View view) {
+        SettingDanmakuActivity.start(this);
+    }
+
+    private void onPlayer(View view) {
+        SettingPlayerActivity.start(this);
+    }
+
     private void setLockText() {
         mBinding.lockText.setText(Setting.getSwitch(PasswordLock.isSet()));
     }
@@ -251,6 +261,7 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
         Setting.putWall(Setting.getWall() == 4 ? 1 : Setting.getWall() + 1);
         Setting.putWallType(0);
         ConfigEvent.wall();
+        Notify.show(R.string.setting_wall_changed);
     }
 
     private void setWallRefresh(View view) {
@@ -266,6 +277,7 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
     private void setSound(View view) {
         Setting.putSound(!Setting.isSound());
         mBinding.soundText.setText(Setting.getSwitch(Setting.isSound()));
+        Notify.show(ResUtil.getString(R.string.setting_sound_state, Setting.getSwitch(Setting.isSound())));
     }
 
     private void setMode(View view) {
@@ -288,6 +300,7 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
         mBinding.sizeText.setText(size[index]);
         PlayerSetting.putSize(index);
         RefreshEvent.size();
+        Notify.show(ResUtil.getString(R.string.setting_size_changed, size[index]));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

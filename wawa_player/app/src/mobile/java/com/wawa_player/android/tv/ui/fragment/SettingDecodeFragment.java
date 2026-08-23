@@ -15,6 +15,7 @@ import com.wawa_player.android.tv.setting.DecodeSetting;
 import com.wawa_player.android.tv.setting.PlayerSetting;
 import com.wawa_player.android.tv.setting.Setting;
 import com.wawa_player.android.tv.ui.base.BaseFragment;
+import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.ResUtil;
 
 public class SettingDecodeFragment extends BaseFragment {
@@ -67,32 +68,39 @@ public class SettingDecodeFragment extends BaseFragment {
         if (PlayerSetting.isMpv()) return;
         DecodeSetting.putTunnel(!DecodeSetting.isTunnel());
         mBinding.tunnelText.setText(Setting.getSwitch(DecodeSetting.isTunnel()));
+        Notify.show(ResUtil.getString(R.string.player_decode_tunnel_state, Setting.getSwitch(DecodeSetting.isTunnel())));
     }
 
     private void setAudioPassThrough(View view) {
         DecodeSetting.putAudioPassThrough(!DecodeSetting.isAudioPassThrough());
         mBinding.audioPassThroughText.setText(Setting.getSwitch(DecodeSetting.isAudioPassThrough()));
+        Notify.show(ResUtil.getString(R.string.player_decode_audio_pass_state, Setting.getSwitch(DecodeSetting.isAudioPassThrough())));
     }
 
     private void setAudioPrefer(View view) {
         DecodeSetting.putAudioPrefer(!DecodeSetting.isAudioPrefer());
         mBinding.audioPreferText.setText(Setting.getSwitch(DecodeSetting.isAudioPrefer()));
+        Notify.show(ResUtil.getString(R.string.player_decode_audio_state, Setting.getSwitch(DecodeSetting.isAudioPrefer())));
     }
 
     private void setVideoPrefer(View view) {
         DecodeSetting.putVideoPrefer(!DecodeSetting.isVideoPrefer());
         mBinding.videoPreferText.setText(Setting.getSwitch(DecodeSetting.isVideoPrefer()));
+        Notify.show(ResUtil.getString(R.string.player_decode_video_state, Setting.getSwitch(DecodeSetting.isVideoPrefer())));
     }
 
     private void setDolbyVisionOutput(View view) {
         int mode = (DecodeSetting.getDolbyVisionOutputPolicy() + 1) % (DolbyVisionOutputPolicy.ASSUME_UNSUPPORTED + 1);
         DecodeSetting.putDolbyVisionOutputPolicy(mode);
-        mBinding.dolbyVisionOutputText.setText(ResUtil.getStringArray(R.array.select_dolby_vision_output)[mode]);
+        String value = ResUtil.getStringArray(R.array.select_dolby_vision_output)[mode];
+        mBinding.dolbyVisionOutputText.setText(value);
+        Notify.show(ResUtil.getString(R.string.player_decode_dolby_state, value));
     }
 
     private void setAAC(View view) {
         DecodeSetting.putPreferAAC(!DecodeSetting.isPreferAAC());
         mBinding.aacText.setText(Setting.getSwitch(DecodeSetting.isPreferAAC()));
+        Notify.show(ResUtil.getString(R.string.player_decode_aac_state, Setting.getSwitch(DecodeSetting.isPreferAAC())));
     }
 
     @Override

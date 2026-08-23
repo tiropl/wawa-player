@@ -15,6 +15,7 @@ import com.wawa_player.android.tv.setting.Setting;
 import com.wawa_player.android.tv.ui.base.BaseActivity;
 import com.wawa_player.android.tv.ui.dialog.PreloadDialog;
 import com.wawa_player.android.tv.utils.FileUtil;
+import com.wawa_player.android.tv.utils.Notify;
 
 public class SettingPreloadActivity extends BaseActivity {
 
@@ -65,24 +66,29 @@ public class SettingPreloadActivity extends BaseActivity {
     private void setPreload(View view) {
         PreloadSetting.putEnabled(!PreloadSetting.isEnabled());
         mBinding.preloadText.setText(Setting.getSwitch(PreloadSetting.isEnabled()));
+        Notify.show(getString(R.string.player_preload_state, Setting.getSwitch(PreloadSetting.isEnabled())));
         setVisible();
     }
 
     private void setPreloadNext(View view) {
         PreloadSetting.putNextEpisodeEnabled(!PreloadSetting.isNextEpisodeEnabled());
         mBinding.preloadNextText.setText(Setting.getSwitch(PreloadSetting.isNextEpisodeEnabled()));
+        Notify.show(getString(R.string.player_preload_next_state, Setting.getSwitch(PreloadSetting.isNextEpisodeEnabled())));
     }
 
     public void setPreload(int type, int value) {
         if (type == PreloadDialog.THREADS) {
             PreloadSetting.putThreads(value);
             setPreloadThreadsText();
+            Notify.show(getString(R.string.player_preload_threads_state, value));
         } else if (type == PreloadDialog.SIZE) {
             PreloadSetting.putSizeMb(value);
             setPreloadSizeText();
+            Notify.show(getString(R.string.player_preload_size_state, FileUtil.byteCountToDisplaySize(PreloadSetting.getSizeBytes())));
         } else if (type == PreloadDialog.TIME) {
             PreloadSetting.putTimeSeconds(value);
             setPreloadTimeText();
+            Notify.show(getString(R.string.player_preload_time_state, value));
         }
     }
 
