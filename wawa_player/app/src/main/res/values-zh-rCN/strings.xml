@@ -289,7 +289,8 @@
     <string name="setting_size">图片尺寸</string>
     <string name="setting_doh">DoH</string>
     <string name="setting_proxy">Proxy</string>
-    <string name="setting_cache">缓存</string>
+    <string name="setting_cache">清除缓存</string>
+    <string name="setting_cache_expire">缓存时长</string>
     <string name="setting_backup">备份</string>
     <string name="setting_restore">恢复</string>
     <string name="setting_version">版本</string>
@@ -303,6 +304,8 @@
     <string name="setting_cache_cleared">缓存已清理</string>
     <string name="setting_theme_changed">主题色彩：%s</string>
     <string name="setting_doh_changed">DoH：%s</string>
+    <string name="setting_cache_expire_changed">线路缓存：%s</string>
+    <string name="setting_cache_fallback">加载失败，已使用缓存线路数据</string>
 
     <!-- Backup & Restore -->
     <string name="restore_select">选择备份</string>
@@ -464,6 +467,13 @@
         <item>4:3</item>
         <item>填充</item>
         <item>裁剪</item>
+    </string-array>
+
+    <string-array name="select_cache_expire">
+        <item>关闭</item>
+        <item>6 小时</item>
+        <item>12 小时</item>
+        <item>24 小时</item>
     </string-array>
 
     <string-array name="audio_effect_stability_levels">

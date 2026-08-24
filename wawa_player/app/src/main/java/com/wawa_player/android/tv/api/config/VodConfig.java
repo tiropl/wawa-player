@@ -4,7 +4,6 @@ import android.text.TextUtils;
 
 import com.wawa_player.android.tv.App;
 import com.wawa_player.android.tv.R;
-import com.wawa_player.android.tv.api.Decoder;
 import com.wawa_player.android.tv.api.loader.BaseLoader;
 import com.wawa_player.android.tv.bean.Config;
 import com.wawa_player.android.tv.bean.Depot;
@@ -16,7 +15,6 @@ import com.wawa_player.android.tv.event.RefreshEvent;
 import com.wawa_player.android.tv.impl.Callback;
 import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.Task;
-import com.wawa_player.android.tv.utils.UrlUtil;
 import com.github.catvod.bean.Doh;
 import com.github.catvod.bean.Header;
 import com.github.catvod.bean.Proxy;
@@ -157,7 +155,7 @@ public class VodConfig extends BaseConfig {
 
     @Override
     protected void load(Config config) throws Throwable {
-        String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), TAG, TIMEOUT);
+        String json = fetchJson(config);
         checkJson(config, Json.parse(json).getAsJsonObject());
     }
 
@@ -185,7 +183,6 @@ public class VodConfig extends BaseConfig {
         List<Depot> items = Depot.arrayFrom(object.getAsJsonArray("urls").toString());
         if (items.isEmpty()) throw new Exception("Depot urls is empty");
         configuring = false;
-        for (Depot old : LineConfig.getLines(VOD)) Config.delete(old.getUrl(), VOD);
         LineConfig.save(VOD, config.getUrl(), items);
         load(this.config = Config.find(items.get(0), VOD));
         Config.delete(config.getUrl());

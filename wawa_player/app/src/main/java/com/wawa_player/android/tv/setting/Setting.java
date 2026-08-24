@@ -14,10 +14,14 @@ public class Setting {
     private static final int MAX_SITE_MODE = 1;
     private static final int MIN_SYNC_MODE = 0;
     private static final int MAX_SYNC_MODE = 2;
+    private static final int MIN_CACHE_EXPIRE = 0;
+    private static final int MAX_CACHE_EXPIRE = 168;
 
     public static final int MODE_DEFAULT = 0;
     public static final int MODE_ELDER = 1;
     public static final int MODE_CHILD = 2;
+
+    public static final int[] CACHE_EXPIRE_HOURS = {0, 6, 12, 24};
 
     public static String getSwitch(boolean value) {
         return ResUtil.getString(value ? R.string.setting_on : R.string.setting_off);
@@ -155,6 +159,20 @@ public class Setting {
 
     public static void putMode(int mode) {
         Prefers.put("mode", Math.clamp(mode, MODE_DEFAULT, MODE_CHILD));
+    }
+
+    public static int getCacheExpire() {
+        return Math.clamp(Prefers.getInt("cache_expire", 12), MIN_CACHE_EXPIRE, MAX_CACHE_EXPIRE);
+    }
+
+    public static void putCacheExpire(int hours) {
+        Prefers.put("cache_expire", Math.clamp(hours, MIN_CACHE_EXPIRE, MAX_CACHE_EXPIRE));
+    }
+
+    public static int getCacheExpireIndex() {
+        int hours = getCacheExpire();
+        for (int i = 0; i < CACHE_EXPIRE_HOURS.length; i++) if (CACHE_EXPIRE_HOURS[i] == hours) return i;
+        return 2;
     }
 
     public static boolean isElderMode() {

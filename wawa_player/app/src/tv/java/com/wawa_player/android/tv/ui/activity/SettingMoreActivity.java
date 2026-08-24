@@ -20,6 +20,7 @@ import com.wawa_player.android.tv.setting.Setting;
 import com.wawa_player.android.tv.event.RefreshEvent;
 import com.wawa_player.android.tv.ui.base.BaseActivity;
 import com.wawa_player.android.tv.ui.dialog.DohDialog;
+import com.wawa_player.android.tv.ui.dialog.ExpireDialog;
 import com.wawa_player.android.tv.ui.dialog.LockActionDialog;
 import com.wawa_player.android.tv.ui.dialog.LockChangeDialog;
 import com.wawa_player.android.tv.ui.dialog.LockSetDialog;
@@ -39,10 +40,11 @@ import java.util.List;
 
 import com.wawa_player.android.tv.Updater;
 
-public class SettingMoreActivity extends BaseActivity implements DohDialog.Listener, ModeDialog.Listener, LockActionDialog.Listener, LockSetDialog.Listener {
+public class SettingMoreActivity extends BaseActivity implements DohDialog.Listener, ModeDialog.Listener, ExpireDialog.Listener, LockActionDialog.Listener, LockSetDialog.Listener {
 
     private ActivitySettingMoreBinding mBinding;
     private final String[] modes = new String[3];
+    private String[] cacheExpires;
 
     public static void start(Activity activity) {
         activity.startActivity(new Intent(activity, SettingMoreActivity.class));
@@ -73,6 +75,7 @@ public class SettingMoreActivity extends BaseActivity implements DohDialog.Liste
         modes[Setting.MODE_ELDER] = ResUtil.getString(R.string.setting_mode_elder);
         modes[Setting.MODE_CHILD] = ResUtil.getString(R.string.setting_mode_child);
         mBinding.modeText.setText(modes[Setting.getMode()]);
+        mBinding.cacheExpireText.setText((cacheExpires = ResUtil.getStringArray(R.array.select_cache_expire))[Setting.getCacheExpireIndex()]);
         setLockText();
         setCacheText();
     }
@@ -92,6 +95,7 @@ public class SettingMoreActivity extends BaseActivity implements DohDialog.Liste
         mBinding.lock.setOnClickListener(this::onLock);
         mBinding.incognito.setOnClickListener(this::setIncognito);
         mBinding.doh.setOnClickListener(this::setDoh);
+        mBinding.cacheExpire.setOnClickListener(this::onCacheExpire);
         mBinding.backup.setOnClickListener(this::onBackup);
         mBinding.restore.setOnClickListener(this::onRestore);
         mBinding.cache.setOnClickListener(this::onCache);
@@ -177,6 +181,17 @@ public class SettingMoreActivity extends BaseActivity implements DohDialog.Liste
                 Notify.show(R.string.setting_cache_cleared);
             }
         });
+    }
+
+    private void onCacheExpire(View view) {
+        ExpireDialog.create().index(Setting.getCacheExpireIndex()).show(this);
+    }
+
+    @Override
+    public void setCacheExpire(int index) {
+        Setting.putCacheExpire(Setting.CACHE_EXPIRE_HOURS[index]);
+        mBinding.cacheExpireText.setText(cacheExpires[index]);
+        Notify.show(ResUtil.getString(R.string.setting_cache_expire_changed, cacheExpires[index]));
     }
 
     private void onBackup(View view) {

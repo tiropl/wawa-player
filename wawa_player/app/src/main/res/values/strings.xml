@@ -290,7 +290,8 @@
     <string name="setting_size">Image size</string>
     <string name="setting_doh">DoH</string>
     <string name="setting_proxy">Proxy</string>
-    <string name="setting_cache">Cache</string>
+    <string name="setting_cache">Clear cache</string>
+    <string name="setting_cache_expire">Cache duration</string>
     <string name="setting_backup">Backup</string>
     <string name="setting_restore">Restore</string>
     <string name="setting_version">Version</string>
@@ -304,6 +305,8 @@
     <string name="setting_cache_cleared">Cache cleared</string>
     <string name="setting_theme_changed">Theme color: %s</string>
     <string name="setting_doh_changed">DoH: %s</string>
+    <string name="setting_cache_expire_changed">Line cache: %s</string>
+    <string name="setting_cache_fallback">Load failed, using cached line data</string>
 
     <!-- Backup & Restore -->
     <string name="restore_select">Select backup</string>
@@ -474,6 +477,13 @@
         <item>4:3</item>
         <item>Fill</item>
         <item>Zoom</item>
+    </string-array>
+
+    <string-array name="select_cache_expire">
+        <item>Off</item>
+        <item>6 hours</item>
+        <item>12 hours</item>
+        <item>24 hours</item>
     </string-array>
 
     <string-array name="audio_effect_stability_levels">

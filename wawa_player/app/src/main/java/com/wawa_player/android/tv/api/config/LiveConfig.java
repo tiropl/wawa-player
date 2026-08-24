@@ -2,7 +2,6 @@ package com.wawa_player.android.tv.api.config;
 
 import android.text.TextUtils;
 
-import com.wawa_player.android.tv.api.Decoder;
 import com.wawa_player.android.tv.api.LiveApi;
 import com.wawa_player.android.tv.api.loader.BaseLoader;
 import com.wawa_player.android.tv.api.parser.LiveParser;
@@ -129,7 +128,7 @@ public class LiveConfig extends BaseConfig {
 
     @Override
     protected void load(Config config) throws Throwable {
-        String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), TAG, TIMEOUT);
+        String json = fetchJson(config);
         if (Json.isObj(json)) checkJson(config, Json.parse(json).getAsJsonObject());
         else parseText(config, json);
     }
@@ -187,7 +186,6 @@ public class LiveConfig extends BaseConfig {
         List<Depot> items = Depot.arrayFrom(object.getAsJsonArray("urls").toString());
         if (items.isEmpty()) throw new Exception("Depot urls is empty");
         configuring = false;
-        for (Depot old : LineConfig.getLines(LIVE)) Config.delete(old.getUrl(), LIVE);
         LineConfig.save(LIVE, config.getUrl(), items);
         load(this.config = Config.find(items.get(0), LIVE));
         Config.delete(config.getUrl());
