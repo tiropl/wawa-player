@@ -171,7 +171,7 @@ public class Util {
     }
 
     public static boolean isLeanback() {
-        return "leanback".equals(BuildConfig.FLAVOR_mode);
+        return "tv".equals(BuildConfig.FLAVOR_mode);
     }
 
     public static boolean isMobile() {

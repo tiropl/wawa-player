@@ -16,8 +16,8 @@ android {
         applicationId "com.wawa_player.android.tv"
         minSdk libs.versions.minSdk.get().toInteger()
         targetSdk libs.versions.targetSdk.get().toInteger()
-        versionCode 51
-        versionName "0.5.1"
+        versionCode 52
+        versionName "0.5.2"
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString(), "eventBusIndex": "com.wawa_player.android.tv.event.EventIndex"]
@@ -28,7 +28,7 @@ android {
     flavorDimensions = ["mode", "abi"]
 
     productFlavors {
-        leanback {
+        tv {
             dimension "mode"
         }
         mobile {
@@ -128,8 +128,8 @@ dependencies {
     implementation libs.permissionx
     implementation libs.simple.xml
     implementation libs.textdrawable
-    leanbackImplementation libs.leanback
-    leanbackImplementation libs.androidautosize
+    tvImplementation libs.leanback
+    tvImplementation libs.androidautosize
     mobileImplementation libs.biometric
     mobileImplementation libs.zxing.android.embedded
     annotationProcessor libs.room.compiler
