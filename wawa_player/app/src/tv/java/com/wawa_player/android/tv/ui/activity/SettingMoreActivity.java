@@ -15,8 +15,10 @@ import com.wawa_player.android.tv.db.AppDatabase;
 import com.wawa_player.android.tv.impl.Callback;
 import com.wawa_player.android.tv.impl.ConfigListener;
 import com.wawa_player.android.tv.setting.Setting;
+import com.wawa_player.android.tv.event.RefreshEvent;
 import com.wawa_player.android.tv.ui.base.BaseActivity;
 import com.wawa_player.android.tv.ui.dialog.DohDialog;
+import com.wawa_player.android.tv.ui.dialog.ModeDialog;
 import com.wawa_player.android.tv.ui.dialog.RestoreDialog;
 import com.wawa_player.android.tv.utils.FileUtil;
 import com.wawa_player.android.tv.utils.Notify;
@@ -30,9 +32,10 @@ import java.util.List;
 
 import com.wawa_player.android.tv.Updater;
 
-public class SettingMoreActivity extends BaseActivity implements DohDialog.Listener {
+public class SettingMoreActivity extends BaseActivity implements DohDialog.Listener, ModeDialog.Listener {
 
     private ActivitySettingMoreBinding mBinding;
+    private final String[] modes = new String[3];
 
     public static void start(Activity activity) {
         activity.startActivity(new Intent(activity, SettingMoreActivity.class));
@@ -55,10 +58,14 @@ public class SettingMoreActivity extends BaseActivity implements DohDialog.Liste
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        mBinding.incognito.requestFocus();
+        mBinding.mode.requestFocus();
         mBinding.versionText.setText(BuildConfig.VERSION_NAME);
         mBinding.dohText.setText(getDohList()[getDohIndex()]);
         mBinding.incognitoText.setText(Setting.getSwitch(Setting.isIncognito()));
+        modes[Setting.MODE_DEFAULT] = ResUtil.getString(R.string.setting_mode_default);
+        modes[Setting.MODE_ELDER] = ResUtil.getString(R.string.setting_mode_elder);
+        modes[Setting.MODE_CHILD] = ResUtil.getString(R.string.setting_mode_child);
+        mBinding.modeText.setText(modes[Setting.getMode()]);
         setCacheText();
     }
 
@@ -73,6 +80,7 @@ public class SettingMoreActivity extends BaseActivity implements DohDialog.Liste
 
     @Override
     protected void initEvent() {
+        mBinding.mode.setOnClickListener(this::setMode);
         mBinding.incognito.setOnClickListener(this::setIncognito);
         mBinding.doh.setOnClickListener(this::setDoh);
         mBinding.backup.setOnClickListener(this::onBackup);
@@ -89,6 +97,21 @@ public class SettingMoreActivity extends BaseActivity implements DohDialog.Liste
         Setting.putIncognito(!Setting.isIncognito());
         mBinding.incognitoText.setText(Setting.getSwitch(Setting.isIncognito()));
         Notify.show(ResUtil.getString(R.string.setting_incognito_state, Setting.getSwitch(Setting.isIncognito())));
+    }
+
+    private void setMode(View view) {
+        ModeDialog.create().index(Setting.getMode()).show(this);
+    }
+
+    @Override
+    public void setMode(int mode) {
+        if (mode == Setting.MODE_CHILD) {
+            Notify.show(R.string.setting_mode_coming_soon);
+            return;
+        }
+        Setting.putMode(mode);
+        mBinding.modeText.setText(modes[mode]);
+        RefreshEvent.mode();
     }
 
     private void setDoh(View view) {
@@ -135,6 +158,7 @@ public class SettingMoreActivity extends BaseActivity implements DohDialog.Liste
                 mBinding.versionText.setText(BuildConfig.VERSION_NAME);
                 mBinding.dohText.setText(getDohList()[getDohIndex()]);
                 mBinding.incognitoText.setText(Setting.getSwitch(Setting.isIncognito()));
+                mBinding.modeText.setText(modes[Setting.getMode()]);
                 setCacheText();
             }
 

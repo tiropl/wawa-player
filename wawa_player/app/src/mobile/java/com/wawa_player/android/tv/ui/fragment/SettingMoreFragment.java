@@ -14,6 +14,7 @@ import com.wawa_player.android.tv.Updater;
 import com.wawa_player.android.tv.api.config.VodConfig;
 import com.wawa_player.android.tv.databinding.FragmentSettingMoreBinding;
 import com.wawa_player.android.tv.db.AppDatabase;
+import com.wawa_player.android.tv.event.RefreshEvent;
 import com.wawa_player.android.tv.impl.Callback;
 import com.wawa_player.android.tv.setting.Setting;
 import com.wawa_player.android.tv.ui.base.BaseFragment;
@@ -32,6 +33,7 @@ import java.util.List;
 public class SettingMoreFragment extends BaseFragment {
 
     private FragmentSettingMoreBinding mBinding;
+    private final String[] modes = new String[3];
 
     public static SettingMoreFragment newInstance() {
         return new SettingMoreFragment();
@@ -57,6 +59,10 @@ public class SettingMoreFragment extends BaseFragment {
         mBinding.versionText.setText(BuildConfig.VERSION_NAME);
         mBinding.dohText.setText(getDohList()[getDohIndex()]);
         mBinding.incognitoText.setText(Setting.getSwitch(Setting.isIncognito()));
+        modes[Setting.MODE_DEFAULT] = getString(R.string.setting_mode_default);
+        modes[Setting.MODE_ELDER] = getString(R.string.setting_mode_elder);
+        modes[Setting.MODE_CHILD] = getString(R.string.setting_mode_child);
+        mBinding.modeText.setText(modes[Setting.getMode()]);
         setCacheText();
     }
 
@@ -71,6 +77,7 @@ public class SettingMoreFragment extends BaseFragment {
 
     @Override
     protected void initEvent() {
+        mBinding.mode.setOnClickListener(this::setMode);
         mBinding.incognito.setOnClickListener(this::setIncognito);
         mBinding.doh.setOnClickListener(this::setDoh);
         mBinding.cache.setOnClickListener(this::onCache);
@@ -87,6 +94,19 @@ public class SettingMoreFragment extends BaseFragment {
         Setting.putIncognito(!Setting.isIncognito());
         mBinding.incognitoText.setText(Setting.getSwitch(Setting.isIncognito()));
         Notify.show(ResUtil.getString(R.string.setting_incognito_state, Setting.getSwitch(Setting.isIncognito())));
+    }
+
+    private void setMode(View view) {
+        new MaterialAlertDialogBuilder(requireActivity()).setTitle(R.string.setting_mode).setNegativeButton(R.string.dialog_negative, null).setSingleChoiceItems(modes, Setting.getMode(), (dialog, which) -> {
+            if (which == Setting.MODE_CHILD) {
+                Notify.show(R.string.setting_mode_coming_soon);
+                return;
+            }
+            Setting.putMode(which);
+            mBinding.modeText.setText(modes[which]);
+            RefreshEvent.mode();
+            dialog.dismiss();
+        }).show();
     }
 
     private void setDoh(View view) {
@@ -132,6 +152,7 @@ public class SettingMoreFragment extends BaseFragment {
                 mBinding.versionText.setText(BuildConfig.VERSION_NAME);
                 mBinding.dohText.setText(getDohList()[getDohIndex()]);
                 mBinding.incognitoText.setText(Setting.getSwitch(Setting.isIncognito()));
+                mBinding.modeText.setText(modes[Setting.getMode()]);
                 setCacheText();
             }
 

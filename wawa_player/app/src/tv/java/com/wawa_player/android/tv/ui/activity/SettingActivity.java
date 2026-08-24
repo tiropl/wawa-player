@@ -38,7 +38,6 @@ import com.wawa_player.android.tv.ui.dialog.LockActionDialog;
 import com.wawa_player.android.tv.ui.dialog.LockChangeDialog;
 import com.wawa_player.android.tv.ui.dialog.LockSetDialog;
 import com.wawa_player.android.tv.ui.dialog.LockVerifyDialog;
-import com.wawa_player.android.tv.ui.dialog.ModeDialog;
 import com.wawa_player.android.tv.ui.dialog.SiteDialog;
 import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.PermissionUtil;
@@ -47,11 +46,10 @@ import com.wawa_player.android.tv.utils.ResUtil;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-public class SettingActivity extends BaseActivity implements ConfigListener, SiteListener, LiveListener, ModeDialog.Listener, LockActionDialog.Listener, LockSetDialog.Listener {
+public class SettingActivity extends BaseActivity implements ConfigListener, SiteListener, LiveListener, LockActionDialog.Listener, LockSetDialog.Listener {
 
     private ActivitySettingBinding mBinding;
     private String[] size;
-    private final String[] modes = new String[3];
 
     public static void start(Activity activity) {
         activity.startActivity(new Intent(activity, SettingActivity.class));
@@ -85,10 +83,6 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
     private void setOtherText() {
         mBinding.soundText.setText(Setting.getSwitch(Setting.isSound()));
         mBinding.sizeText.setText((size = ResUtil.getStringArray(R.array.select_size))[PlayerSetting.getSize()]);
-        modes[Setting.MODE_DEFAULT] = ResUtil.getString(R.string.setting_mode_default);
-        modes[Setting.MODE_ELDER] = ResUtil.getString(R.string.setting_mode_elder);
-        modes[Setting.MODE_CHILD] = ResUtil.getString(R.string.setting_mode_child);
-        mBinding.modeText.setText(modes[Setting.getMode()]);
     }
 
     @Override
@@ -105,7 +99,6 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
         mBinding.player.setOnClickListener(this::onPlayer);
         mBinding.danmaku.setOnClickListener(this::onDanmaku);
         mBinding.sound.setOnClickListener(this::setSound);
-        mBinding.mode.setOnClickListener(this::setMode);
         mBinding.more.setOnClickListener(this::onMore);
         mBinding.lock.setOnClickListener(this::onLock);
         mBinding.vodHistory.setOnClickListener(this::onVodHistory);
@@ -278,21 +271,6 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
         Setting.putSound(!Setting.isSound());
         mBinding.soundText.setText(Setting.getSwitch(Setting.isSound()));
         Notify.show(ResUtil.getString(R.string.setting_sound_state, Setting.getSwitch(Setting.isSound())));
-    }
-
-    private void setMode(View view) {
-        ModeDialog.create().index(Setting.getMode()).show(this);
-    }
-
-    @Override
-    public void setMode(int mode) {
-        if (mode == Setting.MODE_CHILD) {
-            Notify.show(R.string.setting_mode_coming_soon);
-            return;
-        }
-        Setting.putMode(mode);
-        mBinding.modeText.setText(modes[mode]);
-        RefreshEvent.mode();
     }
 
     private void setSize(View view) {

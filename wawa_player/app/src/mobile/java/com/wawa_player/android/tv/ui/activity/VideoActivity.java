@@ -75,6 +75,7 @@ import com.wawa_player.android.tv.player.media.PlaySpec;
 import com.wawa_player.android.tv.service.PlaybackService;
 import com.wawa_player.android.tv.setting.DanmakuSetting;
 import com.wawa_player.android.tv.setting.PlayerSetting;
+import com.wawa_player.android.tv.setting.Setting;
 import com.wawa_player.android.tv.setting.SpeedSetting;
 import com.wawa_player.android.tv.ui.adapter.EpisodeAdapter;
 import com.wawa_player.android.tv.ui.adapter.FlagAdapter;
@@ -386,6 +387,32 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         PlayerEngineDialog.setText(mBinding.control.action.player);
         mBinding.control.action.danmaku.setVisibility(DanmakuSetting.isLoad() ? View.VISIBLE : View.GONE);
         mBinding.video.addOnLayoutChangeListener((view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> mPiP.update(this, view));
+        updateElderModeUI();
+    }
+
+    private void updateElderModeUI() {
+        boolean elder = Setting.isElderMode();
+        mBinding.control.action.player.setVisibility(elder ? View.GONE : View.VISIBLE);
+        mBinding.control.action.decode.setVisibility(elder ? View.GONE : View.VISIBLE);
+        mBinding.control.action.replay.setVisibility(elder ? View.GONE : View.VISIBLE);
+        mBinding.control.action.repeat.setVisibility(elder ? View.GONE : View.VISIBLE);
+        mBinding.control.action.speed.setVisibility(elder ? View.GONE : View.VISIBLE);
+        mBinding.control.action.scale.setVisibility(elder ? View.GONE : View.VISIBLE);
+        mBinding.control.action.danmaku.setVisibility(elder ? View.GONE : (DanmakuSetting.isLoad() ? View.VISIBLE : View.GONE));
+        if (elder) {
+            mBinding.control.action.parse.setVisibility(View.GONE);
+            mBinding.control.action.text.setVisibility(View.GONE);
+            mBinding.control.action.audio.setVisibility(View.VISIBLE);
+            mBinding.control.action.video.setVisibility(View.VISIBLE);
+            mBinding.control.action.edition.setVisibility(View.GONE);
+            mBinding.control.action.chapter.setVisibility(View.GONE);
+            mBinding.control.action.opening.setVisibility(View.VISIBLE);
+            mBinding.control.action.ending.setVisibility(View.VISIBLE);
+        } else {
+            mBinding.control.action.parse.setVisibility(isUseParse() ? View.VISIBLE : View.GONE);
+            PlaybackAction.setTracks(player(), mBinding.control.action.text, mBinding.control.action.audio, mBinding.control.action.video);
+            PlaybackAction.setMediaOptions(player(), mBinding.control.action.edition, mBinding.control.action.chapter);
+        }
     }
 
     private void setVideoView(boolean isInPictureInPictureMode) {
@@ -694,7 +721,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     @Override
     public void renderUseParse(boolean useParse) {
         setUseParse(useParse);
-        mBinding.control.action.parse.setVisibility(isUseParse() ? View.VISIBLE : View.GONE);
+        mBinding.control.action.parse.setVisibility(Setting.isElderMode() ? View.GONE : (isUseParse() ? View.VISIBLE : View.GONE));
     }
 
     @Override
@@ -1174,7 +1201,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mBinding.control.keep.setVisibility(mHistory == null || isFullscreen() ? View.GONE : View.VISIBLE);
         mBinding.control.action.getRoot().setVisibility(isFullscreen() ? View.VISIBLE : View.GONE);
         mBinding.control.right.lock.setVisibility(isFullscreen() ? View.VISIBLE : View.GONE);
-        mBinding.control.action.parse.setVisibility(isUseParse() ? View.VISIBLE : View.GONE);
+        mBinding.control.action.parse.setVisibility(Setting.isElderMode() ? View.GONE : (isUseParse() ? View.VISIBLE : View.GONE));
         mBinding.control.info.setVisibility(player().isEmpty() ? View.GONE : View.VISIBLE);
         mBinding.control.cast.setVisibility(player().isEmpty() ? View.GONE : View.VISIBLE);
         mBinding.control.center.setVisibility(isLock() ? View.GONE : View.VISIBLE);
@@ -1404,6 +1431,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         else if (event.getType() == RefreshEvent.Type.VOD) mVod.updateVod(event.getVod());
         else if (event.getType() == RefreshEvent.Type.SUBTITLE) player().setSub(Sub.from(event.getPath()));
         else if (event.getType() == RefreshEvent.Type.DANMAKU) player().setDanmaku(Danmaku.from(event.getPath()));
+        else if (event.getType() == RefreshEvent.Type.MODE) updateElderModeUI();
     }
 
     @Override
@@ -1439,10 +1467,15 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     }
 
     private void setTrackVisible() {
-        PlaybackAction.setTracks(player(), mBinding.control.action.text, mBinding.control.action.audio, mBinding.control.action.video);
+        if (Setting.isElderMode()) {
+            mBinding.control.action.text.setVisibility(View.GONE);
+        } else {
+            PlaybackAction.setTracks(player(), mBinding.control.action.text, mBinding.control.action.audio, mBinding.control.action.video);
+        }
     }
 
     private void setMediaOptionVisible() {
+        if (Setting.isElderMode()) return;
         PlaybackAction.setMediaOptions(player(), mBinding.control.action.edition, mBinding.control.action.chapter);
     }
 

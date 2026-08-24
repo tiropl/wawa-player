@@ -60,7 +60,7 @@
     <string name="play_ready">準備播放：<xliff:g name="name">%s</xliff:g></string>
     <string name="play_switch_flag">正在切換線路至「<xliff:g name="name">%s</xliff:g>」</string>
     <string name="play_switch_site">正在切換站源至「<xliff:g name="name">%s</xliff:g>」</string>
-    <string name="play_switch_parse">正在切换解析至「<xliff:g name="name">%s</xliff:g>」</string>
+    <string name="play_switch_parse">正在切換解析至「<xliff:g name="name">%s</xliff:g>」</string>
 
     <!-- Playback Setting -->
     <string name="setting_tab_offset">偏移</string>
@@ -250,6 +250,12 @@
     <string name="push">推送</string>
 
     <!-- Setting -->
+    <string name="setting_mode">操作模式</string>
+    <string name="setting_mode_default">預設</string>
+    <string name="setting_mode_elder">長輩模式</string>
+    <string name="setting_mode_child">兒童模式</string>
+    <string name="setting_mode_coming_soon">敬請期待</string>
+    <string name="setting_line_name">線路：<xliff:g name="name">%s</xliff:g></string>
     <string name="setting_vod">點播</string>
     <string name="setting_live">直播</string>
     <string name="setting_wall">壁紙</string>
@@ -259,7 +265,7 @@
 
     <string name="setting_sound">提示音</string>
 
-    <string name="setting_more">更多設置</string>
+    <string name="setting_more">更多設定</string>
     <string name="setting_lock">密碼鎖</string>
     <string name="lock_title_set">設定密碼</string>
     <string name="lock_title_verify">驗證密碼</string>
@@ -324,7 +330,7 @@
     <string name="player_preload_setting">預載設定</string>
     <string name="player_preload">預載</string>
     <string name="player_preload_next">預載下集</string>
-    <string name="player_preload_threads">預載線程</string>
+    <string name="player_preload_threads">預載執行緒</string>
     <string name="player_preload_threads_value">%1$d 條</string>
     <string name="player_preload_size">預載容量</string>
     <string name="player_preload_time">預載時間</string>
@@ -351,7 +357,7 @@
     <string name="player_decode_audio_pass_state">音訊直通：%s</string>
     <string name="player_preload_state">預載：%s</string>
     <string name="player_preload_next_state">預載下集：%s</string>
-    <string name="player_preload_threads_state">預載線程：%1$d 條</string>
+    <string name="player_preload_threads_state">預載執行緒：%1$d 條</string>
     <string name="player_preload_size_state">預載容量：%s</string>
     <string name="player_preload_time_state">預載時間：%1$d 秒</string>
 
@@ -397,13 +403,13 @@
     <string name="error_play_flag">暫無線路資料</string>
     <string name="error_play_timeout">連線逾時</string>
     <string name="error_audio_effect_unsupported">目前播放方式不支援音質設定</string>
-    <string name="error_audio_effect_tunnel">Tunnel 模式下不支援音質設定</string>
+    <string name="error_audio_effect_tunnel">隧道模式下不支援音質設定</string>
     <string name="error_audio_effect_passthrough">音訊直通音軌不支援音質設定</string>
     <string name="error_audio_effect_apply">音質設定套用失敗</string>
     <string name="error_video_effect_unsupported">目前播放方式不支援畫質設定</string>
     <string name="error_video_effect_decode">畫質設定需要視訊硬解</string>
     <string name="error_video_effect_drm">DRM 影片不支援畫質設定</string>
-    <string name="error_video_effect_tunnel">Tunnel 模式下不支援畫質設定</string>
+    <string name="error_video_effect_tunnel">隧道模式下不支援畫質設定</string>
     <string name="error_video_effect_dolby_vision_passthrough">杜比視界直通不支援畫質設定</string>
     <string name="error_play_tvbus">錯誤代碼：<xliff:g name="name">%s</xliff:g></string>
     <string name="error_detail">暫無播放資料</string>

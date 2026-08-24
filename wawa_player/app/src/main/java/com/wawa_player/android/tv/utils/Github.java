@@ -4,11 +4,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Github {
-
+    // 仓库地址配置
     private static final String REPO = "oyonono/wawa-player";
 
     public static String getRelease() {
-        return "https://api.github.com/repos/" + REPO + "releases/latest";
+        return "https://api.github.com/repos/" + REPO + "/releases/latest";
     }
 
     public static String findApk(JSONObject release, String mode, String abi) {
