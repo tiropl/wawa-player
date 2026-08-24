@@ -157,7 +157,10 @@ public class LiveConfig extends BaseConfig {
     }
 
     private void parseText(Config config, String text) {
-        if (configuring) LineConfig.clear(LIVE);
+        if (configuring) {
+            for (Depot old : LineConfig.getLines(LIVE)) Config.delete(old.getUrl(), LIVE);
+            LineConfig.clear(LIVE);
+        }
         configuring = false;
         Live live = new Live(UrlUtil.getName(config.getUrl()), config.getUrl()).sync();
         lives = new ArrayList<>(List.of(live));
@@ -171,7 +174,10 @@ public class LiveConfig extends BaseConfig {
         } else if (object.has("urls")) {
             parseDepot(config, object);
         } else {
-            if (configuring) LineConfig.clear(LIVE);
+            if (configuring) {
+                for (Depot old : LineConfig.getLines(LIVE)) Config.delete(old.getUrl(), LIVE);
+                LineConfig.clear(LIVE);
+            }
             configuring = false;
             parseConfig(config, object);
         }
@@ -181,6 +187,7 @@ public class LiveConfig extends BaseConfig {
         List<Depot> items = Depot.arrayFrom(object.getAsJsonArray("urls").toString());
         if (items.isEmpty()) throw new Exception("Depot urls is empty");
         configuring = false;
+        for (Depot old : LineConfig.getLines(LIVE)) Config.delete(old.getUrl(), LIVE);
         LineConfig.save(LIVE, config.getUrl(), items);
         load(this.config = Config.find(items.get(0), LIVE));
         Config.delete(config.getUrl());

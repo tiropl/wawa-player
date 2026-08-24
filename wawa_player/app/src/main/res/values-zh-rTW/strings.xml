@@ -252,7 +252,7 @@
     <!-- Setting -->
     <string name="setting_mode">操作模式</string>
     <string name="setting_mode_default">預設</string>
-    <string name="setting_mode_elder">長輩模式</string>
+    <string name="setting_mode_elder">簡潔模式</string>
     <string name="setting_mode_child">兒童模式</string>
     <string name="setting_mode_coming_soon">敬請期待</string>
     <string name="setting_mode_changed">操作模式：%s</string>

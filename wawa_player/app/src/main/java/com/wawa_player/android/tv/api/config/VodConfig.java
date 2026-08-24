@@ -172,7 +172,10 @@ public class VodConfig extends BaseConfig {
         } else if (object.has("urls")) {
             parseDepot(config, object);
         } else {
-            if (configuring) LineConfig.clear(VOD);
+            if (configuring) {
+                for (Depot old : LineConfig.getLines(VOD)) Config.delete(old.getUrl(), VOD);
+                LineConfig.clear(VOD);
+            }
             configuring = false;
             parseConfig(config, object);
         }
@@ -182,6 +185,7 @@ public class VodConfig extends BaseConfig {
         List<Depot> items = Depot.arrayFrom(object.getAsJsonArray("urls").toString());
         if (items.isEmpty()) throw new Exception("Depot urls is empty");
         configuring = false;
+        for (Depot old : LineConfig.getLines(VOD)) Config.delete(old.getUrl(), VOD);
         LineConfig.save(VOD, config.getUrl(), items);
         load(this.config = Config.find(items.get(0), VOD));
         Config.delete(config.getUrl());

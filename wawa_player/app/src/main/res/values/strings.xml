@@ -253,7 +253,7 @@
     <!-- Setting -->
     <string name="setting_mode">Operation Mode</string>
     <string name="setting_mode_default">Default</string>
-    <string name="setting_mode_elder">Elder</string>
+    <string name="setting_mode_elder">Simple</string>
     <string name="setting_mode_child">Child</string>
     <string name="setting_mode_coming_soon">Coming soon</string>
     <string name="setting_mode_changed">Operation Mode: %s</string>
