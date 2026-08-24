@@ -1,5 +1,7 @@
 package com.wawa_player.android.tv.ui.dialog;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -12,6 +14,7 @@ import com.wawa_player.android.tv.impl.LineListener;
 import com.wawa_player.android.tv.ui.adapter.LineAdapter;
 import com.wawa_player.android.tv.ui.custom.SpaceItemDecoration;
 import com.wawa_player.android.tv.utils.ResUtil;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class LineDialog extends BaseAlertDialog implements LineAdapter.OnClickListener {
 
