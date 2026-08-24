@@ -35,6 +35,7 @@ import com.wawa_player.android.tv.impl.FilterListener;
 import com.wawa_player.android.tv.impl.LineListener;
 import com.wawa_player.android.tv.impl.SiteListener;
 import com.wawa_player.android.tv.model.SiteViewModel;
+import com.wawa_player.android.tv.setting.Setting;
 import com.wawa_player.android.tv.ui.activity.HistoryActivity;
 import com.wawa_player.android.tv.ui.activity.KeepActivity;
 import com.wawa_player.android.tv.ui.activity.SearchActivity;
@@ -147,16 +148,18 @@ public class VodFragment extends BaseFragment implements ConfigListener, SiteLis
     private void setFabVisible(int position) {
         if (mAdapter.getItemCount() == 0) {
             mBinding.top.setVisibility(View.INVISIBLE);
-            mBinding.link.setVisibility(View.VISIBLE);
+            mBinding.link.setVisibility(Setting.isElderMode() ? View.GONE : View.VISIBLE);
             mBinding.filter.setVisibility(View.GONE);
         } else if (!mAdapter.get(position).getFilters().isEmpty()) {
             mBinding.top.setVisibility(View.INVISIBLE);
             mBinding.link.setVisibility(View.GONE);
-            mBinding.filter.show();
+            if (!Setting.isElderMode()) mBinding.filter.show();
+            else mBinding.filter.setVisibility(View.GONE);
         } else if (position == 0 || mAdapter.get(position).getFilters().isEmpty()) {
             mBinding.top.setVisibility(View.INVISIBLE);
             mBinding.filter.setVisibility(View.GONE);
-            mBinding.link.show();
+            if (!Setting.isElderMode()) mBinding.link.show();
+            else mBinding.link.setVisibility(View.GONE);
         }
     }
 
@@ -169,6 +172,7 @@ public class VodFragment extends BaseFragment implements ConfigListener, SiteLis
     private void onTop(View view) {
         getFragment().scrollToTop();
         mBinding.top.setVisibility(View.INVISIBLE);
+        if (Setting.isElderMode()) return;
         if (mBinding.filter.getVisibility() == View.INVISIBLE) mBinding.filter.show();
         else if (mBinding.link.getVisibility() == View.INVISIBLE) mBinding.link.show();
     }
@@ -265,6 +269,9 @@ public class VodFragment extends BaseFragment implements ConfigListener, SiteLis
                 break;
             case CATEGORY:
                 getFragment().onRefresh();
+                break;
+            case MODE:
+                setFabVisible(mBinding.pager.getCurrentItem());
                 break;
         }
     }

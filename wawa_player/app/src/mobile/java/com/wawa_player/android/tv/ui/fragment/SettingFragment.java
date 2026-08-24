@@ -21,9 +21,7 @@ import com.wawa_player.android.tv.event.RefreshEvent;
 import com.wawa_player.android.tv.impl.Callback;
 import com.wawa_player.android.tv.impl.ConfigListener;
 import com.wawa_player.android.tv.impl.LiveListener;
-import com.wawa_player.android.tv.impl.LockListener;
 import com.wawa_player.android.tv.impl.SiteListener;
-import com.wawa_player.android.tv.setting.PasswordLock;
 import com.wawa_player.android.tv.setting.PlayerSetting;
 import com.wawa_player.android.tv.setting.Setting;
 import com.wawa_player.android.tv.ui.activity.HomeActivity;
@@ -31,9 +29,6 @@ import com.wawa_player.android.tv.ui.base.BaseFragment;
 import com.wawa_player.android.tv.ui.dialog.ConfigDialog;
 import com.wawa_player.android.tv.ui.dialog.HistoryDialog;
 import com.wawa_player.android.tv.ui.dialog.LiveDialog;
-import com.wawa_player.android.tv.ui.dialog.LockChangeDialog;
-import com.wawa_player.android.tv.ui.dialog.LockSetDialog;
-import com.wawa_player.android.tv.ui.dialog.LockVerifyDialog;
 import com.wawa_player.android.tv.ui.dialog.SiteDialog;
 import com.wawa_player.android.tv.ui.dialog.ThemeDialog;
 import com.wawa_player.android.tv.utils.Notify;
@@ -44,7 +39,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-public class SettingFragment extends BaseFragment implements ConfigListener, SiteListener, LiveListener, ThemeDialog.Listener, LockSetDialog.Listener {
+public class SettingFragment extends BaseFragment implements ConfigListener, SiteListener, LiveListener, ThemeDialog.Listener {
 
     private FragmentSettingBinding mBinding;
     private String[] size;
@@ -81,7 +76,6 @@ public class SettingFragment extends BaseFragment implements ConfigListener, Sit
         mBinding.themeColorText.setText(getThemeText());
         mBinding.soundText.setText(Setting.getSwitch(Setting.isSound()));
         mBinding.sizeText.setText((size = ResUtil.getStringArray(R.array.select_size))[PlayerSetting.getSize()]);
-        setLockText();
     }
 
     @Override
@@ -99,7 +93,6 @@ public class SettingFragment extends BaseFragment implements ConfigListener, Sit
         mBinding.danmaku.setOnClickListener(this::onDanmaku);
         mBinding.sound.setOnClickListener(this::setSound);
         mBinding.more.setOnClickListener(this::onMore);
-        mBinding.lock.setOnClickListener(this::onLock);
         mBinding.vodHistory.setOnClickListener(this::onVodHistory);
         mBinding.themeColor.setOnClickListener(this::onThemeColor);
         mBinding.liveHistory.setOnClickListener(this::onLiveHistory);
@@ -223,40 +216,6 @@ public class SettingFragment extends BaseFragment implements ConfigListener, Sit
     private void onPlayer(View view) {
         getRoot().change(2);
     }
-
-    private void setLockText() {
-        mBinding.lockText.setText(Setting.getSwitch(PasswordLock.isSet()));
-    }
-
-    private void onLock(View view) {
-        if (PasswordLock.isSet()) showLockActions();
-        else LockSetDialog.create().listener(this).show(this);
-    }
-
-    private void showLockActions() {
-        new MaterialAlertDialogBuilder(requireActivity()).setTitle(R.string.setting_lock).setItems(new String[]{getString(R.string.lock_action_change), getString(R.string.lock_action_clear)}, (dialog, which) -> {
-            if (which == 0) LockChangeDialog.create().show(this);
-            else LockVerifyDialog.create().listener(clearLockListener).show(this);
-        }).setNegativeButton(R.string.dialog_negative, null).show();
-    }
-
-    @Override
-    public void onLockSet() {
-        setLockText();
-    }
-
-    private final LockListener clearLockListener = new LockListener() {
-        @Override
-        public void onLockVerified() {
-            PasswordLock.clear();
-            Notify.show(R.string.lock_clear_success);
-            setLockText();
-        }
-
-        @Override
-        public void onLockCancelled() {
-        }
-    };
 
     private void setWallDefault(View view) {
         Setting.putWall(Setting.getWall() == 4 ? 1 : Setting.getWall() + 1);
