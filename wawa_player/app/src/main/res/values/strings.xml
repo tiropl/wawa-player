@@ -397,7 +397,6 @@
     <string name="line_switching">Switching line to: %1$s</string>
     <string name="line_update_fail">Config update failed</string>
     <string name="line_load_fail">Line load failed</string>
-    <string name="line_risk_confirm">This line may contain executable code, confirm to use?</string>
 
     <!-- Error -->
     <string name="error_config_get">Configuration get failed</string>

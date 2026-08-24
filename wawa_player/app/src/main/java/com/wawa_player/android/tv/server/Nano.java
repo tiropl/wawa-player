@@ -23,6 +23,7 @@ import fi.iki.elonen.NanoHTTPD;
 public class Nano extends NanoHTTPD {
 
     private static final String INDEX = "index.html";
+    private static final String INDEX_ELDER = "index_elder.html";
 
     private List<Process> process;
 
@@ -77,17 +78,12 @@ public class Nano extends NanoHTTPD {
         }
     }
 
-    private static final String SCRIPT_JS = "js/script.js";
-
     private Response getAssets(String path) {
         try {
             if (path.isEmpty()) path = INDEX;
             if (path.equals(INDEX)) {
-                return newFixedLengthResponse(Response.Status.OK, MIME_HTML, Asset.read(INDEX));
-            }
-            if (path.equals(SCRIPT_JS)) {
-                String js = Asset.read(SCRIPT_JS).replace("/*{{ELDER_MODE}}*/false", String.valueOf(Setting.isElderMode()));
-                return newFixedLengthResponse(Response.Status.OK, "application/javascript", js);
+                String html = Asset.read(Setting.isElderMode() ? INDEX_ELDER : INDEX);
+                return newFixedLengthResponse(Response.Status.OK, MIME_HTML, html);
             }
             InputStream is = Asset.open(path);
             return newFixedLengthResponse(Response.Status.OK, getMimeTypeForFile(path), is, -1);

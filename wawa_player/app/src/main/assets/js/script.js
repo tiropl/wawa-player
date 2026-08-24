@@ -1,5 +1,4 @@
 ﻿const icDir = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F5A623'><path d='M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z'/></svg>`;
-const ELDER_MODE = /*{{ELDER_MODE}}*/false;
 const icFile = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23717970'><path d='M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z'/></svg>`;
 let currentRoot = '';
 let currentFile = '';
@@ -263,20 +262,18 @@ function warnToast(msg) {
 
 function showPanel(id) {
     for (let i = 1; i <= 5; i++) {
-        document.getElementById('panel' + i).classList.toggle('active', i === id);
-        document.getElementById('tab' + i).classList.toggle('active', i === id);
+        const panel = document.getElementById('panel' + i);
+        const tab = document.getElementById('tab' + i);
+        if (panel) panel.classList.toggle('active', i === id);
+        if (tab) tab.classList.toggle('active', i === id);
     }
-    if (id === 5 && document.getElementById('file_list').innerHTML === '') listFile('');
+    const fileList = document.getElementById('file_list');
+    if (id === 5 && fileList && fileList.innerHTML === '') listFile('');
 }
 
 const tab = parseInt(new URLSearchParams(window.location.search).get('tab')) || 1;
 history.replaceState(null, '');
-if (ELDER_MODE) {
-    document.querySelector('.md-nav-bar').style.display = 'none';
-    showPanel(1);
-} else {
-    showPanel(tab);
-}
+showPanel(tab);
 
 window.addEventListener('popstate', function () {
     if (dialogClosing) { dialogClosing = false; return; }

@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.wawa_player.android.tv.App;
 import com.wawa_player.android.tv.R;
 import com.wawa_player.android.tv.api.loader.BaseLoader;
-import com.wawa_player.android.tv.api.Decoder;
 import com.wawa_player.android.tv.bean.Config;
 import com.wawa_player.android.tv.bean.Depot;
 import com.wawa_player.android.tv.bean.Parse;
@@ -16,7 +15,6 @@ import com.wawa_player.android.tv.event.RefreshEvent;
 import com.wawa_player.android.tv.impl.Callback;
 import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.Task;
-import com.wawa_player.android.tv.utils.UrlUtil;
 import com.github.catvod.bean.Doh;
 import com.github.catvod.bean.Header;
 import com.github.catvod.bean.Proxy;
@@ -75,18 +73,6 @@ public class VodConfig extends BaseConfig {
 
     public static void load(Config config, Callback callback, boolean configuring) {
         get().clear().config(config).configuring(configuring).load(callback);
-    }
-
-    public static boolean checkRisk(Depot line) {
-        try {
-            String json = Decoder.getJson(UrlUtil.convert(line.getUrl()), TAG, TIMEOUT);
-            JsonObject object = Json.parse(json).getAsJsonObject();
-            if (object.has("msg")) return false;
-            if (object.has("urls")) return true;
-            return !Json.safeString(object, "spider").isEmpty();
-        } catch (Throwable e) {
-            return false;
-        }
     }
 
     public static void switchLine(Depot line, Callback callback) {
