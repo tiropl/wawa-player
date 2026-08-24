@@ -18,10 +18,8 @@ media3
 *.jks
 
 # APK输出目录
-wawa_player/app/arm64_v8a
-wawa_player/app/armeabi_v7a
 wawa_player/app/mobileArm64_v8a
 wawa_player/app/mobileArmeabi_v7a
-wawa_player/app/leanbackArm64_v8a
-wawa_player/app/leanbackArmeabi_v7a
+wawa_player/app/tvArm64_v8a
+wawa_player/app/tvArmeabi_v7a
 **/*.apk

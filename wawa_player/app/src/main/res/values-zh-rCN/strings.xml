@@ -255,6 +255,7 @@
     <string name="setting_mode_elder">长辈模式</string>
     <string name="setting_mode_child">儿童模式</string>
     <string name="setting_mode_coming_soon">敬请期待</string>
+    <string name="setting_mode_changed">操作模式：%s</string>
     <string name="setting_line_name">线路：<xliff:g name="name">%s</xliff:g></string>
     <string name="setting_vod">点播</string>
     <string name="setting_live">直播</string>

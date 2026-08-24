@@ -256,6 +256,7 @@
     <string name="setting_mode_elder">Elder</string>
     <string name="setting_mode_child">Child</string>
     <string name="setting_mode_coming_soon">Coming soon</string>
+    <string name="setting_mode_changed">Operation Mode: %s</string>
     <string name="setting_line_name">Line: <xliff:g name="name">%s</xliff:g></string>
     <string name="setting_vod">Vod</string>
     <string name="setting_live">Live</string>

@@ -30,18 +30,18 @@ git submodule update --init --recursive
 
 ## 项目架构
 
-| 项目      | 值                             |
-|---------|-------------------------------|
-| package | `com.wawa_player.android.tv`       |
-| minSdk  | 24（Android 7.0 Nougat）        |
-| abi     | `arm64-v8a`、`armeabi-v7a`     |
-| flavor  | `leanback`（电视版）、`mobile`（手机版） |
+| 项目      | 值                            |
+|---------|------------------------------|
+| package | `com.wawa_player.android.tv` |
+| minSdk  | 24（Android 7.0 Nougat）       |
+| abi     | `arm64-v8a`、`armeabi-v7a`    |
+| flavor  | `tv`（电视版）、`mobile`（手机版）      |
 
 ```
 wawa_player/
 ├── app/
     ├── main/        公共业务逻辑
-    ├── leanback/    电视端
+    ├── tv/    电视端
     ├── mobile/      手机端
 ├── catvod/         爬虫抽象层（Spider 接口、OkHttp 网络栈）
 ├── quickjs/        QuickJS JavaScript 引擎

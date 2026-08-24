@@ -111,6 +111,7 @@ public class SettingMoreActivity extends BaseActivity implements DohDialog.Liste
         }
         Setting.putMode(mode);
         mBinding.modeText.setText(modes[mode]);
+        Notify.show(getString(R.string.setting_mode_changed, modes[mode]));
         RefreshEvent.mode();
     }
 

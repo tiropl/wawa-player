@@ -104,6 +104,7 @@ public class SettingMoreFragment extends BaseFragment {
             }
             Setting.putMode(which);
             mBinding.modeText.setText(modes[which]);
+            Notify.show(getString(R.string.setting_mode_changed, modes[which]));
             RefreshEvent.mode();
             dialog.dismiss();
         }).show();
