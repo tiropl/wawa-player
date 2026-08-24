@@ -1,0 +1,106 @@
+package com.wawa_player.android.tv.ui.activity;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+
+import androidx.viewbinding.ViewBinding;
+
+import com.wawa_player.android.tv.R;
+import com.wawa_player.android.tv.databinding.ActivitySettingPreloadBinding;
+import com.wawa_player.android.tv.setting.PlayerSetting;
+import com.wawa_player.android.tv.setting.PreloadSetting;
+import com.wawa_player.android.tv.setting.Setting;
+import com.wawa_player.android.tv.ui.base.BaseActivity;
+import com.wawa_player.android.tv.ui.dialog.PreloadDialog;
+import com.wawa_player.android.tv.utils.FileUtil;
+import com.wawa_player.android.tv.utils.Notify;
+
+public class SettingPreloadActivity extends BaseActivity {
+
+    private ActivitySettingPreloadBinding mBinding;
+
+    public static void start(Activity activity) {
+        activity.startActivity(new Intent(activity, SettingPreloadActivity.class));
+    }
+
+    @Override
+    protected ViewBinding getBinding() {
+        return mBinding = ActivitySettingPreloadBinding.inflate(getLayoutInflater());
+    }
+
+    @Override
+    protected void initView(Bundle savedInstanceState) {
+        mBinding.preload.requestFocus();
+        refresh();
+    }
+
+    @Override
+    protected void initEvent() {
+        mBinding.preload.setOnClickListener(this::setPreload);
+        mBinding.preloadNext.setOnClickListener(this::setPreloadNext);
+        mBinding.preloadSize.setOnClickListener(view -> PreloadDialog.show(this, PreloadDialog.SIZE));
+        mBinding.preloadTime.setOnClickListener(view -> PreloadDialog.show(this, PreloadDialog.TIME));
+        mBinding.preloadThread.setOnClickListener(view -> PreloadDialog.show(this, PreloadDialog.THREADS));
+    }
+
+    private void refresh() {
+        mBinding.preloadText.setText(Setting.getSwitch(PreloadSetting.isEnabled()));
+        mBinding.preloadNextText.setText(Setting.getSwitch(PreloadSetting.isNextEpisodeEnabled()));
+        setPreloadThreadsText();
+        setPreloadSizeText();
+        setPreloadTimeText();
+        setVisible();
+    }
+
+    private void setVisible() {
+        boolean exo = PlayerSetting.isExo();
+        boolean preload = PreloadSetting.isEnabled();
+        mBinding.preloadTime.setVisibility(preload ? View.VISIBLE : View.GONE);
+        mBinding.preloadNext.setVisibility(preload && exo ? View.VISIBLE : View.GONE);
+        mBinding.preloadSize.setVisibility(preload && exo ? View.VISIBLE : View.GONE);
+        mBinding.preloadThread.setVisibility(preload && exo ? View.VISIBLE : View.GONE);
+    }
+
+    private void setPreload(View view) {
+        PreloadSetting.putEnabled(!PreloadSetting.isEnabled());
+        mBinding.preloadText.setText(Setting.getSwitch(PreloadSetting.isEnabled()));
+        Notify.show(getString(R.string.player_preload_state, Setting.getSwitch(PreloadSetting.isEnabled())));
+        setVisible();
+    }
+
+    private void setPreloadNext(View view) {
+        PreloadSetting.putNextEpisodeEnabled(!PreloadSetting.isNextEpisodeEnabled());
+        mBinding.preloadNextText.setText(Setting.getSwitch(PreloadSetting.isNextEpisodeEnabled()));
+        Notify.show(getString(R.string.player_preload_next_state, Setting.getSwitch(PreloadSetting.isNextEpisodeEnabled())));
+    }
+
+    public void setPreload(int type, int value) {
+        if (type == PreloadDialog.THREADS) {
+            PreloadSetting.putThreads(value);
+            setPreloadThreadsText();
+            Notify.show(getString(R.string.player_preload_threads_state, value));
+        } else if (type == PreloadDialog.SIZE) {
+            PreloadSetting.putSizeMb(value);
+            setPreloadSizeText();
+            Notify.show(getString(R.string.player_preload_size_state, FileUtil.byteCountToDisplaySize(PreloadSetting.getSizeBytes())));
+        } else if (type == PreloadDialog.TIME) {
+            PreloadSetting.putTimeSeconds(value);
+            setPreloadTimeText();
+            Notify.show(getString(R.string.player_preload_time_state, value));
+        }
+    }
+
+    private void setPreloadSizeText() {
+        mBinding.preloadSizeText.setText(FileUtil.byteCountToDisplaySize(PreloadSetting.getSizeBytes()));
+    }
+
+    private void setPreloadTimeText() {
+        mBinding.preloadTimeText.setText(getString(R.string.player_preload_time_value, PreloadSetting.getTimeSeconds()));
+    }
+
+    private void setPreloadThreadsText() {
+        mBinding.preloadThreadText.setText(getString(R.string.player_preload_threads_value, PreloadSetting.getThreads()));
+    }
+}

@@ -1,4 +1,7 @@
 pluginManagement {
+    // media3 modules use convention plugins provided by these included builds.
+    includeBuild("media3/build-logic-settings")
+    includeBuild("media3/build-logic")
     repositories {
         gradlePluginPortal()
         mavenCentral()
@@ -20,8 +23,61 @@ dependencyResolutionManagement {
     }
 }
 
+rootProject.name = "wawa-player"
+
+// project modules
 include ':app'
 include ':catvod'
 include ':chaquo'
 include ':quickjs'
-rootProject.name = "TV"
+project(':app').projectDir = file('wawa_player/app')
+project(':catvod').projectDir = file('wawa_player/catvod')
+project(':chaquo').projectDir = file('wawa_player/chaquo')
+project(':quickjs').projectDir = file('wawa_player/quickjs')
+
+// media3 modules
+include ':lib-common'
+include ':lib-container'
+include ':lib-database'
+include ':lib-datasource'
+include ':lib-datasource-okhttp'
+include ':lib-decoder'
+include ':lib-decoder-ffmpeg'
+include ':lib-exoplayer'
+include ':lib-extractor'
+include ':lib-mpvplayer'
+include ':lib-effect'
+include ':lib-effect-ndk'
+include ':lib-muxer'
+include ':lib-exoplayer-dash'
+include ':lib-inspector'
+include ':lib-inspector-frame'
+include ':lib-ui-danmaku'
+include ':lib-ui'
+include ':test-data'
+include ':test-utils'
+include ':test-utils-robolectric'
+include ':lib-transformer'
+
+project(':lib-common').projectDir = file('media3/libraries/common')
+project(':lib-container').projectDir = file('media3/libraries/container')
+project(':lib-database').projectDir = file('media3/libraries/database')
+project(':lib-datasource').projectDir = file('media3/libraries/datasource')
+project(':lib-datasource-okhttp').projectDir = file('media3/libraries/datasource_okhttp')
+project(':lib-decoder').projectDir = file('media3/libraries/decoder')
+project(':lib-decoder-ffmpeg').projectDir = file('media3/libraries/decoder_ffmpeg')
+project(':lib-exoplayer').projectDir = file('media3/libraries/exoplayer')
+project(':lib-extractor').projectDir = file('media3/libraries/extractor')
+project(':lib-mpvplayer').projectDir = file('media3/libraries/mpvplayer')
+project(':lib-effect').projectDir = file('media3/libraries/effect')
+project(':lib-effect-ndk').projectDir = file('media3/libraries/effect_ndk')
+project(':lib-muxer').projectDir = file('media3/libraries/muxer')
+project(':lib-exoplayer-dash').projectDir = file('media3/libraries/exoplayer_dash')
+project(':lib-inspector').projectDir = file('media3/libraries/inspector')
+project(':lib-inspector-frame').projectDir = file('media3/libraries/inspector_frame')
+project(':lib-ui-danmaku').projectDir = file('media3/libraries/ui_danmaku')
+project(':lib-ui').projectDir = file('media3/libraries/ui')
+project(':test-data').projectDir = file('media3/libraries/test_data')
+project(':test-utils').projectDir = file('media3/libraries/test_utils')
+project(':test-utils-robolectric').projectDir = file('media3/libraries/test_utils_robolectric')
+project(':lib-transformer').projectDir = file('media3/libraries/transformer')
