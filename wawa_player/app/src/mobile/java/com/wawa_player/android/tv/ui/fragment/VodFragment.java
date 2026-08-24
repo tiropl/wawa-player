@@ -108,6 +108,10 @@ public class VodFragment extends BaseFragment implements ConfigListener, SiteLis
         mBinding.filter.setOnClickListener(this::onFilter);
         mBinding.filter.setOnLongClickListener(this::onLink);
         mBinding.toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
+        mBinding.appBar.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            View progress = mBinding.progress.getRoot();
+            progress.layout(progress.getLeft(), bottom, progress.getRight(), ((View) progress.getParent()).getHeight());
+        });
         mBinding.appBar.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
             float factor = Math.abs(verticalOffset * 1f / appBarLayout.getTotalScrollRange());
             int padding = (int) (ResUtil.dp2px(12) * factor);

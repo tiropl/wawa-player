@@ -342,7 +342,17 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         Notify.show(getString(R.string.line_switching, item.getName()));
         VodConfig.switchLine(item, new Callback() {
             @Override
+            public void start() {
+                mBinding.progressLayout.showProgress();
+            }
+
+            @Override
             public void success() {
+                showContent();
+            }
+
+            @Override
+            public void error(String msg) {
                 showContent();
             }
         });
