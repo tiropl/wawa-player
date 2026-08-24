@@ -23,7 +23,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "TV"
+rootProject.name = "wawa-player"
 
 // project modules
 include ':app'

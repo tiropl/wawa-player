@@ -1,15 +1,6 @@
-# 开发者文档
-
-基于 [CatVod](https://github.com/CatVodTVOfficial/CatVodTVJarLoader) 的开源 Android 影音应用，同时支持 **Android TV 大屏幕**与**手机**两种使用场景，并通过外部配置灵活扩展内容。
-
-[讨论群组](https://t.me/fongmi_official) | [发布频道](https://t.me/fongmi_release)
-
-[![Star History Chart](https://api.star-history.com/svg?repos=FongMi/TV&type=Date)](https://www.star-history.com/#FongMi/TV&Date)
-
----
-
 ## 目录
 
+- [快速开始](#快速开始)
 - [项目架构](#项目架构)
 - [播放器](#播放器)
 - [点播功能](#点播功能)
@@ -24,6 +15,19 @@
 
 ---
 
+## 快速开始
+
+```bash
+# 克隆主仓库
+git clone https://github.com/your-fork/wawa-player.git
+cd wawa-player
+
+# 初始化 media3 子模块
+git submodule update --init --recursive
+```
+
+---
+
 ## 项目架构
 
 | 项目      | 值                             |
@@ -34,16 +38,15 @@
 | flavor  | `leanback`（电视版）、`mobile`（手机版） |
 
 ```
-TV/
-├── app/            主应用（含两套 UI Flavor）
+wawa_player/
+├── app/
+    ├── main/        公共业务逻辑
+    ├── leanback/    电视端
+    ├── mobile/      手机端
 ├── catvod/         爬虫抽象层（Spider 接口、OkHttp 网络栈）
 ├── quickjs/        QuickJS JavaScript 引擎
 ├── chaquo/         Chaquopy Python 引擎
 ```
-
-`app/src/main/` 为两个版本共用的业务逻辑，`app/src/leanback/` 与 `app/src/mobile/` 各自实现对应 UI。
-
----
 
 ## 播放器
 
@@ -139,9 +142,9 @@ Live 配置可内嵌或独立存放。完整字段说明见 [CONFIG.md](docs/CON
 
 ## 延伸阅读
 
-| 文件                          | 说明                   |
-|-----------------------------|----------------------|
+| 文件                         | 说明                   |
+|----------------------------|----------------------|
 | [CONFIG.md](docs/CONFIG.md) | Vod / Live 完整配置字段说明  |
 | [SPIDER.md](docs/SPIDER.md) | Spider 所有方法规格与返回格式   |
-| [LOCAL.md](docs/LOCAL.md)   | 本地 HTTP API 所有端点完整说明 |
-| [LIVE.md](docs/LIVE.md)     | 直播来源格式完整说明           |
+| [LOCAL.md](docs/LOCAL.md)  | 本地 HTTP API 所有端点完整说明 |
+| [LIVE.md](docs/LIVE.md)    | 直播来源格式完整说明           |

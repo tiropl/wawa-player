@@ -7,6 +7,9 @@ local.properties
 lib-*.aar
 /Release
 
+# git子模块
+media3
+
 # AI
 .claude
 .qoderignore
