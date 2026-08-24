@@ -12,6 +12,7 @@ import com.wawa_player.android.tv.bean.Parse;
 import com.wawa_player.android.tv.bean.Result;
 import com.wawa_player.android.tv.bean.Vod;
 import com.wawa_player.android.tv.playback.PlaybackResult;
+import com.wawa_player.android.tv.setting.Setting;
 
 import java.util.Collections;
 import java.util.List;
@@ -445,7 +446,7 @@ public class VodPlaybackController {
     }
 
     private void restoreEpisodeOrder(History history) {
-        if (history.isRevSort()) reverseEpisode(true);
+        if (!Setting.isElderMode() && history.isRevSort()) reverseEpisode(true);
     }
 
     private void resumePlaybackIfNeeded() {

@@ -10,6 +10,7 @@ import com.wawa_player.android.tv.server.process.Media;
 import com.wawa_player.android.tv.server.process.Parse;
 import com.wawa_player.android.tv.server.process.Proxy;
 import com.github.catvod.utils.Asset;
+import com.wawa_player.android.tv.setting.Setting;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -76,9 +77,18 @@ public class Nano extends NanoHTTPD {
         }
     }
 
+    private static final String SCRIPT_JS = "js/script.js";
+
     private Response getAssets(String path) {
         try {
             if (path.isEmpty()) path = INDEX;
+            if (path.equals(INDEX)) {
+                return newFixedLengthResponse(Response.Status.OK, MIME_HTML, Asset.read(INDEX));
+            }
+            if (path.equals(SCRIPT_JS)) {
+                String js = Asset.read(SCRIPT_JS).replace("/*{{ELDER_MODE}}*/false", String.valueOf(Setting.isElderMode()));
+                return newFixedLengthResponse(Response.Status.OK, "application/javascript", js);
+            }
             InputStream is = Asset.open(path);
             return newFixedLengthResponse(Response.Status.OK, getMimeTypeForFile(path), is, -1);
         } catch (Exception e) {

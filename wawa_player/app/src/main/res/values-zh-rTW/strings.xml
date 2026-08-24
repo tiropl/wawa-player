@@ -396,6 +396,7 @@
     <string name="line_switching">正在切換線路至：%1$s</string>
     <string name="line_update_fail">配置更新失敗</string>
     <string name="line_load_fail">線路載入失敗</string>
+    <string name="line_risk_confirm">該線路存在風險，確認使用嗎？</string>
 
     <!-- Error -->
     <string name="error_config_get">配置取得失敗</string>

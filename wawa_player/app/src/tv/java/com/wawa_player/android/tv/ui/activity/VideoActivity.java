@@ -372,6 +372,8 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
         boolean elder = Setting.isElderMode();
         mBinding.change.setVisibility(elder ? View.GONE : View.VISIBLE);
         mBinding.lineName.setVisibility(elder ? View.VISIBLE : View.GONE);
+        mBinding.flag.setVisibility(elder ? View.GONE : (mFlagAdapter.getItemCount() > 0 ? View.VISIBLE : View.GONE));
+        mBinding.part.setVisibility(elder ? View.GONE : View.VISIBLE);
         updateControlBarForElderMode();
     }
 
@@ -390,10 +392,10 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
         mBinding.control.action.scale.setVisibility(elder ? View.GONE : View.VISIBLE);
         mBinding.control.action.text.setVisibility(elder ? View.GONE : View.VISIBLE);
         mBinding.control.action.danmaku.setVisibility(elder ? View.GONE : View.VISIBLE);
-        mBinding.control.action.edition.setVisibility(elder ? View.GONE : View.VISIBLE);
-        mBinding.control.action.chapter.setVisibility(elder ? View.GONE : View.VISIBLE);
+        setMediaOptionVisible();
         mBinding.control.action.opening.setVisibility(elder ? View.GONE : View.VISIBLE);
         mBinding.control.action.ending.setVisibility(elder ? View.GONE : View.VISIBLE);
+        mBinding.array.setVisibility(elder ? View.GONE : (mArrayAdapter.getItemCount() > 0 ? View.VISIBLE : View.GONE));
     }
 
     private void setPlaybackMode() {
@@ -623,7 +625,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
 
     @Override
     public void renderFlags(List<Flag> items) {
-        mBinding.flag.setVisibility(items.isEmpty() ? View.GONE : View.VISIBLE);
+        mBinding.flag.setVisibility((items.isEmpty() || Setting.isElderMode()) ? View.GONE : View.VISIBLE);
         mFlagAdapter.addAll(items);
     }
 
@@ -839,7 +841,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
         List<String> items = new ArrayList<>();
         items.add(getString(R.string.play_reverse));
         items.add(getString(mHistory.getRevPlayText()));
-        mBinding.array.setVisibility(size > 1 ? View.VISIBLE : View.GONE);
+        mBinding.array.setVisibility((size > 1 && !Setting.isElderMode()) ? View.VISIBLE : View.GONE);
         if (mHistory.isRevSort()) for (int i = size; i > 0; i -= 20) items.add(i + "-" + Math.max(i - 19, 1));
         else for (int i = 0; i < size; i += 20) items.add((i + 1) + "-" + Math.min(i + 20, size));
         mArrayAdapter.addAll(items);
@@ -1172,7 +1174,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
 
     private void setPartAdapter() {
         mPartAdapter.addAll(PartUtil.split(mHistory.getVodName()));
-        mBinding.part.setVisibility(View.VISIBLE);
+        mBinding.part.setVisibility(Setting.isElderMode() ? View.GONE : View.VISIBLE);
         setR2Callback();
     }
 
@@ -1334,7 +1336,12 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
     }
 
     private void setMediaOptionVisible() {
-        PlaybackAction.setMediaOptions(player(), mBinding.control.action.edition, mBinding.control.action.chapter);
+        if (Setting.isElderMode() || service() == null) {
+            mBinding.control.action.edition.setVisibility(View.GONE);
+            mBinding.control.action.chapter.setVisibility(View.GONE);
+        } else {
+            PlaybackAction.setMediaOptions(player(), mBinding.control.action.edition, mBinding.control.action.chapter);
+        }
     }
 
     @Override
