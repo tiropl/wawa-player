@@ -3,6 +3,10 @@
 -keep class com.fongmi.quickjs.method.** { *; }
 -keep class com.wawa_player.android.tv.bean.** { *; }
 
+# PlaybackService
+-keep class com.wawa_player.android.tv.service.PlaybackService { *; }
+-keep class com.wawa_player.android.tv.service.PlaybackService$* { *; }
+
 # Gson
 -keep class com.google.gson.** { *; }
 

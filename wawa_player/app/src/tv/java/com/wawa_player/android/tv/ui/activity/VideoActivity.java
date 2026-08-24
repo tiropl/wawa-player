@@ -468,7 +468,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
 
     @Override
     public boolean isPlayerEmpty() {
-        return player().isEmpty();
+        return service() == null || player().isEmpty();
     }
 
     @Override

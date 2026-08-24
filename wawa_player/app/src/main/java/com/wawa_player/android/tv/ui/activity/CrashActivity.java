@@ -38,7 +38,9 @@ public class CrashActivity extends BaseActivity {
     @Override
     protected void initEvent() {
         mBinding.details.setOnClickListener(v -> showError());
-        mBinding.restart.setOnClickListener(v -> CustomActivityOnCrash.restartApplication(this, Objects.requireNonNull(CustomActivityOnCrash.getConfigFromIntent(getIntent()))));
+        mBinding.restart.setOnClickListener(v -> {
+            CustomActivityOnCrash.restartApplication(this, Objects.requireNonNull(CustomActivityOnCrash.getConfigFromIntent(getIntent())));
+        });
     }
 
     private void setCrash() {

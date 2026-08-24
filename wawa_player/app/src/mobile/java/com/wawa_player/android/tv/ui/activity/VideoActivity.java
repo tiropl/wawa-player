@@ -410,8 +410,10 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
             mBinding.control.action.ending.setVisibility(View.VISIBLE);
         } else {
             mBinding.control.action.parse.setVisibility(isUseParse() ? View.VISIBLE : View.GONE);
-            PlaybackAction.setTracks(player(), mBinding.control.action.text, mBinding.control.action.audio, mBinding.control.action.video);
-            PlaybackAction.setMediaOptions(player(), mBinding.control.action.edition, mBinding.control.action.chapter);
+            if (service() != null) {
+                PlaybackAction.setTracks(player(), mBinding.control.action.text, mBinding.control.action.audio, mBinding.control.action.video);
+                PlaybackAction.setMediaOptions(player(), mBinding.control.action.edition, mBinding.control.action.chapter);
+            }
         }
     }
 
@@ -505,7 +507,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
 
     @Override
     public boolean isPlayerEmpty() {
-        return player().isEmpty();
+        return service() == null || player().isEmpty();
     }
 
     @Override
