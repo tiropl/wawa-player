@@ -85,6 +85,10 @@ public class LiveConfig extends BaseConfig {
         return config(Config.live());
     }
 
+    public boolean loaded() {
+        return isLoaded();
+    }
+
     public LiveConfig config(Config config) {
         this.config = config;
         if (config.isEmpty()) return this;
@@ -125,7 +129,7 @@ public class LiveConfig extends BaseConfig {
 
     @Override
     protected void load(Config config) throws Throwable {
-        String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), TAG);
+        String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), TAG, TIMEOUT);
         if (Json.isObj(json)) checkJson(config, Json.parse(json).getAsJsonObject());
         else parseText(config, json);
     }

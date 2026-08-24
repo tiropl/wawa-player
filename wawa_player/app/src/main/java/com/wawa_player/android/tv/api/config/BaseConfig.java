@@ -20,6 +20,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.InterruptedIOException;
+import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,9 +31,12 @@ abstract class BaseConfig {
     public static final int LIVE = 1;
     public static final int WALL = 2;
 
+    protected static final long TIMEOUT = 15000;
+
     private final AtomicInteger taskId = new AtomicInteger(0);
 
     protected boolean sync;
+    protected boolean silent;
     protected volatile Config config;
     private volatile Future<?> future;
 
@@ -57,6 +61,10 @@ abstract class BaseConfig {
 
     protected void postEvent() {
         ConfigEvent.common();
+    }
+
+    public void silent(boolean silent) {
+        this.silent = silent;
     }
 
     public boolean needSync(String url) {
@@ -103,14 +111,20 @@ abstract class BaseConfig {
             else App.post(() -> callback.error(Notify.getError(R.string.error_config_get, e)));
         } finally {
             if (taskId.get() == id) postEvent();
+            silent = false;
         }
     }
 
     protected boolean isCanceled(Throwable e) {
+        if (isTimeout(e)) return false;
         if ("Canceled".equals(e.getMessage())) return true;
         if (e instanceof InterruptedException) return true;
         if (e instanceof InterruptedIOException) return true;
-        return e.getCause() instanceof InterruptedIOException;
+        return e.getCause() instanceof InterruptedIOException && !isTimeout(e.getCause());
+    }
+
+    private boolean isTimeout(Throwable e) {
+        return e instanceof SocketTimeoutException || "timeout".equals(e.getMessage());
     }
 
     protected JsonArray fetchArray(JsonObject object, String key) {

@@ -8,6 +8,7 @@ import com.github.catvod.utils.Json;
 import com.github.catvod.utils.Util;
 
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +16,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
 
@@ -24,6 +26,17 @@ public class Decoder {
 
     public static String getJson(String url, String tag) throws Exception {
         try (Response res = OkHttp.newCall(url, tag).execute()) {
+            HttpUrl httpUrl = res.request().url();
+            int size = HttpUrl.parse(url).querySize();
+            if (httpUrl.querySize() == size) url = httpUrl.toString();
+            return verify(url, res.body().string());
+        }
+    }
+
+    public static String getJson(String url, String tag, long timeout) throws Exception {
+        Call call = OkHttp.newCall(url, tag);
+        call.timeout().timeout(timeout, TimeUnit.MILLISECONDS);
+        try (Response res = call.execute()) {
             HttpUrl httpUrl = res.request().url();
             int size = HttpUrl.parse(url).querySize();
             if (httpUrl.querySize() == size) url = httpUrl.toString();

@@ -15,6 +15,7 @@ import com.wawa_player.android.tv.event.ConfigEvent;
 import com.wawa_player.android.tv.event.RefreshEvent;
 import com.wawa_player.android.tv.impl.Callback;
 import com.wawa_player.android.tv.utils.Notify;
+import com.wawa_player.android.tv.utils.Task;
 import com.wawa_player.android.tv.utils.UrlUtil;
 import com.github.catvod.bean.Doh;
 import com.github.catvod.bean.Header;
@@ -77,7 +78,8 @@ public class VodConfig extends BaseConfig {
     }
 
     public static void switchLine(Depot line, Callback callback) {
-        Config prev = get().getConfig();
+        Snapshot snapshot = get().new Snapshot();
+        get().silent(true);
         load(Config.find(line.getUrl(), line.getName(), VOD), new Callback() {
             @Override
             public void start() {
@@ -86,13 +88,17 @@ public class VodConfig extends BaseConfig {
 
             @Override
             public void success() {
+                get().silent(false);
+                ConfigEvent.common();
+                ConfigEvent.vod();
                 callback.success();
             }
 
             @Override
             public void error(String msg) {
+                get().silent(false);
+                get().restore(snapshot);
                 App.post(() -> Notify.show(R.string.line_load_fail));
-                load(prev, new Callback());
                 callback.error(msg);
             }
         });
@@ -100,6 +106,10 @@ public class VodConfig extends BaseConfig {
 
     public VodConfig init() {
         return config(Config.vod());
+    }
+
+    public boolean loaded() {
+        return isLoaded();
     }
 
     public VodConfig config(Config config) {
@@ -140,13 +150,14 @@ public class VodConfig extends BaseConfig {
 
     @Override
     protected void postEvent() {
+        if (silent) return;
         super.postEvent();
         ConfigEvent.vod();
     }
 
     @Override
     protected void load(Config config) throws Throwable {
-        String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), TAG);
+        String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), TAG, TIMEOUT);
         checkJson(config, Json.parse(json).getAsJsonObject());
     }
 
@@ -335,6 +346,50 @@ public class VodConfig extends BaseConfig {
         config.setHome(home.getKey());
         if (save) config.save();
         getSites().forEach(item -> item.setSelected(home));
+    }
+
+    private void restore(Snapshot snapshot) {
+        this.config = snapshot.config;
+        this.home = snapshot.home;
+        this.wall = snapshot.wall;
+        this.parse = snapshot.parse;
+        this.doh = snapshot.doh;
+        this.rules = snapshot.rules;
+        this.sites = snapshot.sites;
+        this.ads = snapshot.ads;
+        this.flags = snapshot.flags;
+        this.parses = snapshot.parses;
+        RuleConfig.get().invalidate();
+        Task.execute(() -> BaseLoader.get().parseJar(snapshot.jar, true));
+    }
+
+    private class Snapshot {
+
+        private final Config config;
+        private final Site home;
+        private final String wall;
+        private final Parse parse;
+        private final List<Doh> doh;
+        private final List<Rule> rules;
+        private final List<Site> sites;
+        private final List<String> ads;
+        private final List<String> flags;
+        private final List<Parse> parses;
+        private final String jar;
+
+        private Snapshot() {
+            this.config = getConfig();
+            this.home = getHome();
+            this.wall = VodConfig.this.wall;
+            this.parse = getParse();
+            this.doh = VodConfig.this.doh;
+            this.rules = getRules();
+            this.sites = getSites();
+            this.ads = getAds();
+            this.flags = getFlags();
+            this.parses = getParses();
+            this.jar = home.getJar();
+        }
     }
 
     private static class Loader {

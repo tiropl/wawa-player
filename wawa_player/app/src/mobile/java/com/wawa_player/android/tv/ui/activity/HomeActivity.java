@@ -14,6 +14,7 @@ import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
 import androidx.core.splashscreen.SplashScreen;
+import androidx.lifecycle.Lifecycle;
 import androidx.viewbinding.ViewBinding;
 
 import com.wawa_player.android.tv.App;
@@ -35,7 +36,6 @@ import com.wawa_player.android.tv.impl.LockListener;
 import com.wawa_player.android.tv.player.extractor.Source;
 import com.wawa_player.android.tv.receiver.ShortcutReceiver;
 import com.wawa_player.android.tv.server.Server;
-import com.wawa_player.android.tv.service.PlaybackService;
 import com.wawa_player.android.tv.setting.PasswordLock;
 import com.wawa_player.android.tv.ui.base.BaseActivity;
 import com.wawa_player.android.tv.ui.custom.FragmentStateManager;
@@ -134,11 +134,20 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
     }
 
     private void initConfig() {
-        VodConfig.get().init().load(getCallback());
-        LiveConfig.get().init().load();
-        WallConfig.get().init();
-        LineConfig.refresh(0);
-        LineConfig.refresh(1);
+        if (VodConfig.get().loaded()) {
+            LoadingSound.stop();
+            setNavigation();
+            WallConfig.get().init();
+            LineConfig.refresh(0);
+            LineConfig.refresh(1);
+            checkAction(getIntent());
+        } else {
+            VodConfig.get().init().load(getCallback());
+            LiveConfig.get().init().load();
+            WallConfig.get().init();
+            LineConfig.refresh(0);
+            LineConfig.refresh(1);
+        }
     }
 
     private Callback getCallback() {
@@ -258,7 +267,7 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
     private void checkOrientation(Configuration newConfig) {
         if (orientation != newConfig.orientation) {
             orientation = newConfig.orientation;
-            RefreshEvent.home();
+            if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) RefreshEvent.home();
         }
     }
 
@@ -281,8 +290,7 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
         } else if (mManager.isVisible(1)) {
             change(0);
         } else if (mManager.canBack(0)) {
-            if (PlaybackService.isRunning()) Util.moveToBackground(this);
-            else super.onBackInvoked();
+            Util.moveToBackground(this);
         }
     }
 

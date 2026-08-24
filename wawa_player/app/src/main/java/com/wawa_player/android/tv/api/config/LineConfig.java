@@ -54,7 +54,7 @@ public class LineConfig {
         if (TextUtils.isEmpty(source)) return;
         Task.submit(() -> {
             try {
-                String json = Decoder.getJson(UrlUtil.convert(source), "LineConfig");
+                String json = Decoder.getJson(UrlUtil.convert(source), "LineConfig", 15000);
                 JsonObject object = Json.parse(json).getAsJsonObject();
                 if (!object.has("urls")) throw new Exception("Line urls is empty");
                 List<Depot> items = Depot.arrayFrom(object.getAsJsonArray("urls").toString());

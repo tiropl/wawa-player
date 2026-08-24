@@ -63,6 +63,7 @@ public class VodFragment extends BaseFragment implements ConfigListener, SiteLis
     private SiteViewModel mViewModel;
     private TypeAdapter mAdapter;
     private Result mResult;
+    private int mPosition;
 
     public static VodFragment newInstance() {
         return new VodFragment();
@@ -94,6 +95,7 @@ public class VodFragment extends BaseFragment implements ConfigListener, SiteLis
         showProgress();
         setTitle();
         setLogo();
+        if (VodConfig.get().loaded()) homeContent();
     }
 
     @Override
@@ -136,7 +138,8 @@ public class VodFragment extends BaseFragment implements ConfigListener, SiteLis
     private void setAdapter(Result result) {
         mAdapter.addAll(mResult = result);
         mBinding.pager.getAdapter().notifyDataSetChanged();
-        setFabVisible(0);
+        if (mPosition > 0 && mPosition < mAdapter.getItemCount()) mBinding.pager.setCurrentItem(mPosition);
+        setFabVisible(mBinding.pager.getCurrentItem());
         hideProgress();
         showContent();
     }
@@ -187,13 +190,11 @@ public class VodFragment extends BaseFragment implements ConfigListener, SiteLis
             @Override
             public void start() {
                 showProgress();
-                hideContent();
-                setTitle();
-                setLogo();
             }
 
             @Override
             public void error(String msg) {
+                hideProgress();
                 showContent();
             }
         });
@@ -233,6 +234,7 @@ public class VodFragment extends BaseFragment implements ConfigListener, SiteLis
     }
 
     private void homeContent() {
+        mPosition = mBinding.pager.getCurrentItem();
         showProgress();
         setFabVisible(0);
         mAdapter.clear();
