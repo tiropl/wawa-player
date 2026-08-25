@@ -2,6 +2,7 @@ package com.wawa_player.android.tv.ui.base;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -111,6 +112,15 @@ public abstract class BaseActivity extends AppCompatActivity {
     private void enableDynamicColor() {
         int color = Setting.getDynamicColor();
         if (color != 0) DynamicColors.applyToActivityIfAvailable(this, new DynamicColorsOptions.Builder().setContentBasedSource(color).build());
+    }
+
+    @Override
+    public Resources getResources() {
+        Resources resources = super.getResources();
+        float fontScale = Resources.getSystem().getConfiguration().fontScale * Setting.getFontScale();
+        resources.getConfiguration().fontScale = fontScale;
+        resources.getDisplayMetrics().scaledDensity = resources.getDisplayMetrics().density * fontScale;
+        return resources;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

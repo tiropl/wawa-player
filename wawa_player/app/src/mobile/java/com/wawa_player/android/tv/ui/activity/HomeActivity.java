@@ -93,7 +93,7 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
         setNavigation();
         initFragment(savedInstanceState);
         Updater.create().start(this);
-        initConfig();
+        initConfig(savedInstanceState);
     }
 
     @Override
@@ -134,14 +134,16 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
         if (savedInstanceState == null) change(0);
     }
 
-    private void initConfig() {
+    private void initConfig(Bundle savedInstanceState) {
         if (TextUtils.isEmpty(VodConfig.getUrl())) {
-            // 未配置线路，弹出配置窗口
-            ConfigDialog.create().vod().show(this);
+            // 未配置线路，冷启动时弹出配置窗口
+            if (savedInstanceState == null) ConfigDialog.create().vod().show(this);
             return;
         }
         if (VodConfig.get().loaded()) {
             setNavigation();
+            // 重建时配置已加载，避免重复拉取线路
+            if (savedInstanceState != null) return;
             WallConfig.get().init();
             LineConfig.refresh(0);
             LineConfig.refresh(1);

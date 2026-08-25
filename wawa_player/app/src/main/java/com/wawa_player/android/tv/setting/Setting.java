@@ -14,6 +14,7 @@ public class Setting {
     private static final int MAX_SITE_MODE = 1;
     private static final int MIN_SYNC_MODE = 0;
     private static final int MAX_SYNC_MODE = 2;
+    private static final float[] FONT_SCALES = {0.9f, 1f, 1.1f, 1.25f, 1.45f};
     public static final int MODE_DEFAULT = 0;
     public static final int MODE_ELDER = 1;
     public static final int MODE_CHILD = 2;
@@ -122,6 +123,18 @@ public class Setting {
 
     public static void putSound(boolean sound) {
         Prefers.put("sound", sound);
+    }
+
+    public static int getFont() {
+        return Math.clamp(Prefers.getInt("font", 1), 0, FONT_SCALES.length - 1);
+    }
+
+    public static void putFont(int font) {
+        Prefers.put("font", Math.clamp(font, 0, FONT_SCALES.length - 1));
+    }
+
+    public static float getFontScale() {
+        return FONT_SCALES[getFont()];
     }
 
     public static boolean getUpdate() {

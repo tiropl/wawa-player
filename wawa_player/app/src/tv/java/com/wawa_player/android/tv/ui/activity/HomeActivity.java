@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.Animation;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -136,7 +137,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         setRecyclerView();
         setViewModel();
         setAdapter();
-        initConfig();
+        initConfig(savedInstanceState);
         setTitle();
         setLogo();
     }
@@ -145,6 +146,11 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     protected void initEvent() {
         mBinding.title.setListener(this);
         mBinding.logo.setOnClickListener(this::onLogo);
+        Animation flicker = ResUtil.getAnim(R.anim.flicker);
+        mBinding.logo.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) v.startAnimation(flicker);
+            else v.clearAnimation();
+        });
         mBinding.recycler.addOnChildViewHolderSelectedListener(new OnChildViewHolderSelectedListener() {
             @Override
             public void onChildViewHolderSelected(@NonNull RecyclerView parent, @Nullable RecyclerView.ViewHolder child, int position, int subposition) {
@@ -208,18 +214,18 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         optional.ifPresent(s -> mBinding.title.setText(s));
     }
 
-    private void initConfig() {
+    private void initConfig(Bundle savedInstanceState) {
         if (TextUtils.isEmpty(VodConfig.getUrl())) {
-            // 未配置线路，弹出配置窗口
-            ConfigDialog.create().vod().show(this);
+            // 未配置线路，冷启动时弹出配置窗口
+            if (savedInstanceState == null) ConfigDialog.create().vod().show(this);
             return;
         }
+        // 重建时配置已加载，避免重复拉取
+        if (savedInstanceState != null) return;
         mBinding.progressLayout.showProgress();
         VodConfig.get().init().load(getCallback());
         LiveConfig.get().init().load();
         WallConfig.get().init();
-        LineConfig.refresh(0);
-        LineConfig.refresh(1);
     }
 
     @Override
@@ -283,7 +289,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     private void setFocus() {
         mBinding.title.setSelected(true);
-        App.post(() -> mBinding.title.setFocusable(true), 500);
+        if (!Setting.isElderMode()) App.post(() -> mBinding.title.setFocusable(true), 500);
         if (!mBinding.title.hasFocus()) mBinding.recycler.requestFocus();
     }
 
@@ -424,6 +430,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
                 getHistory(true);
                 break;
             case MODE:
+                mBinding.title.setFocusable(!Setting.isElderMode());
                 setFunc();
                 break;
         }

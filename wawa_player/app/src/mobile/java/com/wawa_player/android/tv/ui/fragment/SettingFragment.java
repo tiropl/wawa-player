@@ -6,8 +6,10 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.viewbinding.ViewBinding;
 
+import com.wawa_player.android.tv.App;
 import com.wawa_player.android.tv.R;
 import com.wawa_player.android.tv.api.config.LiveConfig;
 import com.wawa_player.android.tv.api.config.VodConfig;
@@ -27,6 +29,7 @@ import com.wawa_player.android.tv.setting.Setting;
 import com.wawa_player.android.tv.ui.activity.HomeActivity;
 import com.wawa_player.android.tv.ui.base.BaseFragment;
 import com.wawa_player.android.tv.ui.dialog.ConfigDialog;
+import com.wawa_player.android.tv.ui.dialog.FontDialog;
 import com.wawa_player.android.tv.ui.dialog.HistoryDialog;
 import com.wawa_player.android.tv.ui.dialog.LiveDialog;
 import com.wawa_player.android.tv.ui.dialog.SiteDialog;
@@ -39,10 +42,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-public class SettingFragment extends BaseFragment implements ConfigListener, SiteListener, LiveListener, ThemeDialog.Listener {
+public class SettingFragment extends BaseFragment implements ConfigListener, SiteListener, LiveListener, ThemeDialog.Listener, FontDialog.Listener {
 
     private FragmentSettingBinding mBinding;
     private String[] size;
+    private String[] fonts;
 
     public static SettingFragment newInstance() {
         return new SettingFragment();
@@ -76,6 +80,7 @@ public class SettingFragment extends BaseFragment implements ConfigListener, Sit
         mBinding.themeColorText.setText(getThemeText());
         mBinding.soundText.setText(Setting.getSwitch(Setting.isSound()));
         mBinding.sizeText.setText((size = ResUtil.getStringArray(R.array.select_size))[PlayerSetting.getSize()]);
+        mBinding.fontText.setText((fonts = ResUtil.getStringArray(R.array.select_font))[Setting.getFont()]);
     }
 
     @Override
@@ -84,6 +89,7 @@ public class SettingFragment extends BaseFragment implements ConfigListener, Sit
         mBinding.live.setOnClickListener(this::onLive);
         mBinding.wall.setOnClickListener(this::onWall);
         mBinding.size.setOnClickListener(this::setSize);
+        mBinding.font.setOnClickListener(this::setFont);
         mBinding.vod.setOnLongClickListener(this::onVodEdit);
         mBinding.vodHome.setOnClickListener(this::onVodHome);
         mBinding.live.setOnLongClickListener(this::onLiveEdit);
@@ -248,6 +254,21 @@ public class SettingFragment extends BaseFragment implements ConfigListener, Sit
             Notify.show(ResUtil.getString(R.string.setting_size_changed, size[which]));
             dialog.dismiss();
         }).show();
+    }
+
+    private void setFont(View view) {
+        FontDialog.create().show(this);
+    }
+
+    @Override
+    public void onFontChanged() {
+        mBinding.fontText.setText(fonts[Setting.getFont()]);
+        showRestartDialog();
+    }
+
+    private void showRestartDialog() {
+        AlertDialog dialog = new MaterialAlertDialogBuilder(requireActivity()).setTitle(R.string.restart_app_title).setMessage(R.string.restart_app_content).setPositiveButton(R.string.restart_now, (d, w) -> App.restart()).setNegativeButton(R.string.restart_later, null).show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).requestFocus();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

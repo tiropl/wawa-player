@@ -4,8 +4,12 @@ import android.Manifest;
 import android.app.Notification;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -15,6 +19,7 @@ import androidx.core.content.ContextCompat;
 
 import com.wawa_player.android.tv.App;
 import com.wawa_player.android.tv.databinding.ViewProgressBinding;
+import com.wawa_player.android.tv.setting.Setting;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class Notify {
@@ -77,6 +82,15 @@ public class Notify {
     private void makeText(String text) {
         if (mToast != null) mToast.cancel();
         mToast = Toast.makeText(App.get(), text, Toast.LENGTH_LONG);
+        View view = mToast.getView();
+        if (view != null) {
+            TextView message = view.findViewById(android.R.id.message);
+            if (message != null) {
+                float baseSp = message.getTextSize() / App.get().getResources().getDisplayMetrics().scaledDensity;
+                float normalPx = baseSp * Resources.getSystem().getDisplayMetrics().scaledDensity;
+                message.setTextSize(TypedValue.COMPLEX_UNIT_PX, normalPx * Setting.getFontScale());
+            }
+        }
         mToast.show();
     }
 }

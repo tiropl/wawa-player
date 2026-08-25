@@ -3,6 +3,7 @@ package com.wawa_player.android.tv;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -66,6 +67,13 @@ public class App extends Application implements Application.ActivityLifecycleCal
 
     public static void removeCallbacks(Runnable... runnable) {
         for (Runnable r : runnable) get().handler.removeCallbacks(r);
+    }
+
+    public static void restart() {
+        Intent intent = get().getPackageManager().getLaunchIntentForPackage(get().getPackageName());
+        if (intent == null) return;
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        get().startActivity(intent);
     }
 
     public void setHook(Hook hook) {

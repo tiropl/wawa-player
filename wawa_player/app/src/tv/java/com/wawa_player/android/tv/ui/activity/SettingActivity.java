@@ -8,9 +8,11 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.viewbinding.ViewBinding;
 
 import com.github.catvod.bean.Doh;
+import com.wawa_player.android.tv.App;
 import com.wawa_player.android.tv.R;
 import com.wawa_player.android.tv.api.config.LiveConfig;
 import com.wawa_player.android.tv.api.config.VodConfig;
@@ -29,20 +31,23 @@ import com.wawa_player.android.tv.setting.PlayerSetting;
 import com.wawa_player.android.tv.setting.Setting;
 import com.wawa_player.android.tv.ui.base.BaseActivity;
 import com.wawa_player.android.tv.ui.dialog.ConfigDialog;
+import com.wawa_player.android.tv.ui.dialog.FontDialog;
 import com.wawa_player.android.tv.ui.dialog.HistoryDialog;
 import com.wawa_player.android.tv.ui.dialog.LiveDialog;
 import com.wawa_player.android.tv.ui.dialog.SiteDialog;
 import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.PermissionUtil;
 import com.wawa_player.android.tv.utils.ResUtil;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-public class SettingActivity extends BaseActivity implements ConfigListener, SiteListener, LiveListener {
+public class SettingActivity extends BaseActivity implements ConfigListener, SiteListener, LiveListener, FontDialog.Listener {
 
     private ActivitySettingBinding mBinding;
     private String[] size;
+    private String[] fonts;
 
     public static void start(Activity activity) {
         activity.startActivity(new Intent(activity, SettingActivity.class));
@@ -75,6 +80,7 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
     private void setOtherText() {
         mBinding.soundText.setText(Setting.getSwitch(Setting.isSound()));
         mBinding.sizeText.setText((size = ResUtil.getStringArray(R.array.select_size))[PlayerSetting.getSize()]);
+        mBinding.fontText.setText((fonts = ResUtil.getStringArray(R.array.select_font))[Setting.getFont()]);
     }
 
     @Override
@@ -83,6 +89,7 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
         mBinding.live.setOnClickListener(this::onLive);
         mBinding.wall.setOnClickListener(this::onWall);
         mBinding.size.setOnClickListener(this::setSize);
+        mBinding.font.setOnClickListener(this::setFont);
         mBinding.vod.setOnLongClickListener(this::onVodEdit);
         mBinding.vodHome.setOnClickListener(this::onVodHome);
         mBinding.live.setOnLongClickListener(this::onLiveEdit);
@@ -232,11 +239,27 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
     }
 
     private void setSize(View view) {
-        int index = (PlayerSetting.getSize() + 1) % size.length;
-        mBinding.sizeText.setText(size[index]);
-        PlayerSetting.putSize(index);
-        RefreshEvent.size();
-        Notify.show(ResUtil.getString(R.string.setting_size_changed, size[index]));
+        new MaterialAlertDialogBuilder(this).setTitle(R.string.setting_size).setNegativeButton(R.string.dialog_negative, null).setSingleChoiceItems(size, PlayerSetting.getSize(), (dialog, which) -> {
+            mBinding.sizeText.setText(size[which]);
+            PlayerSetting.putSize(which);
+            RefreshEvent.size();
+            dialog.dismiss();
+        }).show();
+    }
+
+    private void setFont(View view) {
+        FontDialog.create().show(this);
+    }
+
+    @Override
+    public void onFontChanged() {
+        mBinding.fontText.setText(fonts[Setting.getFont()]);
+        showRestartDialog();
+    }
+
+    private void showRestartDialog() {
+        AlertDialog dialog = new MaterialAlertDialogBuilder(this).setTitle(R.string.restart_app_title).setMessage(R.string.restart_app_content).setPositiveButton(R.string.restart_now, (d, w) -> App.restart()).setNegativeButton(R.string.restart_later, null).show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).requestFocus();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

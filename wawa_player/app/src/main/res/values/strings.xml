@@ -288,6 +288,7 @@
     <string name="setting_auto">Auto</string>
     <string name="setting_custom">Custom</string>
     <string name="setting_size">Image size</string>
+    <string name="setting_font">Font size</string>
     <string name="setting_doh">DoH</string>
     <string name="setting_proxy">Proxy</string>
     <string name="setting_cache">Clear cache</string>
@@ -299,6 +300,10 @@
     <string name="setting_on">On</string>
     <string name="setting_sound_state">Sound: %s</string>
     <string name="setting_size_changed">Image size: %s</string>
+    <string name="restart_app_title">Restart app</string>
+    <string name="restart_app_content">This change requires restarting the app</string>
+    <string name="restart_now">Restart now</string>
+    <string name="restart_later">Restart later</string>
     <string name="setting_wall_changed">Wallpaper switched</string>
     <string name="setting_incognito_state">Incognito mode: %s</string>
     <string name="setting_cache_cleared">Cache cleared</string>
@@ -464,6 +469,14 @@
 
     <string-array name="select_size">
         <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+        <item>Extra</item>
+    </string-array>
+
+    <string-array name="select_font">
+        <item>Small</item>
+        <item>Default</item>
         <item>Medium</item>
         <item>Large</item>
         <item>Extra</item>
