@@ -32,6 +32,7 @@ import com.wawa_player.android.tv.event.RefreshEvent;
 import com.wawa_player.android.tv.event.ServerEvent;
 import com.wawa_player.android.tv.event.StateEvent;
 import com.wawa_player.android.tv.impl.Callback;
+import com.wawa_player.android.tv.impl.ConfigListener;
 import com.wawa_player.android.tv.impl.LockListener;
 import com.wawa_player.android.tv.player.extractor.Source;
 import com.wawa_player.android.tv.receiver.ShortcutReceiver;
@@ -39,6 +40,7 @@ import com.wawa_player.android.tv.server.Server;
 import com.wawa_player.android.tv.setting.PasswordLock;
 import com.wawa_player.android.tv.ui.base.BaseActivity;
 import com.wawa_player.android.tv.ui.custom.FragmentStateManager;
+import com.wawa_player.android.tv.ui.dialog.ConfigDialog;
 import com.wawa_player.android.tv.ui.dialog.LockVerifyDialog;
 import com.wawa_player.android.tv.ui.fragment.SettingDanmakuFragment;
 import com.wawa_player.android.tv.ui.fragment.SettingDecodeFragment;
@@ -59,7 +61,7 @@ import com.google.android.material.navigation.NavigationBarView;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-public class HomeActivity extends BaseActivity implements NavigationBarView.OnItemSelectedListener {
+public class HomeActivity extends BaseActivity implements NavigationBarView.OnItemSelectedListener, ConfigListener {
 
     private FragmentStateManager mManager;
     private ActivityHomeBinding mBinding;
@@ -135,6 +137,11 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
     }
 
     private void initConfig() {
+        if (TextUtils.isEmpty(VodConfig.getUrl())) {
+            // 未配置线路，弹出配置窗口
+            ConfigDialog.create().vod().show(this);
+            return;
+        }
         if (VodConfig.get().loaded()) {
             LoadingSound.stop();
             setNavigation();
@@ -149,6 +156,40 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
             LiveConfig.get().initAsync(liveConfig -> liveConfig.load());
             WallConfig.get().initAsync(wallConfig -> {});
         }
+    }
+
+    @Override
+    public void setConfig(Config config) {
+        if (config.getUrl().startsWith("file")) {
+            PermissionUtil.requestFile(this, allGranted -> loadVodConfig(config));
+        } else {
+            loadVodConfig(config);
+        }
+    }
+
+    private void loadVodConfig(Config config) {
+        VodConfig.load(config, new Callback() {
+            @Override
+            public void start() {
+                Notify.progress(getActivity());
+            }
+
+            @Override
+            public void success() {
+                Notify.dismiss();
+                LoadingSound.stop();
+                setNavigation();
+                LineConfig.refresh(0);
+                LineConfig.refresh(1);
+                checkAction(getIntent());
+            }
+
+            @Override
+            public void error(String msg) {
+                Notify.dismiss();
+                Notify.show(msg);
+            }
+        }, true);
     }
 
     private Callback getCallback() {

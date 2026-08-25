@@ -47,6 +47,7 @@ import com.wawa_player.android.tv.ui.dialog.LinkDialog;
 import com.wawa_player.android.tv.ui.dialog.ReceiveDialog;
 import com.wawa_player.android.tv.ui.dialog.SiteDialog;
 import com.wawa_player.android.tv.utils.ImgUtil;
+import com.wawa_player.android.tv.utils.LoadingSound;
 import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.ResUtil;
 
@@ -225,10 +226,12 @@ public class VodFragment extends BaseFragment implements ConfigListener, SiteLis
 
     private void showProgress() {
         mBinding.progress.getRoot().setVisibility(View.VISIBLE);
+        LoadingSound.start(requireActivity());
     }
 
     private void hideProgress() {
         mBinding.progress.getRoot().setVisibility(View.GONE);
+        LoadingSound.stop();
     }
 
     private void hideContent() {

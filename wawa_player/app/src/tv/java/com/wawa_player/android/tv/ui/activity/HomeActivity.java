@@ -49,6 +49,7 @@ import com.wawa_player.android.tv.setting.PasswordLock;
 import com.wawa_player.android.tv.setting.Setting;
 import com.wawa_player.android.tv.utils.LoadingSound;
 import com.wawa_player.android.tv.impl.Callback;
+import com.wawa_player.android.tv.impl.ConfigListener;
 import com.wawa_player.android.tv.impl.LineListener;
 import com.wawa_player.android.tv.impl.LockListener;
 import com.wawa_player.android.tv.model.SiteViewModel;
@@ -61,6 +62,7 @@ import com.wawa_player.android.tv.ui.base.BaseActivity;
 import com.wawa_player.android.tv.ui.custom.CustomRowPresenter;
 import com.wawa_player.android.tv.ui.custom.CustomSelector;
 import com.wawa_player.android.tv.ui.custom.CustomTitleView;
+import com.wawa_player.android.tv.ui.dialog.ConfigDialog;
 import com.wawa_player.android.tv.ui.dialog.SiteDialog;
 import com.wawa_player.android.tv.ui.dialog.LineDialog;
 import com.wawa_player.android.tv.ui.dialog.LockVerifyDialog;
@@ -89,7 +91,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class HomeActivity extends BaseActivity implements CustomTitleView.Listener, VodPresenter.OnClickListener, FuncPresenter.OnClickListener, HistoryPresenter.OnClickListener, LineListener {
+public class HomeActivity extends BaseActivity implements CustomTitleView.Listener, VodPresenter.OnClickListener, FuncPresenter.OnClickListener, HistoryPresenter.OnClickListener, LineListener, ConfigListener {
 
     private ActivityHomeBinding mBinding;
     private ArrayObjectAdapter mHistoryAdapter;
@@ -210,11 +212,45 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     }
 
     private void initConfig() {
+        if (TextUtils.isEmpty(VodConfig.getUrl())) {
+            // 未配置线路，弹出配置窗口
+            ConfigDialog.create().vod().show(this);
+            return;
+        }
         VodConfig.get().init().load(getCallback());
         LiveConfig.get().init().load();
         WallConfig.get().init();
         LineConfig.refresh(0);
         LineConfig.refresh(1);
+    }
+
+    @Override
+    public void setConfig(Config config) {
+        if (config.getUrl().startsWith("file")) {
+            PermissionUtil.requestFile(this, allGranted -> loadVodConfig(config));
+        } else {
+            loadVodConfig(config);
+        }
+    }
+
+    private void loadVodConfig(Config config) {
+        VodConfig.load(config, new Callback() {
+            @Override
+            public void start() {
+                mBinding.progressLayout.showProgress();
+            }
+
+            @Override
+            public void success() {
+                showContent();
+            }
+
+            @Override
+            public void error(String msg) {
+                Notify.show(msg);
+                showContent();
+            }
+        }, true);
     }
 
     private Callback getCallback() {

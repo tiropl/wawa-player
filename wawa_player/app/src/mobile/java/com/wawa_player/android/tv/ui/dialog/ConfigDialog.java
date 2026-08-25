@@ -10,6 +10,7 @@ import android.view.inputmethod.EditorInfo;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.viewbinding.ViewBinding;
 
 import com.wawa_player.android.tv.R;
@@ -58,6 +59,10 @@ public class ConfigDialog extends BaseAlertDialog {
 
     public void show(Fragment fragment) {
         show(fragment.getChildFragmentManager(), null);
+    }
+
+    public void show(FragmentActivity activity) {
+        show(activity.getSupportFragmentManager(), null);
     }
 
     @Override
@@ -128,13 +133,22 @@ public class ConfigDialog extends BaseAlertDialog {
         String name = binding.name.getText().toString().trim();
         if (edit) Config.find(ori, type).url(url).name(name).update();
         if (url.isEmpty()) Config.delete(ori, type);
-        ((ConfigListener) requireParentFragment()).setConfig(Config.find(url, type));
+        getConfigListener().setConfig(Config.find(url, type));
         dismiss();
+    }
+
+    private ConfigListener getConfigListener() {
+        if (getParentFragment() instanceof ConfigListener) {
+            return (ConfigListener) getParentFragment();
+        } else if (requireActivity() instanceof ConfigListener) {
+            return (ConfigListener) requireActivity();
+        }
+        throw new IllegalStateException("Activity or parent fragment must implement ConfigListener");
     }
 
     private final ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() != Activity.RESULT_OK || result.getData() == null || result.getData().getData() == null) return;
-        ((ConfigListener) requireParentFragment()).setConfig(Config.find("file:/" + FileChooser.getPathFromUri(result.getData().getData()).replace(Path.rootPath(), ""), type));
+        getConfigListener().setConfig(Config.find("file:/" + FileChooser.getPathFromUri(result.getData().getData()).replace(Path.rootPath(), ""), type));
         dismiss();
     });
 }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 
 import androidx.collection.ArrayMap;
 
+import com.github.catvod.Init;
 import com.github.catvod.net.interceptor.AuthInterceptor;
 import com.github.catvod.net.interceptor.RequestInterceptor;
 import com.github.catvod.net.interceptor.ResponseInterceptor;
@@ -13,6 +14,7 @@ import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.io.File;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -27,6 +29,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
+import okhttp3.Cache;
 
 public class OkHttp {
 
@@ -40,6 +43,7 @@ public class OkHttp {
     private OkHttpClient client;
     private OkHttpClient player;
     private OkDns dns;
+    private Cache cache;
 
     public static OkHttp get() {
         return Loader.INSTANCE;
@@ -48,6 +52,13 @@ public class OkHttp {
     public static OkDns dns() {
         if (get().dns != null) return get().dns;
         return get().dns = new OkDns();
+    }
+
+    public static Cache cache() {
+        if (get().cache != null)
+            return get().cache;
+        File cacheDir = new File(Init.context().getCacheDir(), "http_cache");
+        return get().cache = new Cache(cacheDir, 10 * 1024 * 1024);
     }
 
     public static ResponseInterceptor responseInterceptor() {
@@ -187,10 +198,19 @@ public class OkHttp {
     }
 
     private static OkHttpClient.Builder getBuilder() {
-        OkHttpClient.Builder builder = new OkHttpClient.Builder().addInterceptor(requestInterceptor()).addInterceptor(authInterceptor()).addNetworkInterceptor(responseInterceptor()).connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS).readTimeout(TIMEOUT, TimeUnit.MILLISECONDS).writeTimeout(TIMEOUT, TimeUnit.MILLISECONDS).dns(dns()).hostnameVerifier((hostname, session) -> true).sslSocketFactory(getSSLContext().getSocketFactory(), trustAllCertificates());
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .addInterceptor(requestInterceptor())
+                .addInterceptor(authInterceptor())
+                .addNetworkInterceptor(responseInterceptor())
+                .connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS)
+                .readTimeout(TIMEOUT, TimeUnit.MILLISECONDS)
+                .writeTimeout(TIMEOUT, TimeUnit.MILLISECONDS)
+                .dns(dns()).hostnameVerifier((hostname, session) -> true)
+                .cache(cache())
+                .sslSocketFactory(getSSLContext().getSocketFactory(), trustAllCertificates());
+//        HttpLoggingInterceptor logging = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
         builder.proxyAuthenticator(authenticator());
-        //builder.addNetworkInterceptor(logging);
+//        builder.addNetworkInterceptor(logging);
         builder.proxySelector(selector());
         return builder;
     }
