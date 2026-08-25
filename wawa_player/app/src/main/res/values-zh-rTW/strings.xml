@@ -290,7 +290,6 @@
     <string name="setting_doh">DoH</string>
     <string name="setting_proxy">Proxy</string>
     <string name="setting_cache">清除快取</string>
-    <string name="setting_cache_expire">快取時長</string>
     <string name="setting_backup">備份</string>
     <string name="setting_restore">還原</string>
     <string name="setting_version">版本</string>
@@ -304,9 +303,7 @@
     <string name="setting_cache_cleared">快取已清理</string>
     <string name="setting_theme_changed">主題色彩：%s</string>
     <string name="setting_doh_changed">DoH：%s</string>
-    <string name="setting_cache_expire_changed">快取時長：%s</string>
-    <string name="setting_cache_fallback">載入失敗，已使用快取線路資料</string>
-
+    
     <!-- Backup & Restore -->
     <string name="restore_select">選擇備份</string>
     <string name="restore_success">還原成功</string>
@@ -467,13 +464,6 @@
         <item>4:3</item>
         <item>填充</item>
         <item>裁剪</item>
-    </string-array>
-
-    <string-array name="select_cache_expire">
-        <item>關閉</item>
-        <item>6 小時</item>
-        <item>12 小時</item>
-        <item>24 小時</item>
     </string-array>
 
     <string-array name="audio_effect_stability_levels">

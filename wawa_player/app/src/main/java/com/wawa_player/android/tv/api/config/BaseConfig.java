@@ -4,12 +4,10 @@ import android.text.TextUtils;
 
 import com.wawa_player.android.tv.App;
 import com.wawa_player.android.tv.R;
-import com.wawa_player.android.tv.api.Decoder;
 import com.wawa_player.android.tv.bean.Config;
 import com.wawa_player.android.tv.event.ConfigEvent;
 import com.wawa_player.android.tv.impl.Callback;
 import com.wawa_player.android.tv.server.Server;
-import com.wawa_player.android.tv.setting.Setting;
 import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.Task;
 import com.wawa_player.android.tv.utils.UrlUtil;
@@ -17,8 +15,6 @@ import com.github.catvod.bean.Header;
 import com.github.catvod.bean.Proxy;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Json;
-import com.github.catvod.utils.Prefers;
-import com.github.catvod.utils.Util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -43,7 +39,6 @@ abstract class BaseConfig {
     protected boolean silent;
     protected volatile Config config;
     private volatile Future<?> future;
-    private boolean cacheUsed;
 
     protected abstract String getTag();
 
@@ -105,14 +100,7 @@ abstract class BaseConfig {
             OkHttp.cancel(getTag());
             load(config);
             if (taskId.get() != id) return;
-            if (config.equals(this.config)) {
-                if (cacheUsed) config.save();
-                else {
-                    config.update();
-                    if (Setting.getCacheExpire() > 0)
-                        Prefers.put(cacheTimeKey(config), System.currentTimeMillis());
-                }
-            }
+            if (config.equals(this.config)) config.update();
             App.post(() -> Notify.show(config.getNotice()));
             App.post(callback::success);
         } catch (Throwable e) {
@@ -137,34 +125,6 @@ abstract class BaseConfig {
 
     private boolean isTimeout(Throwable e) {
         return e instanceof SocketTimeoutException || "timeout".equals(e.getMessage());
-    }
-
-    private static String cacheTimeKey(Config config) {
-        return "config_cache_time_" + config.getType() + "_" + Util.md5(config.getUrl());
-    }
-
-    protected String fetchJson(Config config) throws Throwable {
-        cacheUsed = false;
-        long expire = Setting.getCacheExpire() * 60L * 60L * 1000L;
-        String json = config.getJson();
-        long cacheTime = Prefers.getLong(cacheTimeKey(config));
-        long age = cacheTime > 0 ? System.currentTimeMillis() - cacheTime : -1;
-        if (expire > 0 && !TextUtils.isEmpty(json) && age >= 0 && age < expire) {
-            cacheUsed = true;
-            return json;
-        }
-        try {
-            json = Decoder.getJson(UrlUtil.convert(config.getUrl()), getTag(), TIMEOUT);
-            config.json(json);
-            return json;
-        } catch (Throwable e) {
-            if (expire > 0 && !TextUtils.isEmpty(json)) {
-                cacheUsed = true;
-                App.post(() -> Notify.show(R.string.setting_cache_fallback));
-                return json;
-            }
-            throw e;
-        }
     }
 
     protected JsonArray fetchArray(JsonObject object, String key) {

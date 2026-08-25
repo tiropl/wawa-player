@@ -39,8 +39,6 @@ public class SettingMoreFragment extends BaseFragment implements LockSetDialog.L
 
     private FragmentSettingMoreBinding mBinding;
     private final String[] modes = new String[3];
-    private String[] cacheExpires;
-
     public static SettingMoreFragment newInstance() {
         return new SettingMoreFragment();
     }
@@ -69,7 +67,6 @@ public class SettingMoreFragment extends BaseFragment implements LockSetDialog.L
         modes[Setting.MODE_ELDER] = getString(R.string.setting_mode_elder);
         modes[Setting.MODE_CHILD] = getString(R.string.setting_mode_child);
         mBinding.modeText.setText(modes[Setting.getMode()]);
-        mBinding.cacheExpireText.setText((cacheExpires = ResUtil.getStringArray(R.array.select_cache_expire))[Setting.getCacheExpireIndex()]);
         setLockText();
         setCacheText();
     }
@@ -90,7 +87,6 @@ public class SettingMoreFragment extends BaseFragment implements LockSetDialog.L
         mBinding.incognito.setOnClickListener(this::setIncognito);
         mBinding.doh.setOnClickListener(this::setDoh);
         mBinding.cache.setOnClickListener(this::onCache);
-        mBinding.cacheExpire.setOnClickListener(this::setCacheExpire);
         mBinding.backup.setOnClickListener(this::onBackup);
         mBinding.restore.setOnClickListener(this::onRestore);
         mBinding.version.setOnClickListener(this::onVersion);
@@ -171,15 +167,6 @@ public class SettingMoreFragment extends BaseFragment implements LockSetDialog.L
                 Notify.show(R.string.setting_cache_cleared);
             }
         });
-    }
-
-    private void setCacheExpire(View view) {
-        new MaterialAlertDialogBuilder(requireActivity()).setTitle(R.string.setting_cache_expire).setNegativeButton(R.string.dialog_negative, null).setSingleChoiceItems(cacheExpires, Setting.getCacheExpireIndex(), (dialog, which) -> {
-            Setting.putCacheExpire(Setting.CACHE_EXPIRE_HOURS[which]);
-            mBinding.cacheExpireText.setText(cacheExpires[which]);
-            Notify.show(getString(R.string.setting_cache_expire_changed, cacheExpires[which]));
-            dialog.dismiss();
-        }).show();
     }
 
     private void onBackup(View view) {

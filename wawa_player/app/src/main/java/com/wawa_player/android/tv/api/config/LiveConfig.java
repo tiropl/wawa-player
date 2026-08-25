@@ -6,6 +6,7 @@ import com.wawa_player.android.tv.api.LiveApi;
 import com.wawa_player.android.tv.api.loader.BaseLoader;
 import com.wawa_player.android.tv.api.parser.LiveParser;
 import com.wawa_player.android.tv.bean.Channel;
+import com.wawa_player.android.tv.api.Decoder;
 import com.wawa_player.android.tv.bean.Config;
 import com.wawa_player.android.tv.bean.Depot;
 import com.wawa_player.android.tv.bean.Group;
@@ -128,7 +129,7 @@ public class LiveConfig extends BaseConfig {
 
     @Override
     protected void load(Config config) throws Throwable {
-        String json = fetchJson(config);
+        String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), getTag(), TIMEOUT);
         if (Json.isObj(json)) checkJson(config, Json.parse(json).getAsJsonObject());
         else parseText(config, json);
     }
