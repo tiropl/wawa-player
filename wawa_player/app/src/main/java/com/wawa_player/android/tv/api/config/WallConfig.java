@@ -15,6 +15,7 @@ import com.wawa_player.android.tv.utils.Download;
 import com.wawa_player.android.tv.utils.FileUtil;
 import com.wawa_player.android.tv.utils.ResUtil;
 import com.wawa_player.android.tv.utils.UrlUtil;
+import com.wawa_player.android.tv.utils.Task;
 import com.github.catvod.utils.Path;
 
 import java.io.File;
@@ -43,6 +44,16 @@ public class WallConfig extends BaseConfig {
 
     public WallConfig init() {
         return config(Config.wall());
+    }
+
+    public void initAsync(java.util.function.Consumer<WallConfig> callback) {
+        Task.submit(() -> {
+            Config config = Config.wall();
+            com.wawa_player.android.tv.App.post(() -> {
+                this.config = config;
+                callback.accept(this);
+            });
+        });
     }
 
     public WallConfig config(Config config) {

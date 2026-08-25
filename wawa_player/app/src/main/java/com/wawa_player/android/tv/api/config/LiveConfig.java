@@ -18,6 +18,7 @@ import com.wawa_player.android.tv.event.ConfigEvent;
 import com.wawa_player.android.tv.impl.Callback;
 import com.wawa_player.android.tv.setting.LiveSetting;
 import com.wawa_player.android.tv.utils.UrlUtil;
+import com.wawa_player.android.tv.utils.Task;
 import com.github.catvod.bean.Header;
 import com.github.catvod.bean.Proxy;
 import com.github.catvod.utils.Json;
@@ -83,6 +84,16 @@ public class LiveConfig extends BaseConfig {
 
     public LiveConfig init() {
         return config(Config.live());
+    }
+
+    public void initAsync(java.util.function.Consumer<LiveConfig> callback) {
+        Task.submit(() -> {
+            Config config = Config.live();
+            com.wawa_player.android.tv.App.post(() -> {
+                this.config = config;
+                callback.accept(this);
+            });
+        });
     }
 
     public boolean loaded() {

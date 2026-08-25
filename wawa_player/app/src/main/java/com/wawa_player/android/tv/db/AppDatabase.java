@@ -46,6 +46,13 @@ public abstract class AppDatabase extends RoomDatabase {
         return instance;
     }
 
+    /**
+     * Pre-warm database on background thread to avoid blocking main thread on first access.
+     */
+    public static void warmUp() {
+        Task.submit(() -> get());
+    }
+
     public static void backup() {
         backup(new com.wawa_player.android.tv.impl.Callback());
     }

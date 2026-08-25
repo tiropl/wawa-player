@@ -83,6 +83,8 @@ public class App extends Application implements Application.ActivityLifecycleCal
         super.onCreate();
         Notify.createChannel();
         registerActivityLifecycleCallbacks(this);
+        // Pre-warm database on background thread to avoid blocking main thread
+        com.wawa_player.android.tv.db.AppDatabase.warmUp();
     }
 
     @Override

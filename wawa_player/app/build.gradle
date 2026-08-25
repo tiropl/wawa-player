@@ -167,7 +167,4 @@ dependencies {
     implementation('androidx.media3:media3-exoplayer-rtsp:1.11.0') {
         exclude group: 'androidx.media3'
     }
-    implementation('androidx.media3:media3-exoplayer-smoothstreaming:1.11.0') {
-        exclude group: 'androidx.media3'
-    }
 }

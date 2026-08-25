@@ -82,7 +82,6 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
     protected void onCreate(Bundle savedInstanceState) {
         SplashScreen.installSplashScreen(this);
         super.onCreate(savedInstanceState);
-        LoadingSound.start(this);
     }
 
     @Override
@@ -93,6 +92,8 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
         initFragment(savedInstanceState);
         Updater.create().start(this);
         initConfig();
+        // Defer loading sound until after UI is interactive
+        mBinding.getRoot().post(() -> LoadingSound.start(this));
     }
 
     @Override
@@ -142,11 +143,11 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
             LineConfig.refresh(1);
             checkAction(getIntent());
         } else {
-            VodConfig.get().init().load(getCallback());
-            LiveConfig.get().init().load();
-            WallConfig.get().init();
-            LineConfig.refresh(0);
-            LineConfig.refresh(1);
+            // Use async init to avoid Room DB queries on main thread
+            // Run VodConfig and LiveConfig in parallel for faster loading
+            VodConfig.get().initAsync(vodConfig -> vodConfig.load(getCallback()));
+            LiveConfig.get().initAsync(liveConfig -> liveConfig.load());
+            WallConfig.get().initAsync(wallConfig -> {});
         }
     }
 
@@ -154,6 +155,8 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
         return new Callback() {
             @Override
             public void success() {
+                LineConfig.refresh(0);
+                LineConfig.refresh(1);
                 checkAction(getIntent());
             }
 

@@ -108,6 +108,16 @@ public class VodConfig extends BaseConfig {
         return config(Config.vod());
     }
 
+    public void initAsync(java.util.function.Consumer<VodConfig> callback) {
+        Task.submit(() -> {
+            Config config = Config.vod();
+            App.post(() -> {
+                this.config = config;
+                callback.accept(this);
+            });
+        });
+    }
+
     public boolean loaded() {
         return isLoaded();
     }
