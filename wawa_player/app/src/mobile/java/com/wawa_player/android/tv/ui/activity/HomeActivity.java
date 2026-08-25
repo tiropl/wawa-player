@@ -50,7 +50,6 @@ import com.wawa_player.android.tv.ui.fragment.SettingPlayerFragment;
 import com.wawa_player.android.tv.ui.fragment.SettingPreloadFragment;
 import com.wawa_player.android.tv.ui.fragment.VodFragment;
 import com.wawa_player.android.tv.utils.FileChooser;
-import com.wawa_player.android.tv.utils.LoadingSound;
 import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.PermissionUtil;
 import com.wawa_player.android.tv.utils.UrlUtil;
@@ -91,11 +90,10 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
         orientation = getResources().getConfiguration().orientation;
         mBinding.navigation.setOnItemSelectedListener(this);
         PermissionUtil.requestNotify(this);
+        setNavigation();
         initFragment(savedInstanceState);
         Updater.create().start(this);
         initConfig();
-        // Defer loading sound until after UI is interactive
-        mBinding.getRoot().post(() -> LoadingSound.start(this));
     }
 
     @Override
@@ -143,7 +141,6 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
             return;
         }
         if (VodConfig.get().loaded()) {
-            LoadingSound.stop();
             setNavigation();
             WallConfig.get().init();
             LineConfig.refresh(0);
@@ -152,6 +149,7 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
         } else {
             // Use async init to avoid Room DB queries on main thread
             // Run VodConfig and LiveConfig in parallel for faster loading
+            mBinding.progressLayout.showProgress();
             VodConfig.get().initAsync(vodConfig -> vodConfig.load(getCallback()));
             LiveConfig.get().initAsync(liveConfig -> liveConfig.load());
             WallConfig.get().initAsync(wallConfig -> {});
@@ -171,13 +169,12 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
         VodConfig.load(config, new Callback() {
             @Override
             public void start() {
-                Notify.progress(getActivity());
+                mBinding.progressLayout.showProgress();
             }
 
             @Override
             public void success() {
-                Notify.dismiss();
-                LoadingSound.stop();
+                mBinding.progressLayout.showContent();
                 setNavigation();
                 LineConfig.refresh(0);
                 LineConfig.refresh(1);
@@ -186,7 +183,7 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
 
             @Override
             public void error(String msg) {
-                Notify.dismiss();
+                mBinding.progressLayout.showContent();
                 Notify.show(msg);
             }
         }, true);
@@ -204,7 +201,7 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
             @Override
             public void error(String msg) {
                 checkAction(getIntent());
-                LoadingSound.stop();
+                mBinding.progressLayout.showContent();
                 StateEvent.empty();
                 Notify.show(msg);
             }

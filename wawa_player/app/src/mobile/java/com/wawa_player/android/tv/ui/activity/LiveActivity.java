@@ -66,7 +66,6 @@ import com.wawa_player.android.tv.ui.dialog.SpeedSettingDialog;
 import com.wawa_player.android.tv.ui.dialog.TrackDialog;
 import com.wawa_player.android.tv.utils.Biometric;
 import com.wawa_player.android.tv.utils.ImgUtil;
-import com.wawa_player.android.tv.utils.LoadingSound;
 import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.PiP;
 import com.wawa_player.android.tv.utils.ResUtil;
@@ -486,17 +485,15 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
 
     @Override
     public void showProgress() {
-        mBinding.progress.getRoot().setVisibility(View.VISIBLE);
+        mBinding.progressLayout.showProgress();
         App.post(mR2, 0);
         hideError();
-        LoadingSound.start(this);
     }
 
     private void hideProgress() {
-        mBinding.progress.getRoot().setVisibility(View.GONE);
+        mBinding.progressLayout.showContent();
         App.removeCallbacks(mR2);
         Traffic.reset();
-        LoadingSound.stop();
     }
 
     private void showError(String text) {

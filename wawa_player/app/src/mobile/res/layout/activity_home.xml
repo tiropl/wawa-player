@@ -22,4 +22,10 @@
         app:labelVisibilityMode="unlabeled"
         app:menu="@menu/menu_nav" />
 
+    <com.wawa_player.android.tv.ui.custom.ProgressLayout
+        android:id="@+id/progressLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/navigation" />
+
 </RelativeLayout>

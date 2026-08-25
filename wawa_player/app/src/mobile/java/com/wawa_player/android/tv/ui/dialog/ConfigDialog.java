@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -22,6 +24,7 @@ import com.wawa_player.android.tv.databinding.DialogConfigBinding;
 import com.wawa_player.android.tv.impl.ConfigListener;
 import com.wawa_player.android.tv.ui.custom.CustomTextListener;
 import com.wawa_player.android.tv.utils.FileChooser;
+import com.wawa_player.android.tv.utils.ViewUtil;
 import com.github.catvod.utils.Path;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -72,7 +75,7 @@ public class ConfigDialog extends BaseAlertDialog {
 
     @Override
     protected MaterialAlertDialogBuilder getBuilder() {
-        return builder().setTitle(type == 0 ? R.string.setting_vod : type == 1 ? R.string.setting_live : R.string.setting_wall).setView(getBinding().getRoot()).setPositiveButton(edit ? R.string.dialog_edit : R.string.dialog_positive, this::onPositive).setNegativeButton(R.string.dialog_negative, null);
+        return builder().setTitle(type == 0 ? R.string.setting_vod : type == 1 ? R.string.setting_live : R.string.setting_wall).setView(getBinding().getRoot()).setPositiveButton(edit ? R.string.dialog_edit : R.string.dialog_positive, null).setNegativeButton(R.string.dialog_negative, null);
     }
 
     @Override
@@ -90,12 +93,22 @@ public class ConfigDialog extends BaseAlertDialog {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 detect(s.toString());
+                binding.error.setVisibility(View.GONE);
             }
         });
         binding.url.setOnEditorActionListener((textView, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE) onPositive(null, 0);
+            if (actionId == EditorInfo.IME_ACTION_DONE) onPositive();
             return true;
         });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        androidx.appcompat.app.AlertDialog dialog = (androidx.appcompat.app.AlertDialog) getDialog();
+        if (dialog == null) return;
+        Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        positiveButton.setOnClickListener(v -> onPositive());
     }
 
     private Config getConfig() {
@@ -128,11 +141,14 @@ public class ConfigDialog extends BaseAlertDialog {
         }
     }
 
-    private void onPositive(DialogInterface dialog, int which) {
+    private void onPositive() {
         String url = binding.url.getText().toString().trim();
         String name = binding.name.getText().toString().trim();
+        if (url.isEmpty()) {
+            showError(binding.error, R.string.dialog_config_error);
+            return;
+        }
         if (edit) Config.find(ori, type).url(url).name(name).update();
-        if (url.isEmpty()) Config.delete(ori, type);
         getConfigListener().setConfig(Config.find(url, type));
         dismiss();
     }
@@ -144,6 +160,12 @@ public class ConfigDialog extends BaseAlertDialog {
             return (ConfigListener) requireActivity();
         }
         throw new IllegalStateException("Activity or parent fragment must implement ConfigListener");
+    }
+
+    private void showError(TextView view, int resId) {
+        view.setText(resId);
+        view.setVisibility(View.VISIBLE);
+        ViewUtil.scrollToReveal(view);
     }
 
     private final ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {

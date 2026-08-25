@@ -47,7 +47,6 @@ import com.wawa_player.android.tv.event.ServerEvent;
 import com.wawa_player.android.tv.setting.ModePolicy;
 import com.wawa_player.android.tv.setting.PasswordLock;
 import com.wawa_player.android.tv.setting.Setting;
-import com.wawa_player.android.tv.utils.LoadingSound;
 import com.wawa_player.android.tv.impl.Callback;
 import com.wawa_player.android.tv.impl.ConfigListener;
 import com.wawa_player.android.tv.impl.LineListener;
@@ -125,14 +124,12 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     protected void onCreate(Bundle savedInstanceState) {
         SplashScreen.installSplashScreen(this);
         super.onCreate(savedInstanceState);
-        LoadingSound.start(this);
     }
 
     @Override
     protected void initView(Bundle savedInstanceState) {
         mResult = Result.empty();
         mClock = Clock.create(mBinding.clock);
-        mBinding.progressLayout.showProgress();
         PermissionUtil.requestNotify(this);
         DLNARendererService.start(this);
         Updater.create().start(this);
@@ -217,6 +214,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
             ConfigDialog.create().vod().show(this);
             return;
         }
+        mBinding.progressLayout.showProgress();
         VodConfig.get().init().load(getCallback());
         LiveConfig.get().init().load();
         WallConfig.get().init();

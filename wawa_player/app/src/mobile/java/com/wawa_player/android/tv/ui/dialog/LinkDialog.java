@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.text.InputFilter;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
@@ -17,8 +16,6 @@ import com.wawa_player.android.tv.R;
 import com.wawa_player.android.tv.databinding.DialogLinkBinding;
 import com.wawa_player.android.tv.ui.activity.VideoActivity;
 import com.wawa_player.android.tv.utils.FileChooser;
-import com.wawa_player.android.tv.utils.Sniffer;
-import com.wawa_player.android.tv.utils.Util;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class LinkDialog extends BaseAlertDialog {
@@ -41,9 +38,7 @@ public class LinkDialog extends BaseAlertDialog {
 
     @Override
     protected void initView() {
-        CharSequence text = Util.getClipText();
         binding.text.setFilters(new InputFilter[]{new InputFilter.LengthFilter(Integer.MAX_VALUE)});
-        if (!TextUtils.isEmpty(text)) binding.text.setText(Sniffer.getUrl(text.toString()));
     }
 
     @Override

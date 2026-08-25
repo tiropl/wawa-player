@@ -384,6 +384,7 @@
     <string name="dialog_select_edition">选择标题</string>
     <string name="dialog_select_chapter">选择章节</string>
     <string name="dialog_config_hint">请输入配置…</string>
+    <string name="dialog_config_error">URL不能为空</string>
     <string name="dialog_config_name">请输入名称…</string>
     <string name="dialog_config_url">请输入地址…</string>
 

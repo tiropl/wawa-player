@@ -47,7 +47,6 @@ import com.wawa_player.android.tv.ui.dialog.LinkDialog;
 import com.wawa_player.android.tv.ui.dialog.ReceiveDialog;
 import com.wawa_player.android.tv.ui.dialog.SiteDialog;
 import com.wawa_player.android.tv.utils.ImgUtil;
-import com.wawa_player.android.tv.utils.LoadingSound;
 import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.ResUtil;
 
@@ -94,10 +93,10 @@ public class VodFragment extends BaseFragment implements ConfigListener, SiteLis
         mBinding.title.setSelected(true);
         setRecyclerView();
         setViewModel();
-        showProgress();
         setTitle();
         setLogo();
         if (VodConfig.get().loaded()) homeContent();
+        else showContent();
     }
 
     @Override
@@ -110,7 +109,7 @@ public class VodFragment extends BaseFragment implements ConfigListener, SiteLis
         mBinding.filter.setOnLongClickListener(this::onLink);
         mBinding.toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
         mBinding.appBar.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-            View progress = mBinding.progress.getRoot();
+            View progress = mBinding.progressLayout;
             progress.layout(progress.getLeft(), bottom, progress.getRight(), ((View) progress.getParent()).getHeight());
         });
         mBinding.appBar.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
@@ -225,13 +224,11 @@ public class VodFragment extends BaseFragment implements ConfigListener, SiteLis
     }
 
     private void showProgress() {
-        mBinding.progress.getRoot().setVisibility(View.VISIBLE);
-        LoadingSound.start(requireActivity());
+        mBinding.progressLayout.showProgress();
     }
 
     private void hideProgress() {
-        mBinding.progress.getRoot().setVisibility(View.GONE);
-        LoadingSound.stop();
+        mBinding.progressLayout.showContent();
     }
 
     private void hideContent() {
