@@ -196,6 +196,7 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
         return new Callback() {
             @Override
             public void success() {
+                mBinding.progressLayout.showContent();
                 LineConfig.refresh(0);
                 LineConfig.refresh(1);
                 checkAction(getIntent());

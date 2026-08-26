@@ -40,11 +40,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.wawa_player.android.tv.ui.custom.ProgressLayout
-            android:id="@+id/progressLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
     </FrameLayout>
 
     <androidx.appcompat.widget.LinearLayoutCompat
