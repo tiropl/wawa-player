@@ -4,8 +4,8 @@ import android.text.TextUtils;
 
 import com.wawa_player.android.tv.App;
 import com.wawa_player.android.tv.R;
-import com.wawa_player.android.tv.api.Decoder;
 import com.wawa_player.android.tv.api.loader.BaseLoader;
+import com.wawa_player.android.tv.api.Decoder;
 import com.wawa_player.android.tv.bean.Config;
 import com.wawa_player.android.tv.bean.Depot;
 import com.wawa_player.android.tv.bean.Parse;
@@ -108,6 +108,16 @@ public class VodConfig extends BaseConfig {
         return config(Config.vod());
     }
 
+    public void initAsync(java.util.function.Consumer<VodConfig> callback) {
+        Task.submit(() -> {
+            Config config = Config.vod();
+            App.post(() -> {
+                this.config = config;
+                callback.accept(this);
+            });
+        });
+    }
+
     public boolean loaded() {
         return isLoaded();
     }
@@ -157,7 +167,7 @@ public class VodConfig extends BaseConfig {
 
     @Override
     protected void load(Config config) throws Throwable {
-        String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), TAG, TIMEOUT);
+        String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), getTag(), TIMEOUT);
         checkJson(config, Json.parse(json).getAsJsonObject());
     }
 
@@ -172,7 +182,10 @@ public class VodConfig extends BaseConfig {
         } else if (object.has("urls")) {
             parseDepot(config, object);
         } else {
-            if (configuring) LineConfig.clear(VOD);
+            if (configuring) {
+                for (Depot old : LineConfig.getLines(VOD)) Config.delete(old.getUrl(), VOD);
+                LineConfig.clear(VOD);
+            }
             configuring = false;
             parseConfig(config, object);
         }

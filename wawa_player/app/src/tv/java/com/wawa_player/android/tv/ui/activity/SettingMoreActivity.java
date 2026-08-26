@@ -14,16 +14,23 @@ import com.wawa_player.android.tv.databinding.ActivitySettingMoreBinding;
 import com.wawa_player.android.tv.db.AppDatabase;
 import com.wawa_player.android.tv.impl.Callback;
 import com.wawa_player.android.tv.impl.ConfigListener;
+import com.wawa_player.android.tv.impl.LockListener;
+import com.wawa_player.android.tv.setting.PasswordLock;
 import com.wawa_player.android.tv.setting.Setting;
 import com.wawa_player.android.tv.event.RefreshEvent;
 import com.wawa_player.android.tv.ui.base.BaseActivity;
 import com.wawa_player.android.tv.ui.dialog.DohDialog;
+import com.wawa_player.android.tv.ui.dialog.LockActionDialog;
+import com.wawa_player.android.tv.ui.dialog.LockChangeDialog;
+import com.wawa_player.android.tv.ui.dialog.LockSetDialog;
+import com.wawa_player.android.tv.ui.dialog.LockVerifyDialog;
 import com.wawa_player.android.tv.ui.dialog.ModeDialog;
 import com.wawa_player.android.tv.ui.dialog.RestoreDialog;
 import com.wawa_player.android.tv.utils.FileUtil;
 import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.PermissionUtil;
 import com.wawa_player.android.tv.utils.ResUtil;
+import com.wawa_player.android.tv.ui.adapter.LockActionAdapter;
 import com.github.catvod.bean.Doh;
 import com.github.catvod.net.OkHttp;
 
@@ -32,11 +39,10 @@ import java.util.List;
 
 import com.wawa_player.android.tv.Updater;
 
-public class SettingMoreActivity extends BaseActivity implements DohDialog.Listener, ModeDialog.Listener {
+public class SettingMoreActivity extends BaseActivity implements DohDialog.Listener, ModeDialog.Listener, LockActionDialog.Listener, LockSetDialog.Listener {
 
     private ActivitySettingMoreBinding mBinding;
     private final String[] modes = new String[3];
-
     public static void start(Activity activity) {
         activity.startActivity(new Intent(activity, SettingMoreActivity.class));
     }
@@ -66,6 +72,7 @@ public class SettingMoreActivity extends BaseActivity implements DohDialog.Liste
         modes[Setting.MODE_ELDER] = ResUtil.getString(R.string.setting_mode_elder);
         modes[Setting.MODE_CHILD] = ResUtil.getString(R.string.setting_mode_child);
         mBinding.modeText.setText(modes[Setting.getMode()]);
+        setLockText();
         setCacheText();
     }
 
@@ -81,6 +88,7 @@ public class SettingMoreActivity extends BaseActivity implements DohDialog.Liste
     @Override
     protected void initEvent() {
         mBinding.mode.setOnClickListener(this::setMode);
+        mBinding.lock.setOnClickListener(this::onLock);
         mBinding.incognito.setOnClickListener(this::setIncognito);
         mBinding.doh.setOnClickListener(this::setDoh);
         mBinding.backup.setOnClickListener(this::onBackup);
@@ -111,8 +119,42 @@ public class SettingMoreActivity extends BaseActivity implements DohDialog.Liste
         }
         Setting.putMode(mode);
         mBinding.modeText.setText(modes[mode]);
+        Notify.show(getString(R.string.setting_mode_changed, modes[mode]));
         RefreshEvent.mode();
     }
+
+    private void setLockText() {
+        mBinding.lockText.setText(Setting.getSwitch(PasswordLock.isSet()));
+    }
+
+    private void onLock(View view) {
+        if (PasswordLock.isSet()) LockActionDialog.create().show(this);
+        else LockSetDialog.create().listener(this).show(this);
+    }
+
+    @Override
+    public void onLockAction(int action) {
+        if (action == LockActionAdapter.ACTION_CHANGE) LockChangeDialog.create().show(this);
+        else LockVerifyDialog.create().listener(clearLockListener).show(this);
+    }
+
+    @Override
+    public void onLockSet() {
+        setLockText();
+    }
+
+    private final LockListener clearLockListener = new LockListener() {
+        @Override
+        public void onLockVerified() {
+            PasswordLock.clear();
+            Notify.show(R.string.lock_clear_success);
+            setLockText();
+        }
+
+        @Override
+        public void onLockCancelled() {
+        }
+    };
 
     private void setDoh(View view) {
         DohDialog.create().index(getDohIndex()).show(this);

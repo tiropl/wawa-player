@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.Animation;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,8 +48,8 @@ import com.wawa_player.android.tv.event.ServerEvent;
 import com.wawa_player.android.tv.setting.ModePolicy;
 import com.wawa_player.android.tv.setting.PasswordLock;
 import com.wawa_player.android.tv.setting.Setting;
-import com.wawa_player.android.tv.utils.LoadingSound;
 import com.wawa_player.android.tv.impl.Callback;
+import com.wawa_player.android.tv.impl.ConfigListener;
 import com.wawa_player.android.tv.impl.LineListener;
 import com.wawa_player.android.tv.impl.LockListener;
 import com.wawa_player.android.tv.model.SiteViewModel;
@@ -61,6 +62,7 @@ import com.wawa_player.android.tv.ui.base.BaseActivity;
 import com.wawa_player.android.tv.ui.custom.CustomRowPresenter;
 import com.wawa_player.android.tv.ui.custom.CustomSelector;
 import com.wawa_player.android.tv.ui.custom.CustomTitleView;
+import com.wawa_player.android.tv.ui.dialog.ConfigDialog;
 import com.wawa_player.android.tv.ui.dialog.SiteDialog;
 import com.wawa_player.android.tv.ui.dialog.LineDialog;
 import com.wawa_player.android.tv.ui.dialog.LockVerifyDialog;
@@ -89,7 +91,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class HomeActivity extends BaseActivity implements CustomTitleView.Listener, VodPresenter.OnClickListener, FuncPresenter.OnClickListener, HistoryPresenter.OnClickListener, LineListener {
+public class HomeActivity extends BaseActivity implements CustomTitleView.Listener, VodPresenter.OnClickListener, FuncPresenter.OnClickListener, HistoryPresenter.OnClickListener, LineListener, ConfigListener {
 
     private ActivityHomeBinding mBinding;
     private ArrayObjectAdapter mHistoryAdapter;
@@ -123,21 +125,20 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     protected void onCreate(Bundle savedInstanceState) {
         SplashScreen.installSplashScreen(this);
         super.onCreate(savedInstanceState);
-        LoadingSound.start(this);
     }
 
     @Override
     protected void initView(Bundle savedInstanceState) {
         mResult = Result.empty();
         mClock = Clock.create(mBinding.clock);
-        mBinding.progressLayout.showProgress();
         PermissionUtil.requestNotify(this);
         DLNARendererService.start(this);
         Updater.create().start(this);
         setRecyclerView();
         setViewModel();
         setAdapter();
-        initConfig();
+        setFunc();
+        initConfig(savedInstanceState);
         setTitle();
         setLogo();
     }
@@ -146,6 +147,11 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     protected void initEvent() {
         mBinding.title.setListener(this);
         mBinding.logo.setOnClickListener(this::onLogo);
+        Animation flicker = ResUtil.getAnim(R.anim.flicker);
+        mBinding.logo.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) v.startAnimation(flicker);
+            else v.clearAnimation();
+        });
         mBinding.recycler.addOnChildViewHolderSelectedListener(new OnChildViewHolderSelectedListener() {
             @Override
             public void onChildViewHolderSelected(@NonNull RecyclerView parent, @Nullable RecyclerView.ViewHolder child, int position, int subposition) {
@@ -209,12 +215,48 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         optional.ifPresent(s -> mBinding.title.setText(s));
     }
 
-    private void initConfig() {
+    private void initConfig(Bundle savedInstanceState) {
+        Server.get().start();
+        if (TextUtils.isEmpty(VodConfig.getUrl())) {
+            // 未配置线路，冷启动时弹出配置窗口
+            if (savedInstanceState == null) ConfigDialog.create().vod().show(this);
+            return;
+        }
+        // 重建时配置已加载，避免重复拉取
+        if (savedInstanceState != null) return;
+        mBinding.progressLayout.showProgress();
         VodConfig.get().init().load(getCallback());
         LiveConfig.get().init().load();
         WallConfig.get().init();
-        LineConfig.refresh(0);
-        LineConfig.refresh(1);
+    }
+
+    @Override
+    public void setConfig(Config config) {
+        if (config.getUrl().startsWith("file")) {
+            PermissionUtil.requestFile(this, allGranted -> loadVodConfig(config));
+        } else {
+            loadVodConfig(config);
+        }
+    }
+
+    private void loadVodConfig(Config config) {
+        VodConfig.load(config, new Callback() {
+            @Override
+            public void start() {
+                mBinding.progressLayout.showProgress();
+            }
+
+            @Override
+            public void success() {
+                showContent();
+            }
+
+            @Override
+            public void error(String msg) {
+                Notify.show(msg);
+                showContent();
+            }
+        }, true);
     }
 
     private Callback getCallback() {
@@ -249,7 +291,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     private void setFocus() {
         mBinding.title.setSelected(true);
-        App.post(() -> mBinding.title.setFocusable(true), 500);
+        if (!Setting.isElderMode()) App.post(() -> mBinding.title.setFocusable(true), 500);
         if (!mBinding.title.hasFocus()) mBinding.recycler.requestFocus();
     }
 
@@ -282,10 +324,12 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     private void setFunc() {
         List<Func> items = new ArrayList<>();
-        items.add(Func.create(R.string.home_vod));
-        if (LiveConfig.hasUrl()) items.add(Func.create(R.string.home_live));
+        if (!TextUtils.isEmpty(VodConfig.getUrl())) {
+            items.add(Func.create(R.string.home_vod));
+            if (LiveConfig.hasUrl()) items.add(Func.create(R.string.home_live));
+            items.add(Func.create(R.string.home_keep));
+        }
         items.add(Func.create(R.string.home_search));
-        items.add(Func.create(R.string.home_keep));
         if (ModePolicy.showPush()) {
             items.add(Func.create(R.string.home_push));
         }
@@ -342,7 +386,17 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         Notify.show(getString(R.string.line_switching, item.getName()));
         VodConfig.switchLine(item, new Callback() {
             @Override
+            public void start() {
+                mBinding.progressLayout.showProgress();
+            }
+
+            @Override
             public void success() {
+                showContent();
+            }
+
+            @Override
+            public void error(String msg) {
                 showContent();
             }
         });
@@ -380,6 +434,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
                 getHistory(true);
                 break;
             case MODE:
+                mBinding.title.setFocusable(!Setting.isElderMode());
                 setFunc();
                 break;
         }

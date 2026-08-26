@@ -252,9 +252,10 @@
     <!-- Setting -->
     <string name="setting_mode">操作模式</string>
     <string name="setting_mode_default">預設</string>
-    <string name="setting_mode_elder">長輩模式</string>
+    <string name="setting_mode_elder">簡潔模式</string>
     <string name="setting_mode_child">兒童模式</string>
     <string name="setting_mode_coming_soon">敬請期待</string>
+    <string name="setting_mode_changed">操作模式：%s</string>
     <string name="setting_line_name">線路：<xliff:g name="name">%s</xliff:g></string>
     <string name="setting_vod">點播</string>
     <string name="setting_live">直播</string>
@@ -286,9 +287,10 @@
     <string name="setting_auto">自動</string>
     <string name="setting_custom">自訂</string>
     <string name="setting_size">圖片尺寸</string>
+    <string name="setting_font">字體大小</string>
     <string name="setting_doh">DoH</string>
     <string name="setting_proxy">Proxy</string>
-    <string name="setting_cache">暫存</string>
+    <string name="setting_cache">清除快取</string>
     <string name="setting_backup">備份</string>
     <string name="setting_restore">還原</string>
     <string name="setting_version">版本</string>
@@ -297,12 +299,16 @@
     <string name="setting_on">開</string>
     <string name="setting_sound_state">提示音：%s</string>
     <string name="setting_size_changed">圖片尺寸：%s</string>
+    <string name="restart_app_title">重啟應用</string>
+    <string name="restart_app_content">本次修改需要重啟應用</string>
+    <string name="restart_now">立即重啟</string>
+    <string name="restart_later">稍後手動重啟</string>
     <string name="setting_wall_changed">桌布已切換</string>
     <string name="setting_incognito_state">無痕模式：%s</string>
     <string name="setting_cache_cleared">快取已清理</string>
     <string name="setting_theme_changed">主題色彩：%s</string>
     <string name="setting_doh_changed">DoH：%s</string>
-
+    
     <!-- Backup & Restore -->
     <string name="restore_select">選擇備份</string>
     <string name="restore_success">還原成功</string>
@@ -383,6 +389,7 @@
     <string name="dialog_select_edition">選擇標題</string>
     <string name="dialog_select_chapter">選擇章節</string>
     <string name="dialog_config_hint">請輸入配置…</string>
+    <string name="dialog_config_error">URL不能為空</string>
     <string name="dialog_config_name">請輸入名稱…</string>
     <string name="dialog_config_url">請輸入網址…</string>
 
@@ -452,6 +459,14 @@
 
     <string-array name="select_size">
         <item>小</item>
+        <item>中</item>
+        <item>大</item>
+        <item>特大</item>
+    </string-array>
+
+    <string-array name="select_font">
+        <item>小</item>
+        <item>默認</item>
         <item>中</item>
         <item>大</item>
         <item>特大</item>

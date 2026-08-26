@@ -26,5 +26,6 @@
     <color name="white_80">#CCFFFFFF</color>
     <color name="white_90">#E6FFFFFF</color>
     <color name="ic_launcher_background">#CFEFEA</color>
+    <color name="splash_background">#141218</color>
 
 </resources>

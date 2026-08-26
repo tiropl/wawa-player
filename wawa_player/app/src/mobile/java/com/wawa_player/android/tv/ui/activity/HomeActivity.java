@@ -32,6 +32,7 @@ import com.wawa_player.android.tv.event.RefreshEvent;
 import com.wawa_player.android.tv.event.ServerEvent;
 import com.wawa_player.android.tv.event.StateEvent;
 import com.wawa_player.android.tv.impl.Callback;
+import com.wawa_player.android.tv.impl.ConfigListener;
 import com.wawa_player.android.tv.impl.LockListener;
 import com.wawa_player.android.tv.player.extractor.Source;
 import com.wawa_player.android.tv.receiver.ShortcutReceiver;
@@ -39,6 +40,7 @@ import com.wawa_player.android.tv.server.Server;
 import com.wawa_player.android.tv.setting.PasswordLock;
 import com.wawa_player.android.tv.ui.base.BaseActivity;
 import com.wawa_player.android.tv.ui.custom.FragmentStateManager;
+import com.wawa_player.android.tv.ui.dialog.ConfigDialog;
 import com.wawa_player.android.tv.ui.dialog.LockVerifyDialog;
 import com.wawa_player.android.tv.ui.fragment.SettingDanmakuFragment;
 import com.wawa_player.android.tv.ui.fragment.SettingDecodeFragment;
@@ -48,7 +50,6 @@ import com.wawa_player.android.tv.ui.fragment.SettingPlayerFragment;
 import com.wawa_player.android.tv.ui.fragment.SettingPreloadFragment;
 import com.wawa_player.android.tv.ui.fragment.VodFragment;
 import com.wawa_player.android.tv.utils.FileChooser;
-import com.wawa_player.android.tv.utils.LoadingSound;
 import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.PermissionUtil;
 import com.wawa_player.android.tv.utils.UrlUtil;
@@ -59,7 +60,7 @@ import com.google.android.material.navigation.NavigationBarView;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-public class HomeActivity extends BaseActivity implements NavigationBarView.OnItemSelectedListener {
+public class HomeActivity extends BaseActivity implements NavigationBarView.OnItemSelectedListener, ConfigListener {
 
     private FragmentStateManager mManager;
     private ActivityHomeBinding mBinding;
@@ -82,7 +83,6 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
     protected void onCreate(Bundle savedInstanceState) {
         SplashScreen.installSplashScreen(this);
         super.onCreate(savedInstanceState);
-        LoadingSound.start(this);
     }
 
     @Override
@@ -90,9 +90,10 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
         orientation = getResources().getConfiguration().orientation;
         mBinding.navigation.setOnItemSelectedListener(this);
         PermissionUtil.requestNotify(this);
+        setNavigation();
         initFragment(savedInstanceState);
         Updater.create().start(this);
-        initConfig();
+        initConfig(savedInstanceState);
     }
 
     @Override
@@ -133,34 +134,78 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
         if (savedInstanceState == null) change(0);
     }
 
-    private void initConfig() {
+    private void initConfig(Bundle savedInstanceState) {
+        Server.get().start();
+        if (TextUtils.isEmpty(VodConfig.getUrl())) {
+            // 未配置线路，冷启动时弹出配置窗口
+            if (savedInstanceState == null) ConfigDialog.create().vod().show(this);
+            return;
+        }
         if (VodConfig.get().loaded()) {
-            LoadingSound.stop();
             setNavigation();
+            // 重建时配置已加载，避免重复拉取线路
+            if (savedInstanceState != null) return;
             WallConfig.get().init();
             LineConfig.refresh(0);
             LineConfig.refresh(1);
             checkAction(getIntent());
         } else {
-            VodConfig.get().init().load(getCallback());
-            LiveConfig.get().init().load();
-            WallConfig.get().init();
-            LineConfig.refresh(0);
-            LineConfig.refresh(1);
+            // Use async init to avoid Room DB queries on main thread
+            // Run VodConfig and LiveConfig in parallel for faster loading
+            mBinding.progressLayout.showProgress();
+            VodConfig.get().initAsync(vodConfig -> vodConfig.load(getCallback()));
+            LiveConfig.get().initAsync(liveConfig -> liveConfig.load());
+            WallConfig.get().initAsync(wallConfig -> {});
         }
+    }
+
+    @Override
+    public void setConfig(Config config) {
+        if (config.getUrl().startsWith("file")) {
+            PermissionUtil.requestFile(this, allGranted -> loadVodConfig(config));
+        } else {
+            loadVodConfig(config);
+        }
+    }
+
+    private void loadVodConfig(Config config) {
+        VodConfig.load(config, new Callback() {
+            @Override
+            public void start() {
+                mBinding.progressLayout.showProgress();
+            }
+
+            @Override
+            public void success() {
+                mBinding.progressLayout.showContent();
+                setNavigation();
+                LineConfig.refresh(0);
+                LineConfig.refresh(1);
+                checkAction(getIntent());
+            }
+
+            @Override
+            public void error(String msg) {
+                mBinding.progressLayout.showContent();
+                Notify.show(msg);
+            }
+        }, true);
     }
 
     private Callback getCallback() {
         return new Callback() {
             @Override
             public void success() {
+                mBinding.progressLayout.showContent();
+                LineConfig.refresh(0);
+                LineConfig.refresh(1);
                 checkAction(getIntent());
             }
 
             @Override
             public void error(String msg) {
                 checkAction(getIntent());
-                LoadingSound.stop();
+                mBinding.progressLayout.showContent();
                 StateEvent.empty();
                 Notify.show(msg);
             }

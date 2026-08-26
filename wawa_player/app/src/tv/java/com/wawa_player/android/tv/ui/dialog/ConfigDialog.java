@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -24,6 +25,7 @@ import com.wawa_player.android.tv.ui.custom.CustomTextListener;
 import com.wawa_player.android.tv.utils.FileChooser;
 import com.wawa_player.android.tv.utils.QRCode;
 import com.wawa_player.android.tv.utils.ResUtil;
+import com.wawa_player.android.tv.utils.ViewUtil;
 import com.github.catvod.utils.Path;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -95,6 +97,7 @@ public class ConfigDialog extends BaseAlertDialog {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 detect(s.toString());
+                binding.error.setVisibility(View.GONE);
             }
         });
         binding.text.setOnEditorActionListener((textView, actionId, event) -> {
@@ -136,8 +139,11 @@ public class ConfigDialog extends BaseAlertDialog {
     private void onPositive(View view) {
         String name = binding.name.getText().toString().trim();
         String text = binding.text.getText().toString().trim();
+        if (text.isEmpty()) {
+            showError(binding.error, R.string.dialog_config_error);
+            return;
+        }
         if (edit) Config.find(url, type).url(text).update();
-        if (text.isEmpty()) Config.delete(url, type);
         if (name.isEmpty()) ((ConfigListener) requireActivity()).setConfig(Config.find(text, type));
         else ((ConfigListener) requireActivity()).setConfig(Config.find(text, name, type));
         dismiss();
@@ -145,6 +151,12 @@ public class ConfigDialog extends BaseAlertDialog {
 
     private void onNegative(View view) {
         dismiss();
+    }
+
+    private void showError(TextView view, int resId) {
+        view.setText(resId);
+        view.setVisibility(View.VISIBLE);
+        ViewUtil.scrollToReveal(view);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

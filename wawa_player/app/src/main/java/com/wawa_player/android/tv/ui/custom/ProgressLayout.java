@@ -85,6 +85,12 @@ public class ProgressLayout extends RelativeLayout {
         else showContent();
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mState == State.PROGRESS) LoadingSound.stop();
+    }
+
     public boolean isProgress() {
         return mState == State.PROGRESS;
     }

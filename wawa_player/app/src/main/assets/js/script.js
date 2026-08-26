@@ -262,10 +262,13 @@ function warnToast(msg) {
 
 function showPanel(id) {
     for (let i = 1; i <= 5; i++) {
-        document.getElementById('panel' + i).classList.toggle('active', i === id);
-        document.getElementById('tab' + i).classList.toggle('active', i === id);
+        const panel = document.getElementById('panel' + i);
+        const tab = document.getElementById('tab' + i);
+        if (panel) panel.classList.toggle('active', i === id);
+        if (tab) tab.classList.toggle('active', i === id);
     }
-    if (id === 5 && document.getElementById('file_list').innerHTML === '') listFile('');
+    const fileList = document.getElementById('file_list');
+    if (id === 5 && fileList && fileList.innerHTML === '') listFile('');
 }
 
 const tab = parseInt(new URLSearchParams(window.location.search).get('tab')) || 1;

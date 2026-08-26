@@ -252,9 +252,10 @@
     <!-- Setting -->
     <string name="setting_mode">操作模式</string>
     <string name="setting_mode_default">默认</string>
-    <string name="setting_mode_elder">长辈模式</string>
+    <string name="setting_mode_elder">简洁模式</string>
     <string name="setting_mode_child">儿童模式</string>
     <string name="setting_mode_coming_soon">敬请期待</string>
+    <string name="setting_mode_changed">操作模式：%s</string>
     <string name="setting_line_name">线路：<xliff:g name="name">%s</xliff:g></string>
     <string name="setting_vod">点播</string>
     <string name="setting_live">直播</string>
@@ -286,9 +287,10 @@
     <string name="setting_auto">自动</string>
     <string name="setting_custom">自定义</string>
     <string name="setting_size">图片尺寸</string>
+    <string name="setting_font">字体大小</string>
     <string name="setting_doh">DoH</string>
     <string name="setting_proxy">Proxy</string>
-    <string name="setting_cache">缓存</string>
+    <string name="setting_cache">清除缓存</string>
     <string name="setting_backup">备份</string>
     <string name="setting_restore">恢复</string>
     <string name="setting_version">版本</string>
@@ -297,12 +299,16 @@
     <string name="setting_on">开</string>
     <string name="setting_sound_state">提示音：%s</string>
     <string name="setting_size_changed">图片尺寸：%s</string>
+    <string name="restart_app_title">重启应用</string>
+    <string name="restart_app_content">本次修改需要重启应用</string>
+    <string name="restart_now">立即重启</string>
+    <string name="restart_later">稍后手动重启</string>
     <string name="setting_wall_changed">壁纸已切换</string>
     <string name="setting_incognito_state">无痕模式：%s</string>
     <string name="setting_cache_cleared">缓存已清理</string>
     <string name="setting_theme_changed">主题色彩：%s</string>
     <string name="setting_doh_changed">DoH：%s</string>
-
+    
     <!-- Backup & Restore -->
     <string name="restore_select">选择备份</string>
     <string name="restore_success">恢复成功</string>
@@ -383,6 +389,7 @@
     <string name="dialog_select_edition">选择标题</string>
     <string name="dialog_select_chapter">选择章节</string>
     <string name="dialog_config_hint">请输入配置…</string>
+    <string name="dialog_config_error">URL不能为空</string>
     <string name="dialog_config_name">请输入名称…</string>
     <string name="dialog_config_url">请输入地址…</string>
 
@@ -452,6 +459,14 @@
 
     <string-array name="select_size">
         <item>小</item>
+        <item>中</item>
+        <item>大</item>
+        <item>特大</item>
+    </string-array>
+
+    <string-array name="select_font">
+        <item>小</item>
+        <item>默认</item>
         <item>中</item>
         <item>大</item>
         <item>特大</item>

@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 
+import com.wawa_player.android.tv.setting.Setting;
 import com.wawa_player.android.tv.ui.custom.CustomWallView;
 import com.wawa_player.android.tv.utils.Util;
 
@@ -96,7 +97,11 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     public Resources getResources() {
-        return hackResources(super.getResources());
+        Resources resources = hackResources(super.getResources());
+        float fontScale = Resources.getSystem().getConfiguration().fontScale * Setting.getFontScale();
+        resources.getConfiguration().fontScale = fontScale;
+        resources.getDisplayMetrics().scaledDensity = resources.getDisplayMetrics().density * fontScale;
+        return resources;
     }
 
     @Override

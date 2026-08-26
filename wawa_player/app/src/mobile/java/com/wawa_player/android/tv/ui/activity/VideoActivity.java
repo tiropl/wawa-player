@@ -408,10 +408,16 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
             mBinding.control.action.chapter.setVisibility(View.GONE);
             mBinding.control.action.opening.setVisibility(View.VISIBLE);
             mBinding.control.action.ending.setVisibility(View.VISIBLE);
+            mBinding.reverse.setVisibility(View.GONE);
+            mBinding.more.setVisibility(View.GONE);
         } else {
             mBinding.control.action.parse.setVisibility(isUseParse() ? View.VISIBLE : View.GONE);
-            PlaybackAction.setTracks(player(), mBinding.control.action.text, mBinding.control.action.audio, mBinding.control.action.video);
-            PlaybackAction.setMediaOptions(player(), mBinding.control.action.edition, mBinding.control.action.chapter);
+            mBinding.reverse.setVisibility(mEpisodeAdapter.getItemCount() < 2 ? View.GONE : View.VISIBLE);
+            mBinding.more.setVisibility(mEpisodeAdapter.getItemCount() < 10 ? View.GONE : View.VISIBLE);
+            if (service() != null) {
+                PlaybackAction.setTracks(player(), mBinding.control.action.text, mBinding.control.action.audio, mBinding.control.action.video);
+                PlaybackAction.setMediaOptions(player(), mBinding.control.action.edition, mBinding.control.action.chapter);
+            }
         }
     }
 
@@ -505,7 +511,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
 
     @Override
     public boolean isPlayerEmpty() {
-        return player().isEmpty();
+        return service() == null || player().isEmpty();
     }
 
     @Override
@@ -876,9 +882,9 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mBinding.control.action.episodes.setVisibility(items.size() < 2 ? View.GONE : View.VISIBLE);
         mBinding.control.next.setVisibility(items.size() < 2 ? View.GONE : View.VISIBLE);
         mBinding.control.prev.setVisibility(items.size() < 2 ? View.GONE : View.VISIBLE);
-        mBinding.reverse.setVisibility(items.size() < 2 ? View.GONE : View.VISIBLE);
+        mBinding.reverse.setVisibility((items.size() < 2 || Setting.isElderMode()) ? View.GONE : View.VISIBLE);
         mBinding.episode.setVisibility(items.isEmpty() ? View.GONE : View.VISIBLE);
-        mBinding.more.setVisibility(items.size() < 10 ? View.GONE : View.VISIBLE);
+        mBinding.more.setVisibility((items.size() < 10 || Setting.isElderMode()) ? View.GONE : View.VISIBLE);
         mEpisodeAdapter.addAll(items);
     }
 
@@ -1202,6 +1208,10 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mBinding.control.action.getRoot().setVisibility(isFullscreen() ? View.VISIBLE : View.GONE);
         mBinding.control.right.lock.setVisibility(isFullscreen() ? View.VISIBLE : View.GONE);
         mBinding.control.action.parse.setVisibility(Setting.isElderMode() ? View.GONE : (isUseParse() ? View.VISIBLE : View.GONE));
+        if (Setting.isElderMode()) {
+            mBinding.control.action.edition.setVisibility(View.GONE);
+            mBinding.control.action.chapter.setVisibility(View.GONE);
+        }
         mBinding.control.info.setVisibility(player().isEmpty() ? View.GONE : View.VISIBLE);
         mBinding.control.cast.setVisibility(player().isEmpty() ? View.GONE : View.VISIBLE);
         mBinding.control.center.setVisibility(isLock() ? View.GONE : View.VISIBLE);

@@ -14,6 +14,7 @@ import com.wawa_player.android.tv.R;
 import com.wawa_player.android.tv.api.config.VodConfig;
 import com.wawa_player.android.tv.bean.Site;
 import com.wawa_player.android.tv.impl.SiteListener;
+import com.wawa_player.android.tv.setting.ModePolicy;
 import com.wawa_player.android.tv.utils.KeyUtil;
 import com.wawa_player.android.tv.utils.ResUtil;
 import com.google.android.material.textview.MaterialTextView;
@@ -45,6 +46,7 @@ public class CustomTitleView extends MaterialTextView {
     }
 
     private boolean hasEvent(KeyEvent event) {
+        if (!ModePolicy.showSiteSwitch()) return false;
         return !getHome().isEmpty() && (KeyUtil.isLeftKey(event) || KeyUtil.isRightKey(event) || (KeyUtil.isUpKey(event) && !coolDown));
     }
 

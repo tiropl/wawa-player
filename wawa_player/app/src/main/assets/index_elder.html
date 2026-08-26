@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+    <title>搜索</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+    <meta name="color-scheme" content="light dark">
+    <link rel="stylesheet" href="css/ui.css">
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/script.js" defer></script>
+    <style>
+        .tab-panel.active {
+            justify-content: flex-start;
+            padding-top: 20vh;
+            padding-bottom: 40vh;
+        }
+        .elder-title {
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--md-on-surface);
+            margin-bottom: 4px;
+            text-align: center;
+        }
+        .md-input {
+            height: 72px;
+            font-size: 20px;
+        }
+        .md-btn {
+            height: 52px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="app-body">
+            <div id="panel1" class="tab-panel active">
+                <div class="panel-content">
+                    <div class="elder-title">搜 索</div>
+                    <div class="md-field">
+                        <input id="keyword" class="md-input" type="text" placeholder="请输入..." />
+                    </div>
+                    <button class="md-btn md-btn-filled md-btn-full" onclick="search()">确 定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Snackbar -->
+    <div id="warnToast">
+        <div class="md-snackbar" id="warnToastContent"></div>
+    </div>
+    <!-- Loading -->
+    <div id="loadingToast">
+        <div class="md-progress-wrap">
+            <svg class="md-progress" viewBox="0 0 48 48">
+                <circle cx="24" cy="24" r="20"/>
+            </svg>
+        </div>
+    </div>
+</body>
+</html>

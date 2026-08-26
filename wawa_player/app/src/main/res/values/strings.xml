@@ -253,9 +253,10 @@
     <!-- Setting -->
     <string name="setting_mode">Operation Mode</string>
     <string name="setting_mode_default">Default</string>
-    <string name="setting_mode_elder">Elder</string>
+    <string name="setting_mode_elder">Simple</string>
     <string name="setting_mode_child">Child</string>
     <string name="setting_mode_coming_soon">Coming soon</string>
+    <string name="setting_mode_changed">Operation Mode: %s</string>
     <string name="setting_line_name">Line: <xliff:g name="name">%s</xliff:g></string>
     <string name="setting_vod">Vod</string>
     <string name="setting_live">Live</string>
@@ -287,9 +288,10 @@
     <string name="setting_auto">Auto</string>
     <string name="setting_custom">Custom</string>
     <string name="setting_size">Image size</string>
+    <string name="setting_font">Font size</string>
     <string name="setting_doh">DoH</string>
     <string name="setting_proxy">Proxy</string>
-    <string name="setting_cache">Cache</string>
+    <string name="setting_cache">Clear cache</string>
     <string name="setting_backup">Backup</string>
     <string name="setting_restore">Restore</string>
     <string name="setting_version">Version</string>
@@ -298,12 +300,16 @@
     <string name="setting_on">On</string>
     <string name="setting_sound_state">Sound: %s</string>
     <string name="setting_size_changed">Image size: %s</string>
+    <string name="restart_app_title">Restart app</string>
+    <string name="restart_app_content">This change requires restarting the app</string>
+    <string name="restart_now">Restart now</string>
+    <string name="restart_later">Restart later</string>
     <string name="setting_wall_changed">Wallpaper switched</string>
     <string name="setting_incognito_state">Incognito mode: %s</string>
     <string name="setting_cache_cleared">Cache cleared</string>
     <string name="setting_theme_changed">Theme color: %s</string>
     <string name="setting_doh_changed">DoH: %s</string>
-
+    
     <!-- Backup & Restore -->
     <string name="restore_select">Select backup</string>
     <string name="restore_success">Restore successful</string>
@@ -384,6 +390,7 @@
     <string name="dialog_select_edition">Select title</string>
     <string name="dialog_select_chapter">Select chapter</string>
     <string name="dialog_config_hint">Please enter the config…</string>
+    <string name="dialog_config_error">URL cannot be empty</string>
     <string name="dialog_config_name">Please enter the name…</string>
     <string name="dialog_config_url">Please enter the url…</string>
 
@@ -462,6 +469,14 @@
 
     <string-array name="select_size">
         <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+        <item>Extra</item>
+    </string-array>
+
+    <string-array name="select_font">
+        <item>Small</item>
+        <item>Default</item>
         <item>Medium</item>
         <item>Large</item>
         <item>Extra</item>

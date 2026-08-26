@@ -45,7 +45,8 @@ public class LineDialog extends BaseAlertDialog implements LineAdapter.OnClickLi
 
     @Override
     public void onLineClick(Depot item) {
-        ((LineListener) requireActivity()).setLine(item);
+        LineListener listener = (LineListener) requireActivity();
+        listener.setLine(item);
         dismiss();
     }
 

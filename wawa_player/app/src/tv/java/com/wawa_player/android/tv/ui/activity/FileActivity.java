@@ -43,13 +43,20 @@ public class FileActivity extends BaseActivity implements FileAdapter.OnClickLis
     }
 
     private void checkPermission() {
-        PermissionUtil.requestFile(this, allGranted -> update(Path.root()));
+        PermissionUtil.requestFile(this, allGranted -> {
+            if (allGranted) update(Path.root());
+            else finish();
+        });
     }
 
     private void update(File dir) {
-        mBinding.recycler.setSelectedPosition(0);
-        mAdapter.addAll(Path.list(this.dir = dir));
-        mBinding.progressLayout.showContent(true, mAdapter.getItemCount());
+        try {
+            mBinding.recycler.setSelectedPosition(0);
+            mAdapter.addAll(Path.list(this.dir = dir));
+            mBinding.progressLayout.showContent(true, mAdapter.getItemCount());
+        } catch (Exception ignored) {
+            finish();
+        }
     }
 
     @Override
@@ -64,7 +71,7 @@ public class FileActivity extends BaseActivity implements FileAdapter.OnClickLis
 
     @Override
     protected void onBackInvoked() {
-        if (isRoot()) {
+        if (dir == null || isRoot()) {
             super.onBackInvoked();
         } else {
             update(dir.getParentFile());

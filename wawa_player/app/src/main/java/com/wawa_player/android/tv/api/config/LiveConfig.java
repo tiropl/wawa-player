@@ -2,11 +2,11 @@ package com.wawa_player.android.tv.api.config;
 
 import android.text.TextUtils;
 
-import com.wawa_player.android.tv.api.Decoder;
 import com.wawa_player.android.tv.api.LiveApi;
 import com.wawa_player.android.tv.api.loader.BaseLoader;
 import com.wawa_player.android.tv.api.parser.LiveParser;
 import com.wawa_player.android.tv.bean.Channel;
+import com.wawa_player.android.tv.api.Decoder;
 import com.wawa_player.android.tv.bean.Config;
 import com.wawa_player.android.tv.bean.Depot;
 import com.wawa_player.android.tv.bean.Group;
@@ -18,6 +18,7 @@ import com.wawa_player.android.tv.event.ConfigEvent;
 import com.wawa_player.android.tv.impl.Callback;
 import com.wawa_player.android.tv.setting.LiveSetting;
 import com.wawa_player.android.tv.utils.UrlUtil;
+import com.wawa_player.android.tv.utils.Task;
 import com.github.catvod.bean.Header;
 import com.github.catvod.bean.Proxy;
 import com.github.catvod.utils.Json;
@@ -85,6 +86,16 @@ public class LiveConfig extends BaseConfig {
         return config(Config.live());
     }
 
+    public void initAsync(java.util.function.Consumer<LiveConfig> callback) {
+        Task.submit(() -> {
+            Config config = Config.live();
+            com.wawa_player.android.tv.App.post(() -> {
+                this.config = config;
+                callback.accept(this);
+            });
+        });
+    }
+
     public boolean loaded() {
         return isLoaded();
     }
@@ -129,7 +140,7 @@ public class LiveConfig extends BaseConfig {
 
     @Override
     protected void load(Config config) throws Throwable {
-        String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), TAG, TIMEOUT);
+        String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), getTag(), TIMEOUT);
         if (Json.isObj(json)) checkJson(config, Json.parse(json).getAsJsonObject());
         else parseText(config, json);
     }
@@ -157,7 +168,10 @@ public class LiveConfig extends BaseConfig {
     }
 
     private void parseText(Config config, String text) {
-        if (configuring) LineConfig.clear(LIVE);
+        if (configuring) {
+            for (Depot old : LineConfig.getLines(LIVE)) Config.delete(old.getUrl(), LIVE);
+            LineConfig.clear(LIVE);
+        }
         configuring = false;
         Live live = new Live(UrlUtil.getName(config.getUrl()), config.getUrl()).sync();
         lives = new ArrayList<>(List.of(live));
@@ -171,7 +185,10 @@ public class LiveConfig extends BaseConfig {
         } else if (object.has("urls")) {
             parseDepot(config, object);
         } else {
-            if (configuring) LineConfig.clear(LIVE);
+            if (configuring) {
+                for (Depot old : LineConfig.getLines(LIVE)) Config.delete(old.getUrl(), LIVE);
+                LineConfig.clear(LIVE);
+            }
             configuring = false;
             parseConfig(config, object);
         }
