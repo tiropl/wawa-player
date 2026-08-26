@@ -3,6 +3,7 @@ package com.wawa_player.android.tv.ui.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import com.wawa_player.android.tv.ui.dialog.ConfigDialog;
 import com.wawa_player.android.tv.ui.dialog.FontDialog;
 import com.wawa_player.android.tv.ui.dialog.HistoryDialog;
 import com.wawa_player.android.tv.ui.dialog.LiveDialog;
+import com.wawa_player.android.tv.ui.dialog.ModeDialog;
 import com.wawa_player.android.tv.ui.dialog.SiteDialog;
 import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.PermissionUtil;
@@ -43,11 +45,12 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-public class SettingActivity extends BaseActivity implements ConfigListener, SiteListener, LiveListener, FontDialog.Listener {
+public class SettingActivity extends BaseActivity implements ConfigListener, SiteListener, LiveListener, FontDialog.Listener, ModeDialog.Listener {
 
     private ActivitySettingBinding mBinding;
     private String[] size;
     private String[] fonts;
+    private final String[] modes = new String[3];
 
     public static void start(Activity activity) {
         activity.startActivity(new Intent(activity, SettingActivity.class));
@@ -78,6 +81,10 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
     }
 
     private void setOtherText() {
+        modes[Setting.MODE_DEFAULT] = ResUtil.getString(R.string.setting_mode_default);
+        modes[Setting.MODE_ELDER] = ResUtil.getString(R.string.setting_mode_elder);
+        modes[Setting.MODE_CHILD] = ResUtil.getString(R.string.setting_mode_child);
+        mBinding.modeText.setText(modes[Setting.getMode()]);
         mBinding.soundText.setText(Setting.getSwitch(Setting.isSound()));
         mBinding.sizeText.setText((size = ResUtil.getStringArray(R.array.select_size))[PlayerSetting.getSize()]);
         mBinding.fontText.setText((fonts = ResUtil.getStringArray(R.array.select_font))[Setting.getFont()]);
@@ -95,6 +102,7 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
         mBinding.live.setOnLongClickListener(this::onLiveEdit);
         mBinding.liveHome.setOnClickListener(this::onLiveHome);
         mBinding.wall.setOnLongClickListener(this::onWallEdit);
+        mBinding.mode.setOnClickListener(this::setMode);
         mBinding.player.setOnClickListener(this::onPlayer);
         mBinding.sound.setOnClickListener(this::setSound);
         mBinding.more.setOnClickListener(this::onMore);
@@ -210,7 +218,24 @@ public class SettingActivity extends BaseActivity implements ConfigListener, Sit
         SettingPlayerActivity.start(this);
     }
 
+    private void setMode(View view) {
+        ModeDialog.create().index(Setting.getMode()).show(this);
+    }
+
+    @Override
+    public void setMode(int mode) {
+        if (mode == Setting.MODE_CHILD) {
+            Notify.show(R.string.setting_mode_coming_soon);
+            return;
+        }
+        Setting.putMode(mode);
+        mBinding.modeText.setText(modes[mode]);
+        Notify.show(getString(R.string.setting_mode_changed, modes[mode]));
+        RefreshEvent.mode();
+    }
+
     private void setWallDefault(View view) {
+        if (TextUtils.isEmpty(WallConfig.getUrl())) return;
         Setting.putWall(Setting.getWall() == 4 ? 1 : Setting.getWall() + 1);
         Setting.putWallType(0);
         ConfigEvent.wall();

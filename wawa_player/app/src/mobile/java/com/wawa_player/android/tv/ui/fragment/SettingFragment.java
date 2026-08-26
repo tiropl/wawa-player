@@ -1,5 +1,6 @@
 package com.wawa_player.android.tv.ui.fragment;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,6 @@ import com.wawa_player.android.tv.ui.dialog.FontDialog;
 import com.wawa_player.android.tv.ui.dialog.HistoryDialog;
 import com.wawa_player.android.tv.ui.dialog.LiveDialog;
 import com.wawa_player.android.tv.ui.dialog.SiteDialog;
-import com.wawa_player.android.tv.ui.dialog.ThemeDialog;
 import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.ResUtil;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -42,20 +42,15 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-public class SettingFragment extends BaseFragment implements ConfigListener, SiteListener, LiveListener, ThemeDialog.Listener, FontDialog.Listener {
+public class SettingFragment extends BaseFragment implements ConfigListener, SiteListener, LiveListener, FontDialog.Listener {
 
     private FragmentSettingBinding mBinding;
     private String[] size;
     private String[] fonts;
+    private final String[] modes = new String[3];
 
     public static SettingFragment newInstance() {
         return new SettingFragment();
-    }
-
-    private String getThemeText() {
-        int color = Setting.getThemeColor();
-        if (color == -1) return getString(R.string.setting_off);
-        return getString(color == 0 ? R.string.setting_auto : R.string.setting_custom);
     }
 
     private HomeActivity getRoot() {
@@ -77,7 +72,10 @@ public class SettingFragment extends BaseFragment implements ConfigListener, Sit
     }
 
     private void setOtherText() {
-        mBinding.themeColorText.setText(getThemeText());
+        modes[Setting.MODE_DEFAULT] = getString(R.string.setting_mode_default);
+        modes[Setting.MODE_ELDER] = getString(R.string.setting_mode_elder);
+        modes[Setting.MODE_CHILD] = getString(R.string.setting_mode_child);
+        mBinding.modeText.setText(modes[Setting.getMode()]);
         mBinding.soundText.setText(Setting.getSwitch(Setting.isSound()));
         mBinding.sizeText.setText((size = ResUtil.getStringArray(R.array.select_size))[PlayerSetting.getSize()]);
         mBinding.fontText.setText((fonts = ResUtil.getStringArray(R.array.select_font))[Setting.getFont()]);
@@ -96,10 +94,10 @@ public class SettingFragment extends BaseFragment implements ConfigListener, Sit
         mBinding.liveHome.setOnClickListener(this::onLiveHome);
         mBinding.wall.setOnLongClickListener(this::onWallEdit);
         mBinding.player.setOnClickListener(this::onPlayer);
+        mBinding.mode.setOnClickListener(this::setMode);
         mBinding.sound.setOnClickListener(this::setSound);
         mBinding.more.setOnClickListener(this::onMore);
         mBinding.vodHistory.setOnClickListener(this::onVodHistory);
-        mBinding.themeColor.setOnClickListener(this::onThemeColor);
         mBinding.liveHistory.setOnClickListener(this::onLiveHistory);
         mBinding.wallDefault.setOnClickListener(this::setWallDefault);
         mBinding.wallRefresh.setOnClickListener(this::setWallRefresh);
@@ -156,13 +154,6 @@ public class SettingFragment extends BaseFragment implements ConfigListener, Sit
         LiveConfig.get().setHome(item);
     }
 
-    @Override
-    public void setTheme(int color) {
-        Setting.putThemeColor(color);
-        RefreshEvent.theme();
-        Notify.show(ResUtil.getString(R.string.setting_theme_changed, getThemeText()));
-    }
-
     private void onVod(View view) {
         ConfigDialog.create().vod().show(this);
     }
@@ -206,10 +197,6 @@ public class SettingFragment extends BaseFragment implements ConfigListener, Sit
         HistoryDialog.create().live().show(this);
     }
 
-    private void onThemeColor(View view) {
-        ThemeDialog.show(this);
-    }
-
     private void onMore(View view) {
         getRoot().change(6);
     }
@@ -218,7 +205,22 @@ public class SettingFragment extends BaseFragment implements ConfigListener, Sit
         getRoot().change(2);
     }
 
+    private void setMode(View view) {
+        new MaterialAlertDialogBuilder(requireActivity()).setTitle(R.string.setting_mode).setNegativeButton(R.string.dialog_negative, null).setSingleChoiceItems(modes, Setting.getMode(), (dialog, which) -> {
+            if (which == Setting.MODE_CHILD) {
+                Notify.show(R.string.setting_mode_coming_soon);
+                return;
+            }
+            Setting.putMode(which);
+            mBinding.modeText.setText(modes[which]);
+            Notify.show(getString(R.string.setting_mode_changed, modes[which]));
+            RefreshEvent.mode();
+            dialog.dismiss();
+        }).show();
+    }
+
     private void setWallDefault(View view) {
+        if (TextUtils.isEmpty(WallConfig.getUrl())) return;
         Setting.putWall(Setting.getWall() == 4 ? 1 : Setting.getWall() + 1);
         Setting.putWallType(0);
         ConfigEvent.wall();

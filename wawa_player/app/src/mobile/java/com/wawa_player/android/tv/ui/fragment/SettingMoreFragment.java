@@ -28,6 +28,7 @@ import com.wawa_player.android.tv.ui.dialog.LockChangeDialog;
 import com.wawa_player.android.tv.ui.dialog.LockSetDialog;
 import com.wawa_player.android.tv.ui.dialog.LockVerifyDialog;
 import com.wawa_player.android.tv.ui.dialog.RestoreDialog;
+import com.wawa_player.android.tv.ui.dialog.ThemeDialog;
 import com.wawa_player.android.tv.utils.FileUtil;
 import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.PermissionUtil;
@@ -39,10 +40,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SettingMoreFragment extends BaseFragment implements LockSetDialog.Listener, LockListener, DanmakuListener {
+public class SettingMoreFragment extends BaseFragment implements LockSetDialog.Listener, LockListener, DanmakuListener, ThemeDialog.Listener {
 
     private FragmentSettingMoreBinding mBinding;
-    private final String[] modes = new String[3];
     public static SettingMoreFragment newInstance() {
         return new SettingMoreFragment();
     }
@@ -57,6 +57,12 @@ public class SettingMoreFragment extends BaseFragment implements LockSetDialog.L
         return list.toArray(new String[0]);
     }
 
+    private String getThemeText() {
+        int color = Setting.getThemeColor();
+        if (color == -1) return getString(R.string.setting_off);
+        return getString(color == 0 ? R.string.setting_auto : R.string.setting_custom);
+    }
+
     @Override
     protected ViewBinding getBinding(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
         return mBinding = FragmentSettingMoreBinding.inflate(inflater, container, false);
@@ -68,10 +74,7 @@ public class SettingMoreFragment extends BaseFragment implements LockSetDialog.L
         mBinding.dohText.setText(getDohList()[getDohIndex()]);
         mBinding.incognitoText.setText(Setting.getSwitch(Setting.isIncognito()));
         mBinding.danmakuText.setText(getDanmakuStatus());
-        modes[Setting.MODE_DEFAULT] = getString(R.string.setting_mode_default);
-        modes[Setting.MODE_ELDER] = getString(R.string.setting_mode_elder);
-        modes[Setting.MODE_CHILD] = getString(R.string.setting_mode_child);
-        mBinding.modeText.setText(modes[Setting.getMode()]);
+        mBinding.themeColorText.setText(getThemeText());
         setLockText();
         setCacheText();
     }
@@ -87,7 +90,7 @@ public class SettingMoreFragment extends BaseFragment implements LockSetDialog.L
 
     @Override
     protected void initEvent() {
-        mBinding.mode.setOnClickListener(this::setMode);
+        mBinding.themeColor.setOnClickListener(this::onThemeColor);
         mBinding.lock.setOnClickListener(this::onLock);
         mBinding.incognito.setOnClickListener(this::setIncognito);
         mBinding.danmaku.setOnClickListener(this::onDanmaku);
@@ -122,18 +125,15 @@ public class SettingMoreFragment extends BaseFragment implements LockSetDialog.L
         Notify.show(ResUtil.getString(R.string.setting_incognito_state, Setting.getSwitch(Setting.isIncognito())));
     }
 
-    private void setMode(View view) {
-        new MaterialAlertDialogBuilder(requireActivity()).setTitle(R.string.setting_mode).setNegativeButton(R.string.dialog_negative, null).setSingleChoiceItems(modes, Setting.getMode(), (dialog, which) -> {
-            if (which == Setting.MODE_CHILD) {
-                Notify.show(R.string.setting_mode_coming_soon);
-                return;
-            }
-            Setting.putMode(which);
-            mBinding.modeText.setText(modes[which]);
-            Notify.show(getString(R.string.setting_mode_changed, modes[which]));
-            RefreshEvent.mode();
-            dialog.dismiss();
-        }).show();
+    private void onThemeColor(View view) {
+        ThemeDialog.show(this);
+    }
+
+    @Override
+    public void setTheme(int color) {
+        Setting.putThemeColor(color);
+        RefreshEvent.theme();
+        Notify.show(ResUtil.getString(R.string.setting_theme_changed, getThemeText()));
     }
 
     private void setLockText() {
@@ -211,7 +211,7 @@ public class SettingMoreFragment extends BaseFragment implements LockSetDialog.L
                 mBinding.versionText.setText(BuildConfig.VERSION_NAME);
                 mBinding.dohText.setText(getDohList()[getDohIndex()]);
                 mBinding.incognitoText.setText(Setting.getSwitch(Setting.isIncognito()));
-                mBinding.modeText.setText(modes[Setting.getMode()]);
+                mBinding.themeColorText.setText(getThemeText());
                 setCacheText();
             }
 
