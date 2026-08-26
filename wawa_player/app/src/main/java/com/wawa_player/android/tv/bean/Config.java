@@ -10,6 +10,7 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import com.wawa_player.android.tv.App;
+import com.wawa_player.android.tv.api.config.BuiltinConfig;
 import com.wawa_player.android.tv.db.AppDatabase;
 import com.github.catvod.utils.Prefers;
 import com.google.gson.annotations.SerializedName;
@@ -92,17 +93,26 @@ public class Config {
 
     public static Config vod() {
         Config item = AppDatabase.get().getConfigDao().findOne(0);
-        return item == null ? create(0) : item;
+        if (item != null) return item;
+        Config config = create(0);
+        if (!TextUtils.isEmpty(BuiltinConfig.VOD_URL)) config.url(BuiltinConfig.VOD_URL);
+        return config;
     }
 
     public static Config live() {
         Config item = AppDatabase.get().getConfigDao().findOne(1);
-        return item == null ? create(1) : item;
+        if (item != null) return item;
+        Config config = create(1);
+        if (!TextUtils.isEmpty(BuiltinConfig.LIVE_URL)) config.url(BuiltinConfig.LIVE_URL);
+        return config;
     }
 
     public static Config wall() {
         Config item = AppDatabase.get().getConfigDao().findOne(2);
-        return item == null ? create(2) : item;
+        if (item != null) return item;
+        Config config = create(2);
+        if (!TextUtils.isEmpty(BuiltinConfig.WALL_URL)) config.url(BuiltinConfig.WALL_URL);
+        return config;
     }
 
     public static Config find(int id) {

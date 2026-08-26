@@ -14,7 +14,6 @@ import com.wawa_player.android.tv.api.config.VodConfig;
 import com.wawa_player.android.tv.databinding.ActivitySettingMoreBinding;
 import com.wawa_player.android.tv.db.AppDatabase;
 import com.wawa_player.android.tv.impl.Callback;
-import com.wawa_player.android.tv.impl.ConfigListener;
 import com.wawa_player.android.tv.impl.DanmakuListener;
 import com.wawa_player.android.tv.impl.LockListener;
 import com.wawa_player.android.tv.setting.DanmakuSetting;

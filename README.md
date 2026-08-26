@@ -1,6 +1,6 @@
 ## 目录
 
-- [快速开始](#快速开始)
+- [快速开始](快速开始)
 - [项目架构](#项目架构)
 - [播放器](#播放器)
 - [点播功能](#点播功能)
@@ -25,6 +25,20 @@ cd wawa-player
 # 初始化 media3 子模块
 git submodule update --init --recursive
 ```
+
+### 内置配置（打包定制）
+
+需要打包内置了点播 / 直播 / 壁纸默认地址的定制版时，修改 [BuiltinConfig.java](wawa_player/app/src/main/java/com/wawa_player/android/tv/api/config/BuiltinConfig.java) 中的常量即可：
+
+> 点播地址是主配置，可以内嵌直播和壁纸
+
+| 常量 | 说明 | 默认值 |
+|------|------|--------|
+| `BuiltinConfig.VOD_URL` | 内置点播配置地址（支持仓库 `urls` 数组与单配置 JSON） | 空 |
+| `BuiltinConfig.LIVE_URL` | 内置直播配置地址（支持 M3U / TXT / JSON） | 空 |
+| `BuiltinConfig.WALL_URL` | 内置壁纸地址（支持图片 / GIF / 视频） | 空 |
+
+填入地址后，App 首次启动（本地数据库无对应类型配置）会自动加载内置地址，不再弹出配置窗口；已在使用的用户不受影响，仍以已保存的配置为准。
 
 ---
 
