@@ -61,7 +61,6 @@ import com.wawa_player.android.tv.playback.vod.VodPlaybackHost;
 import com.wawa_player.android.tv.playback.vod.VodPlaybackMedia;
 import com.wawa_player.android.tv.player.media.PlaySpec;
 import com.wawa_player.android.tv.service.PlaybackService;
-import com.wawa_player.android.tv.setting.DanmakuSetting;
 import com.wawa_player.android.tv.setting.PlayerSetting;
 import com.wawa_player.android.tv.setting.Setting;
 import com.wawa_player.android.tv.setting.SpeedSetting;
@@ -364,7 +363,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
         setSeekNextFocusDown(R.id.next);
         setActionFocusBoundary(mBinding.control.action.getRoot());
         PlayerEngineDialog.setText(mBinding.control.action.player);
-        mBinding.control.action.danmaku.setVisibility(DanmakuSetting.isLoad() ? View.VISIBLE : View.GONE);
+        mBinding.control.action.danmaku.setVisibility(View.VISIBLE);
         updateElderModeUI();
     }
 
@@ -391,7 +390,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
         mBinding.control.action.speed.setVisibility(elder ? View.GONE : View.VISIBLE);
         mBinding.control.action.scale.setVisibility(elder ? View.GONE : View.VISIBLE);
         mBinding.control.action.text.setVisibility(elder ? View.GONE : View.VISIBLE);
-        mBinding.control.action.danmaku.setVisibility(elder ? View.GONE : View.VISIBLE);
+        mBinding.control.action.danmaku.setVisibility(View.VISIBLE);
         setMediaOptionVisible();
         mBinding.control.action.opening.setVisibility(elder ? View.GONE : View.VISIBLE);
         mBinding.control.action.ending.setVisibility(elder ? View.GONE : View.VISIBLE);

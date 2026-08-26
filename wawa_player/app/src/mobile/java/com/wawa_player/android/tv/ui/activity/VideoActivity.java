@@ -385,7 +385,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
 
     private void setVideoView() {
         PlayerEngineDialog.setText(mBinding.control.action.player);
-        mBinding.control.action.danmaku.setVisibility(DanmakuSetting.isLoad() ? View.VISIBLE : View.GONE);
+        mBinding.control.action.danmaku.setVisibility(View.VISIBLE);
         mBinding.video.addOnLayoutChangeListener((view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> mPiP.update(this, view));
         updateElderModeUI();
     }
@@ -398,7 +398,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mBinding.control.action.repeat.setVisibility(elder ? View.GONE : View.VISIBLE);
         mBinding.control.action.speed.setVisibility(elder ? View.GONE : View.VISIBLE);
         mBinding.control.action.scale.setVisibility(elder ? View.GONE : View.VISIBLE);
-        mBinding.control.action.danmaku.setVisibility(elder ? View.GONE : (DanmakuSetting.isLoad() ? View.VISIBLE : View.GONE));
+        mBinding.control.action.danmaku.setVisibility(View.VISIBLE);
         if (elder) {
             mBinding.control.action.parse.setVisibility(View.GONE);
             mBinding.control.action.text.setVisibility(View.GONE);
@@ -1201,7 +1201,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
 
     private void showControl() {
         if (service() == null || isInPictureInPictureMode()) return;
-        mBinding.control.danmaku.setVisibility(isLock() || !player().haveDanmaku() ? View.GONE : View.VISIBLE);
+        mBinding.control.danmaku.setVisibility(isLock() ? View.GONE : View.VISIBLE);
         mBinding.control.setting.setVisibility(mHistory == null || isFullscreen() ? View.GONE : View.VISIBLE);
         mBinding.control.right.rotate.setVisibility(isFullscreen() && !isLock() ? View.VISIBLE : View.GONE);
         mBinding.control.keep.setVisibility(mHistory == null || isFullscreen() ? View.GONE : View.VISIBLE);

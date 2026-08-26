@@ -261,7 +261,6 @@
     <string name="setting_live">直播</string>
     <string name="setting_wall">壁紙</string>
     <string name="setting_player">播放設定</string>
-    <string name="setting_danmaku">彈幕設定</string>
     <string name="setting_incognito">無痕模式</string>
 
     <string name="setting_sound">提示音</string>
@@ -368,13 +367,7 @@
     <string name="player_preload_time_state">預載時間：%1$d 秒</string>
 
     <!-- Danmaku -->
-    <string name="danmaku_load">彈幕載入</string>
-    <string name="danmaku_api">搜尋接口</string>
-    <string name="danmaku_auto_load">自動搜尋</string>
-    <string name="danmaku_spider_first">爬蟲優先</string>
-    <string name="danmaku_load_state">彈幕載入：%s</string>
-    <string name="danmaku_auto_state">自動搜尋：%s</string>
-    <string name="danmaku_spider_state">爬蟲優先：%s</string>
+    <string name="danmaku_api">彈幕接口</string>
 
     <!-- Search -->
     <string name="search_keyword">關鍵字…</string>

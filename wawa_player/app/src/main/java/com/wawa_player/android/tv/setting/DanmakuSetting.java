@@ -36,23 +36,6 @@ public class DanmakuSetting {
     private static final int MIN_MAX_FIXED_LINES = 0;
     private static final int MAX_MAX_FIXED_LINES = 10;
 
-    public static boolean isLoad() {
-        return Prefers.getBoolean("danmaku_load");
-    }
-
-    public static void putLoad(boolean danmakuLoad) {
-        Prefers.put("danmaku_load", danmakuLoad);
-        if (danmakuLoad) putShow(true);
-    }
-
-    public static boolean isAuto() {
-        return Prefers.getBoolean("danmaku_auto");
-    }
-
-    public static void putAuto(boolean auto) {
-        Prefers.put("danmaku_auto", auto);
-    }
-
     public static boolean isSpiderFirst() {
         return Prefers.getBoolean("danmaku_spider_first");
     }

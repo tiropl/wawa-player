@@ -1,5 +1,6 @@
 package com.wawa_player.android.tv.ui.fragment;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +17,13 @@ import com.wawa_player.android.tv.databinding.FragmentSettingMoreBinding;
 import com.wawa_player.android.tv.db.AppDatabase;
 import com.wawa_player.android.tv.event.RefreshEvent;
 import com.wawa_player.android.tv.impl.Callback;
+import com.wawa_player.android.tv.impl.DanmakuListener;
 import com.wawa_player.android.tv.impl.LockListener;
+import com.wawa_player.android.tv.setting.DanmakuSetting;
 import com.wawa_player.android.tv.setting.PasswordLock;
 import com.wawa_player.android.tv.setting.Setting;
 import com.wawa_player.android.tv.ui.base.BaseFragment;
+import com.wawa_player.android.tv.ui.dialog.DanmakuApiDialog;
 import com.wawa_player.android.tv.ui.dialog.LockChangeDialog;
 import com.wawa_player.android.tv.ui.dialog.LockSetDialog;
 import com.wawa_player.android.tv.ui.dialog.LockVerifyDialog;
@@ -35,7 +39,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SettingMoreFragment extends BaseFragment implements LockSetDialog.Listener, LockListener {
+public class SettingMoreFragment extends BaseFragment implements LockSetDialog.Listener, LockListener, DanmakuListener {
 
     private FragmentSettingMoreBinding mBinding;
     private final String[] modes = new String[3];
@@ -63,6 +67,7 @@ public class SettingMoreFragment extends BaseFragment implements LockSetDialog.L
         mBinding.versionText.setText(BuildConfig.VERSION_NAME);
         mBinding.dohText.setText(getDohList()[getDohIndex()]);
         mBinding.incognitoText.setText(Setting.getSwitch(Setting.isIncognito()));
+        mBinding.danmakuText.setText(getDanmakuStatus());
         modes[Setting.MODE_DEFAULT] = getString(R.string.setting_mode_default);
         modes[Setting.MODE_ELDER] = getString(R.string.setting_mode_elder);
         modes[Setting.MODE_CHILD] = getString(R.string.setting_mode_child);
@@ -85,11 +90,26 @@ public class SettingMoreFragment extends BaseFragment implements LockSetDialog.L
         mBinding.mode.setOnClickListener(this::setMode);
         mBinding.lock.setOnClickListener(this::onLock);
         mBinding.incognito.setOnClickListener(this::setIncognito);
+        mBinding.danmaku.setOnClickListener(this::onDanmaku);
         mBinding.doh.setOnClickListener(this::setDoh);
         mBinding.cache.setOnClickListener(this::onCache);
         mBinding.backup.setOnClickListener(this::onBackup);
         mBinding.restore.setOnClickListener(this::onRestore);
         mBinding.version.setOnClickListener(this::onVersion);
+    }
+
+    private String getDanmakuStatus() {
+        return getString(TextUtils.isEmpty(DanmakuSetting.getEffectiveApiUrl()) ? R.string.none : R.string.yes);
+    }
+
+    private void onDanmaku(View view) {
+        DanmakuApiDialog.show(this);
+    }
+
+    @Override
+    public void setDanmakuApi(String url) {
+        DanmakuSetting.putApiUrl(url);
+        mBinding.danmakuText.setText(getDanmakuStatus());
     }
 
     private void onVersion(View view) {
