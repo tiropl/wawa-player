@@ -135,6 +135,7 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
     }
 
     private void initConfig(Bundle savedInstanceState) {
+        Server.get().start();
         if (TextUtils.isEmpty(VodConfig.getUrl())) {
             // 未配置线路，冷启动时弹出配置窗口
             if (savedInstanceState == null) ConfigDialog.create().vod().show(this);
