@@ -61,6 +61,7 @@ import com.wawa_player.android.tv.playback.vod.VodPlaybackHost;
 import com.wawa_player.android.tv.playback.vod.VodPlaybackMedia;
 import com.wawa_player.android.tv.player.media.PlaySpec;
 import com.wawa_player.android.tv.service.PlaybackService;
+import com.wawa_player.android.tv.setting.DanmakuSetting;
 import com.wawa_player.android.tv.setting.PlayerSetting;
 import com.wawa_player.android.tv.setting.Setting;
 import com.wawa_player.android.tv.setting.SpeedSetting;
@@ -311,6 +312,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
         mBinding.control.action.ending.setOnClickListener(view -> onEnding());
         mBinding.control.action.repeat.setOnClickListener(view -> onRepeat());
         mBinding.control.action.danmaku.setOnClickListener(view -> onDanmaku());
+        mBinding.control.action.danmakuShow.setOnClickListener(view -> onDanmakuShow());
         mBinding.control.action.edition.setOnClickListener(view -> onEdition());
         mBinding.control.action.chapter.setOnClickListener(view -> onChapter());
         mBinding.control.action.opening.setOnClickListener(view -> onOpening());
@@ -364,6 +366,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
         setActionFocusBoundary(mBinding.control.action.getRoot());
         PlayerEngineDialog.setText(mBinding.control.action.player);
         mBinding.control.action.danmaku.setVisibility(View.VISIBLE);
+        checkDanmakuImg();
         updateElderModeUI();
     }
 
@@ -1074,6 +1077,20 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
         hideControl();
     }
 
+    private void onDanmakuShow() {
+        DanmakuSetting.putShow(!DanmakuSetting.isShow());
+        checkDanmakuImg();
+        syncDanmakuEnabled();
+    }
+
+    private void checkDanmakuImg() {
+        mBinding.control.action.danmakuShow.setImageResource(DanmakuSetting.isShow() ? R.drawable.ic_control_danmaku_on : R.drawable.ic_control_danmaku_off);
+    }
+
+    private void syncDanmakuEnabled() {
+        player().setDanmakuEnabled(DanmakuSetting.isShow());
+    }
+
     private void onToggle() {
         if (isVisible(mBinding.control.getRoot())) hideControl();
         else showControl(getFocus2());
@@ -1118,6 +1135,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
 
     private void showControl(View view) {
         mBinding.control.getRoot().setVisibility(View.VISIBLE);
+        checkDanmakuImg();
         view.requestFocus();
         setR1Callback();
     }

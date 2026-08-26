@@ -84,10 +84,12 @@
             android:tag="2"
             android:text="@string/play_track_video" />
 
-        <com.google.android.material.textview.MaterialTextView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/danmaku"
             style="@style/Control"
-            android:text="@string/danmaku"
+            android:contentDescription="@string/danmaku"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_control_danmaku_setting"
             android:visibility="gone"
             tools:visibility="visible" />
 

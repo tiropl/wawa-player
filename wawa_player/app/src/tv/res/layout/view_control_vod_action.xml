@@ -97,11 +97,20 @@
             android:tag="2"
             android:text="@string/play_track_video" />
 
-        <com.google.android.material.textview.MaterialTextView
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/danmakuShow"
+            style="@style/Control"
+            android:layout_marginEnd="8dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_control_danmaku_on" />
+
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/danmaku"
             style="@style/Control"
             android:layout_marginEnd="8dp"
-            android:text="@string/danmaku"
+            android:contentDescription="@string/danmaku"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_control_danmaku_setting"
             android:visibility="gone"
             tools:visibility="visible" />
 
