@@ -262,7 +262,6 @@
     <string name="setting_live">Live</string>
     <string name="setting_wall">Wallpaper</string>
     <string name="setting_player">Player setting</string>
-    <string name="setting_danmaku">Danmaku setting</string>
     <string name="setting_incognito">Incognito mode</string>
 
     <string name="setting_sound">Sound</string>
@@ -369,13 +368,7 @@
     <string name="player_preload_time_state">Preload time: %1$d seconds</string>
 
     <!-- Danmaku -->
-    <string name="danmaku_load">Danmaku load</string>
-    <string name="danmaku_api">Search API</string>
-    <string name="danmaku_auto_load">Auto search</string>
-    <string name="danmaku_spider_first">Spider first</string>
-    <string name="danmaku_load_state">Danmaku load: %s</string>
-    <string name="danmaku_auto_state">Auto search: %s</string>
-    <string name="danmaku_spider_state">Spider first: %s</string>
+    <string name="danmaku_api">Danmaku API</string>
 
     <!-- Search -->
     <string name="search_keyword">Keywords…</string>

@@ -84,7 +84,7 @@ public class PlayerSetting {
     }
 
     public static int getBackground() {
-        return Math.clamp(Prefers.getInt("background", 2), MIN_BACKGROUND, MAX_BACKGROUND);
+        return Math.clamp(Prefers.getInt("background", 0), MIN_BACKGROUND, MAX_BACKGROUND);
     }
 
     public static void putBackground(int background) {

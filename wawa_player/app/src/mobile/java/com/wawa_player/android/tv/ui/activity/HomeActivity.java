@@ -42,7 +42,6 @@ import com.wawa_player.android.tv.ui.base.BaseActivity;
 import com.wawa_player.android.tv.ui.custom.FragmentStateManager;
 import com.wawa_player.android.tv.ui.dialog.ConfigDialog;
 import com.wawa_player.android.tv.ui.dialog.LockVerifyDialog;
-import com.wawa_player.android.tv.ui.fragment.SettingDanmakuFragment;
 import com.wawa_player.android.tv.ui.fragment.SettingDecodeFragment;
 import com.wawa_player.android.tv.ui.fragment.SettingFragment;
 import com.wawa_player.android.tv.ui.fragment.SettingMoreFragment;
@@ -125,7 +124,6 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
             case 0 -> VodFragment.newInstance();
             case 1 -> SettingFragment.newInstance();
             case 2 -> SettingPlayerFragment.newInstance();
-            case 3 -> SettingDanmakuFragment.newInstance();
             case 4 -> SettingPreloadFragment.newInstance();
             case 5 -> SettingDecodeFragment.newInstance();
             case 6 -> SettingMoreFragment.newInstance();

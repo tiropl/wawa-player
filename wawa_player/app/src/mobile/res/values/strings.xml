@@ -36,6 +36,8 @@
     <string name="control_scale">Scale</string>
     <string name="control_track">Track</string>
     <string name="control_other">Other</string>
+    <string name="control_fullscreen">Fullscreen</string>
+    <string name="control_fullscreen_exit">Exit fullscreen</string>
 
     <!-- Dialog -->
     <string name="dialog_delete_record">Delete all records?</string>

@@ -312,6 +312,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
         mBinding.control.action.ending.setOnClickListener(view -> onEnding());
         mBinding.control.action.repeat.setOnClickListener(view -> onRepeat());
         mBinding.control.action.danmaku.setOnClickListener(view -> onDanmaku());
+        mBinding.control.action.danmakuShow.setOnClickListener(view -> onDanmakuShow());
         mBinding.control.action.edition.setOnClickListener(view -> onEdition());
         mBinding.control.action.chapter.setOnClickListener(view -> onChapter());
         mBinding.control.action.opening.setOnClickListener(view -> onOpening());
@@ -364,7 +365,8 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
         setSeekNextFocusDown(R.id.next);
         setActionFocusBoundary(mBinding.control.action.getRoot());
         PlayerEngineDialog.setText(mBinding.control.action.player);
-        mBinding.control.action.danmaku.setVisibility(DanmakuSetting.isLoad() ? View.VISIBLE : View.GONE);
+        mBinding.control.action.danmaku.setVisibility(View.VISIBLE);
+        checkDanmakuImg();
         updateElderModeUI();
     }
 
@@ -391,7 +393,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
         mBinding.control.action.speed.setVisibility(elder ? View.GONE : View.VISIBLE);
         mBinding.control.action.scale.setVisibility(elder ? View.GONE : View.VISIBLE);
         mBinding.control.action.text.setVisibility(elder ? View.GONE : View.VISIBLE);
-        mBinding.control.action.danmaku.setVisibility(elder ? View.GONE : View.VISIBLE);
+        mBinding.control.action.danmaku.setVisibility(View.VISIBLE);
         setMediaOptionVisible();
         mBinding.control.action.opening.setVisibility(elder ? View.GONE : View.VISIBLE);
         mBinding.control.action.ending.setVisibility(elder ? View.GONE : View.VISIBLE);
@@ -1075,6 +1077,20 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
         hideControl();
     }
 
+    private void onDanmakuShow() {
+        DanmakuSetting.putShow(!DanmakuSetting.isShow());
+        checkDanmakuImg();
+        syncDanmakuEnabled();
+    }
+
+    private void checkDanmakuImg() {
+        mBinding.control.action.danmakuShow.setImageResource(DanmakuSetting.isShow() ? R.drawable.ic_control_danmaku_on : R.drawable.ic_control_danmaku_off);
+    }
+
+    private void syncDanmakuEnabled() {
+        player().setDanmakuEnabled(DanmakuSetting.isShow());
+    }
+
     private void onToggle() {
         if (isVisible(mBinding.control.getRoot())) hideControl();
         else showControl(getFocus2());
@@ -1119,6 +1135,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
 
     private void showControl(View view) {
         mBinding.control.getRoot().setVisibility(View.VISIBLE);
+        checkDanmakuImg();
         view.requestFocus();
         setR1Callback();
     }

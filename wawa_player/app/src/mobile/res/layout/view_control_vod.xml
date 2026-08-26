@@ -138,6 +138,15 @@
             android:scaleType="center"
             android:src="@drawable/ic_control_danmaku_on" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/danmakuSetting"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/danmaku"
+            android:scaleType="center"
+            android:src="@drawable/ic_control_danmaku_setting" />
+
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <include
@@ -157,12 +166,31 @@
         android:orientation="vertical"
         android:paddingBottom="8dp">
 
-        <androidx.media3.ui.PlayerSeekView
-            android:id="@+id/seek"
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <androidx.media3.ui.PlayerSeekView
+                android:id="@+id/seek"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="16dp"
+                android:paddingEnd="8dp" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/fullscreen"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/control_fullscreen"
+                android:scaleType="center"
+                android:src="@drawable/ic_control_fullscreen" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <include
             android:id="@+id/action"

@@ -74,6 +74,10 @@ public class App extends Application implements Application.ActivityLifecycleCal
         if (intent == null) return;
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         get().startActivity(intent);
+        // 进程内重启时，旧 Activity 的 onDestroy 会清空 VodConfig/LiveConfig/Server/OkHttp/Source 等单例，
+        // 与新 Activity 的加载流程存在竞态（首页加载失败或加载动画卡住）。startActivity 已把启动意图
+        // 交给系统，直接结束当前进程，让系统以全新进程冷启动，规避全部竞态。
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     public void setHook(Hook hook) {

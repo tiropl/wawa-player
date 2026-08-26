@@ -209,6 +209,7 @@ public class VodFragment extends BaseFragment implements ConfigListener, SiteLis
     }
 
     private void onSite(View view) {
+        if (Setting.isElderMode()) return;
         SiteDialog.create().change().show(this);
     }
 

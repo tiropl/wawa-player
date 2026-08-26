@@ -13,7 +13,6 @@ import com.wawa_player.android.tv.gson.FilterAdapter;
 import com.wawa_player.android.tv.gson.HeaderAdapter;
 import com.wawa_player.android.tv.gson.MsgAdapter;
 import com.wawa_player.android.tv.gson.UrlAdapter;
-import com.wawa_player.android.tv.setting.DanmakuSetting;
 import com.wawa_player.android.tv.utils.Util;
 import com.github.catvod.utils.Trans;
 import com.google.gson.annotations.JsonAdapter;
@@ -252,7 +251,6 @@ public class Result implements Parcelable {
     }
 
     public List<Danmaku> getDanmaku() {
-        if (!DanmakuSetting.isLoad()) return new ArrayList<>();
         return danmaku = danmaku == null ? new ArrayList<>() : danmaku;
     }
 
