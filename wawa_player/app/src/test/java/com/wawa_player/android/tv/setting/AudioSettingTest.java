@@ -31,4 +31,24 @@ public class AudioSettingTest {
         AudioSetting.putPreset(1);
         assertTrue(AudioSetting.isEnabled());
     }
+
+    @Test public void resetClearsAdvancedStateAndPresetClamps() {
+        AudioSetting.putStability(50);
+        AudioSetting.putDialogue(50);
+        AudioSetting.putBoost(50);
+        AudioSetting.putPreamp(-50);
+        AudioSetting.putCenterGain(50);
+        AudioSetting.putBalance(50);
+        AudioSetting.putChannelMode(99);
+        AudioSetting.putPreset(-1);
+        assertEquals(1, AudioSetting.getPreset());
+        AudioSetting.resetAdvanced();
+        assertEquals(0, AudioSetting.getStability());
+        assertEquals(0, AudioSetting.getDialogue());
+        assertEquals(0, AudioSetting.getBoost());
+        assertEquals(0, AudioSetting.getCenterGain());
+        assertEquals(0, AudioSetting.getBalance());
+        AudioSetting.reset();
+        assertFalse(AudioSetting.isEnabled());
+    }
 }

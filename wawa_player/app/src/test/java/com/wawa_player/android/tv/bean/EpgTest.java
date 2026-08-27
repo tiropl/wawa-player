@@ -4,6 +4,8 @@ import static com.google.common.truth.Truth.assertThat;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,5 +46,38 @@ public class EpgTest {
 
         assertThat(epg.getKey()).isEmpty();
         assertThat(epg.getList()).isEmpty();
+    }
+
+    @Test
+    public void selectionHelpersFindSelectedAndInRangeItems() {
+        Epg epg = Epg.create("news", "2024-01-01");
+        EpgData past = new EpgData();
+        past.setStartTime(1L);
+        past.setEndTime(2L);
+        EpgData current = new EpgData();
+        current.setStartTime(System.currentTimeMillis() - 1000);
+        current.setEndTime(System.currentTimeMillis() + 60000);
+        EpgData future = new EpgData();
+        future.setStartTime(System.currentTimeMillis() + 600000);
+        future.setEndTime(System.currentTimeMillis() + 700000);
+        epg.setList(new ArrayList<>(List.of(past, current, future)));
+
+        assertThat(epg.getSelected()).isEqualTo(-1);
+        assertThat(epg.getInRange()).isEqualTo(1);
+        epg.selected();
+        assertThat(epg.getSelected()).isEqualTo(1);
+        assertThat(epg.getEpgData()).isSameInstanceAs(current);
+    }
+
+    @Test
+    public void emptyEpgUsesSafeDefaults() {
+        Epg epg = new Epg();
+        assertThat(epg.getKey()).isEmpty();
+        assertThat(epg.getDate()).isEmpty();
+        assertThat(epg.getList()).isEmpty();
+        assertThat(epg.getSelected()).isEqualTo(-1);
+        assertThat(epg.getInRange()).isEqualTo(-1);
+        assertThat(epg.getEpgData().getTitle()).isEmpty();
+        assertThat(epg.equal(null)).isFalse();
     }
 }

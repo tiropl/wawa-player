@@ -11,6 +11,7 @@ import org.robolectric.annotation.Config;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(application = com.wawa_player.android.tv.App.class, sdk = 36)
@@ -44,5 +45,33 @@ public class DanmakuAdapterTest {
 
         assertEquals(1, result.getDanmaku().size());
         assertEquals("a.xml", result.getDanmaku().get(0).getUrl());
+    }
+
+    @Test
+    public void deserializeEmptyArrayReturnsEmptyList() {
+        assertEquals(0, Result.objectFrom("{\"danmaku\":[]}").getDanmaku().size());
+    }
+
+    @Test
+    public void deserializeMixedArrayFiltersInvalidEntries() {
+        Result result = Result.objectFrom("{\"danmaku\":[{\"url\":\"ok.xml\"},{\"url\":\"\"},{\"name\":\"missing-url\"}]}");
+
+        assertEquals(1, result.getDanmaku().size());
+        assertEquals("ok.xml", result.getDanmaku().get(0).getUrl());
+    }
+
+    @Test
+    public void deserializeJsonNullReturnsEmptyListThroughResult() {
+        assertTrue(Result.objectFrom("{\"danmaku\":null}").getDanmaku().isEmpty());
+    }
+
+    @Test
+    public void deserializeEmptyPrimitiveIsFilteredOut() {
+        assertTrue(Result.objectFrom("{\"danmaku\":\"\"}").getDanmaku().isEmpty());
+    }
+
+    @Test
+    public void deserializeObjectFailureIsConvertedToEmptyResult() {
+        assertTrue(Result.objectFrom("{\"danmaku\":{\"url\":\"one.xml\"}}").getDanmaku().isEmpty());
     }
 }

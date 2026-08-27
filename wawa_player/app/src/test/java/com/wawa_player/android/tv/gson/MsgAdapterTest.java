@@ -3,6 +3,7 @@ package com.wawa_player.android.tv.gson;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.gson.JsonParser;
+import com.google.gson.JsonParseException;
 
 import org.junit.Test;
 
@@ -20,5 +21,20 @@ public class MsgAdapterTest {
     @Test(expected = UnsupportedOperationException.class)
     public void rejectsJsonNull() {
         adapter.deserialize(JsonParser.parseString("null"), String.class, null);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void rejectsObject() {
+        adapter.deserialize(JsonParser.parseString("{\"message\":\"ok\"}"), String.class, null);
+    }
+
+    @Test
+    public void convertsNegativeAndDecimalNumbersToStrings() {
+        assertThat(adapter.deserialize(JsonParser.parseString("-3.5"), String.class, null)).isEqualTo("-3.5");
+    }
+
+    @Test
+    public void convertsFalseBooleanToString() {
+        assertThat(adapter.deserialize(JsonParser.parseString("false"), String.class, null)).isEqualTo("false");
     }
 }

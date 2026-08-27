@@ -25,4 +25,17 @@ public class VodPlaybackMediaTest {
         MediaMetadata metadata = VodPlaybackMedia.metadata(history, Episode.create("Series", "url"));
         assertEquals("Series", metadata.title); assertEquals("", metadata.artist); assertEquals("Series", metadata.displayTitle);
     }
+
+    @Test public void emptyHistoryAndEpisodeNamesProduceMetadataDefaults() {
+        History history = new History();
+        MediaMetadata metadata = VodPlaybackMedia.metadata(history, new Episode());
+        assertEquals("", metadata.title);
+        assertEquals("", metadata.artist);
+        assertEquals("", metadata.displayTitle);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void missingEpisodeIsRejectedByMetadataBuilder() {
+        VodPlaybackMedia.metadata(new History(), null);
+    }
 }

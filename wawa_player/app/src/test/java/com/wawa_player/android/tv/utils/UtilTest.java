@@ -38,5 +38,24 @@ public class UtilTest {
     public void cleanConvertsBasicHtmlAndNormalizesLines() {
         assertThat(Util.clean("plain text")).isEqualTo("plain text");
         assertThat(Util.clean("<b>Title</b><br> Description")).isEqualTo("Title\nDescription");
+        assertThat(Util.clean("<p>A&nbsp;B</p><p>Ｃ　Ｄ</p>")).isEqualTo("A B\n\nＣ Ｄ");
+    }
+
+    @Test
+    public void formatsTimesAndHandlesInvalidSubstrings() {
+        assertThat(Util.timeMs(0)).isEqualTo("00:00");
+        assertThat(Util.timeMs(-1)).isEqualTo("-00:00");
+        assertThat(Util.timeMs(65_000)).isEqualTo("01:05");
+        assertThat(Util.substring("a", 2)).isEqualTo("a");
+        assertThat(Util.substring(null, 2)).isNull();
+    }
+
+    @Test
+    public void recognizesSpecialEpisodeNameFormats() {
+        assertThat(Util.getNumber("S02E11")).isEqualTo(11);
+        assertThat(Util.getNumber("第3话")).isEqualTo(3);
+        assertThat(Util.getNumber("Movie 2024 4K")).isEqualTo(-1);
+        assertThat(Util.getNumber("Part 0002")).isEqualTo(2);
+        assertThat(Util.getNumber("")).isEqualTo(-1);
     }
 }

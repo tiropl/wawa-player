@@ -24,6 +24,23 @@ public class PlayerSettingTest {
 
     @Test public void backgroundModesHaveCorrectPredicates() {
         PlayerSetting.putBackground(0); assertTrue(PlayerSetting.isBackgroundOff()); assertFalse(PlayerSetting.isBackgroundOn());
+        PlayerSetting.putBackground(1); assertFalse(PlayerSetting.isBackgroundOff()); assertTrue(PlayerSetting.isBackgroundOn()); assertFalse(PlayerSetting.isBackgroundPiP());
         PlayerSetting.putBackground(2); assertFalse(PlayerSetting.isBackgroundOff()); assertTrue(PlayerSetting.isBackgroundOn()); assertTrue(PlayerSetting.isBackgroundPiP());
+    }
+
+    @Test public void engineDebugGpuAndVulkanStatesAreStored() {
+        PlayerSetting.putEngine(PlayerSetting.ENGINE_MPV);
+        assertTrue(PlayerSetting.isMpv());
+        assertFalse(PlayerSetting.isExo());
+        PlayerSetting.putDebug(true);
+        PlayerSetting.putMpvGpuNext(true);
+        PlayerSetting.putMpvVulkan(true);
+        assertTrue(PlayerSetting.isDebug());
+        assertTrue(PlayerSetting.isMpvGpuNext());
+        assertTrue(PlayerSetting.isMpvVulkan());
+        PlayerSetting.putEngine(-1);
+        assertTrue(PlayerSetting.isExo());
+        PlayerSetting.putBackground(99);
+        assertEquals(2, PlayerSetting.getBackground());
     }
 }

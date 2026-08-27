@@ -33,4 +33,31 @@ public class UrlAdapterTest {
         assertThat(odd.getValues()).hasSize(1);
         assertThat(adapter.deserialize(JsonParser.parseString("[]"), Url.class, null).isEmpty()).isTrue();
     }
+
+    @Test
+    public void arrayPreservesPipeAndAdditionalEqualsInValues() {
+        Url url = adapter.deserialize(JsonParser.parseString("[\"name|part\",\"https://host/a|b?x=1=2\"]"), Url.class, null);
+
+        assertThat(url.n(0)).isEqualTo("name|part");
+        assertThat(url.v(0)).isEqualTo("https://host/a|b?x=1=2");
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void nullIsRejectedByStringConversion() {
+        adapter.deserialize(JsonParser.parseString("null"), Url.class, null);
+    }
+
+    @Test
+    public void nonStringArrayElementIsConvertedByGsonPrimitiveAccess() {
+        Url url = adapter.deserialize(JsonParser.parseString("[1,\"url\"]"), Url.class, null);
+        assertThat(url.n(0)).isEqualTo("1");
+        assertThat(url.v(0)).isEqualTo("url");
+    }
+
+    @Test
+    public void objectFormUsesObjectValues() {
+        Url url = adapter.deserialize(JsonParser.parseString("{\"values\":[{\"n\":\"Name\",\"v\":\"url\"}],\"position\":0}"), Url.class, null);
+        assertThat(url.n(0)).isEqualTo("Name");
+        assertThat(url.v()).isEqualTo("url");
+    }
 }

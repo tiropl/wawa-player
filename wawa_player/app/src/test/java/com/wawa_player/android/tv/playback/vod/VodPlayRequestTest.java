@@ -1,6 +1,7 @@
 package com.wawa_player.android.tv.playback.vod;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import com.wawa_player.android.tv.bean.Episode;
 import com.wawa_player.android.tv.bean.Flag;
@@ -14,34 +15,34 @@ import org.robolectric.annotation.Config;
 @RunWith(RobolectricTestRunner.class)
 @Config(application = com.wawa_player.android.tv.App.class, sdk = 36)
 public class VodPlayRequestTest {
-
     @Test
-    public void factoryCapturesKeyFlagAndEpisodeUrl() {
-        Flag flag = Flag.create("line");
-        Episode episode = Episode.create("01", "https://example/episode");
-        VodPlayRequest request = VodPlayRequest.create("vod-key", flag, episode);
+    public void matchesSameRequestAndRejectsDifferentParts() {
+        Flag flag = Flag.create("source", "episode-url");
+        Episode episode = flag.getEpisodes().get(0);
+        VodPlayRequest request = VodPlayRequest.create("key", flag, episode);
 
-        assertThat(request.getKey()).isEqualTo("vod-key");
-        assertThat(request.getFlag()).isEqualTo("line");
-        assertThat(request.getId()).isEqualTo("https://example/episode");
-        assertThat(request.matches("vod-key", flag, episode)).isTrue();
-        assertThat(request.matches("other", flag, episode)).isFalse();
+        assertTrue(request.matches("key", flag, episode));
+        assertTrue(request.matches(VodPlayRequest.create("key", flag, episode)));
+        assertFalse(request.matches((VodPlayRequest) null));
+        assertFalse(request.matches("other", flag, episode));
+        assertFalse(request.matches("key", Flag.create("other", "episode-url"), episode));
+        assertFalse(request.matches("key", flag, Episode.create("other", "other-url")));
+        assertFalse(request.matches("key", null, episode));
+        assertFalse(request.matches("key", flag, null));
     }
 
     @Test
-    public void matchesRequestAndAcceptsUnscopedOrMatchingResult() {
-        Flag flag = Flag.create("line");
-        Episode episode = Episode.create("01", "episode");
-        VodPlayRequest request = VodPlayRequest.create("key", flag, episode);
+    public void acceptsEmptyOrMatchingResultFlagOnly() {
+        Flag flag = Flag.create("source", "url");
+        VodPlayRequest request = VodPlayRequest.create("key", flag, flag.getEpisodes().get(0));
 
-        assertThat(request.matches(VodPlayRequest.create("key", Flag.create("line"), Episode.create("01", "episode")))).isTrue();
-        assertThat(request.matches((VodPlayRequest) null)).isFalse();
-        assertThat(request.accepts(Result.empty())).isTrue();
-        Result scoped = Result.empty();
-        scoped.setFlag("line");
-        assertThat(request.accepts(scoped)).isTrue();
-        scoped.setFlag("other");
-        assertThat(request.accepts(scoped)).isFalse();
-        assertThat(request.accepts(null)).isFalse();
+        assertFalse(request.accepts(null));
+        assertTrue(request.accepts(Result.empty()));
+        Result same = Result.empty();
+        same.setFlag("source");
+        assertTrue(request.accepts(same));
+        Result other = Result.empty();
+        other.setFlag("other");
+        assertFalse(request.accepts(other));
     }
 }

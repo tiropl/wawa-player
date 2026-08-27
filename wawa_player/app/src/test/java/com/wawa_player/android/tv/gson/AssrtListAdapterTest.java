@@ -51,4 +51,37 @@ public class AssrtListAdapterTest {
         assertEquals("Name", response.getSubtitles().get(0).getNativeName());
         assertEquals("Chinese", response.getSubtitles().get(0).getLanguage());
     }
+
+    @Test
+    public void deserializeMultipleItemsPreservesOrder() {
+        AssrtResponse response = AssrtResponse.from("{\"sub\":{\"subs\":[{\"id\":1},{\"id\":2}]}}");
+        assertEquals(2, response.getSubtitles().size());
+        assertEquals(1, response.getSubtitles().get(0).getId());
+        assertEquals(2, response.getSubtitles().get(1).getId());
+    }
+
+    @Test
+    public void deserializeEmptyObjectReturnsEmptyList() {
+        AssrtResponse response = AssrtResponse.from("{\"sub\":{\"subs\":{}}}");
+        assertTrue(response.getSubtitles().isEmpty());
+    }
+
+    @Test
+    public void deserializeJsonNullReturnsEmptyList() {
+        AssrtResponse response = AssrtResponse.from("{\"sub\":{\"subs\":null}}");
+        assertTrue(response.getSubtitles().isEmpty());
+    }
+
+    @Test(expected = com.google.gson.JsonParseException.class)
+    public void directDeserializeWithoutParameterizedTypeIsRejected() {
+        new AssrtListAdapter().deserialize(com.google.gson.JsonParser.parseString("[]"), java.util.List.class, null);
+    }
+
+    @Test
+    public void primitiveAndEmptyStringAreIgnored() {
+        AssrtResponse primitive = AssrtResponse.from("{\"sub\":{\"subs\":1}}");
+        AssrtResponse empty = AssrtResponse.from("{\"sub\":{\"subs\":\"\"}}");
+        assertTrue(primitive.getSubtitles().isEmpty());
+        assertTrue(empty.getSubtitles().isEmpty());
+    }
 }

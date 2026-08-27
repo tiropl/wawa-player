@@ -29,4 +29,37 @@ public class SubtitleSettingTest {
         SubtitleSetting.putStyleSource(SubtitleSetting.STYLE_SOURCE_ORIGINAL);
         assertFalse(SubtitleSetting.isStyleForced());
     }
+
+    @Test public void opacityEdgeAndPositionValuesClamp() {
+        SubtitleSetting.putTextOpacity(2);
+        SubtitleSetting.putBackgroundOpacity(-1);
+        SubtitleSetting.putEdgeOpacity(2);
+        SubtitleSetting.putEdgeWidth(99);
+        SubtitleSetting.putShadow(-1);
+        SubtitleSetting.putPosition(0.2f);
+        assertEquals(1.0f, SubtitleSetting.getTextOpacity(), 0);
+        assertEquals(0.0f, SubtitleSetting.getBackgroundOpacity(), 0);
+        assertEquals(1.0f, SubtitleSetting.getEdgeOpacity(), 0);
+        assertEquals(SubtitleSetting.MAX_EDGE_WIDTH, SubtitleSetting.getEdgeWidth(), 0);
+        assertEquals(SubtitleSetting.MIN_SHADOW, SubtitleSetting.getShadow(), 0);
+        assertEquals(20.0f, SubtitleSetting.getPosition(), 0);
+        assertTrue(SubtitleSetting.isPositionSet());
+    }
+
+    @Test public void resetGroupsRestoreDefaultsAndForceState() {
+        SubtitleSetting.putStyleSource(SubtitleSetting.STYLE_SOURCE_CUSTOM);
+        SubtitleSetting.putScale(2);
+        SubtitleSetting.putPosition(10);
+        SubtitleSetting.putSecondaryTrackId(4);
+        SubtitleSetting.putSecondaryPosition(100);
+        SubtitleSetting.resetAdjust();
+        assertFalse(SubtitleSetting.isScaleForced());
+        assertFalse(SubtitleSetting.isPositionSet());
+        SubtitleSetting.resetAdvanced();
+        assertEquals(SubtitleSetting.SECONDARY_SUBTITLE_OFF, SubtitleSetting.getSecondaryTrackId());
+        assertEquals(10.0f, SubtitleSetting.getSecondaryPosition(), 0);
+        SubtitleSetting.reset();
+        assertFalse(SubtitleSetting.isCustomStyle());
+        assertFalse(SubtitleSetting.isStyleForced());
+    }
 }

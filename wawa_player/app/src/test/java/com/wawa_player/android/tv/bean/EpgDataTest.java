@@ -45,6 +45,24 @@ public class EpgDataTest {
     }
 
     @Test
+    public void nullFieldsUseEmptyDefaultsAndMatchingSelectionToggles() {
+        EpgData empty = new EpgData();
+        assertThat(empty.getTitle()).isEmpty();
+        assertThat(empty.getStart()).isEmpty();
+        assertThat(empty.getEnd()).isEmpty();
+
+        EpgData same = new EpgData();
+        same.setTitle("News");
+        empty.setTitle("News");
+        empty.setSelected(same);
+        assertThat(empty.isSelected()).isTrue();
+        EpgData different = new EpgData();
+        different.setTitle("Sports");
+        empty.setSelected(different);
+        assertThat(empty.isSelected()).isFalse();
+    }
+
+    @Test
     public void equalityIgnoresSelectionAndEpochFields() {
         EpgData first = new EpgData();
         first.setTitle("News");

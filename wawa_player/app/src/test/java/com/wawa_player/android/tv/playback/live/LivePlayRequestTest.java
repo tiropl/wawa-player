@@ -1,6 +1,9 @@
 package com.wawa_player.android.tv.playback.live;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import com.wawa_player.android.tv.bean.Channel;
 import com.wawa_player.android.tv.bean.EpgData;
@@ -14,35 +17,35 @@ import org.robolectric.annotation.Config;
 @RunWith(RobolectricTestRunner.class)
 @Config(application = com.wawa_player.android.tv.App.class, sdk = 36)
 public class LivePlayRequestTest {
-
     @Test
-    public void liveRequestCapturesChannelPositionGroupAndLine() {
-        Group group = Group.create("News", false);
-        Channel channel = Channel.create("CCTV1").group(group);
-        channel.setIndex(1);
-        LivePlayRequest request = LivePlayRequest.live(channel, 1234L);
-
-        assertThat(request.getChannel()).isSameInstanceAs(channel);
-        assertThat(request.getPosition()).isEqualTo(1234L);
-        assertThat(request.isCatchup()).isFalse();
-        assertThat(request.matches(channel)).isTrue();
-    }
-
-    @Test
-    public void catchupRequestExposesDataAndMatchesOnlySameRequest() {
-        Channel channel = Channel.create("CCTV1");
+    public void liveAndCatchupFactoriesExposeTheirState() {
+        Channel channel = Channel.create("News");
         EpgData data = new EpgData();
-        LivePlayRequest request = LivePlayRequest.catchup(channel, data, 10L);
+        LivePlayRequest live = LivePlayRequest.live(channel, 12);
+        LivePlayRequest catchup = LivePlayRequest.catchup(channel, data, 34);
 
-        assertThat(request.isCatchup()).isTrue();
-        assertThat(request.getCatchupData()).isSameInstanceAs(data);
-        assertThat(request.matches(LivePlayRequest.catchup(channel, data, 10L))).isTrue();
-        assertThat(request.matches(LivePlayRequest.live(channel, 10L))).isFalse();
-        assertThat(request.matches((LivePlayRequest) null)).isFalse();
+        assertFalse(live.isCatchup());
+        assertTrue(catchup.isCatchup());
+        assertSame(data, catchup.getCatchupData());
+        assertThrows(IllegalStateException.class, live::getCatchupData);
+        assertTrue(live.matches(channel));
+        assertTrue(live.matches(LivePlayRequest.live(channel, 12)));
+        assertFalse(live.matches((LivePlayRequest) null));
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void liveRequestCannotExposeCatchupData() {
-        LivePlayRequest.live(Channel.create("CCTV1"), 0L).getCatchupData();
+    @Test
+    public void matchingIncludesGroupLinePositionAndCatchupData() {
+        Group group = new Group("News");
+        Channel channel = Channel.create("Channel").group(group);
+        channel.setIndex(2);
+        EpgData data = new EpgData();
+        LivePlayRequest request = LivePlayRequest.catchup(channel, data, 20);
+
+        assertTrue(request.matches(LivePlayRequest.catchup(channel, data, 20)));
+        assertFalse(request.matches(LivePlayRequest.catchup(channel, data, 21)));
+        assertFalse(request.matches(LivePlayRequest.live(channel, 20)));
+        Channel other = Channel.create("Other").group(group);
+        other.setIndex(2);
+        assertFalse(request.matches(other));
     }
 }

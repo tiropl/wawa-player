@@ -26,6 +26,21 @@ public class SnifferTest {
         assertFalse(Sniffer.isVideoFormat("https://example.com/watch?v=https://cdn.example.com/x.mp4"));
     }
 
+    @Test public void getUrlPreservesJsonDollarAndFindsFirstPushUrl() {
+        assertEquals("{\"url\":\"https://cdn.example.com/a.mp4\"}",
+                Sniffer.getUrl("{\"url\":\"https://cdn.example.com/a.mp4\"}"));
+        assertEquals("https://example.com/video.mp4$token",
+                Sniffer.getUrl("https://example.com/video.mp4$token"));
+        assertEquals("https://cdn.example.com/video.mp4", Sniffer.getUrl("x https://cdn.example.com/video.mp4 y https://cdn.example.com/other.mp4"));
+        assertEquals("", Sniffer.getUrl(""));
+    }
+
+    @Test public void identifiesAdditionalFormatsAndExclusions() {
+        assertTrue(Sniffer.isVideoFormat("https://cdn.example.com/video/movie.mp4"));
+        assertTrue(Sniffer.isVideoFormat("https://cdn.example.com/video/movie.mpd"));
+        assertFalse(Sniffer.isVideoFormat("https://cdn.example.com/video/movie.jpg"));
+    }
+
     @Test public void buildsClickableTextAndPreservesPlainText() {
         var value = Sniffer.buildClickable("A [a=cr:{\"url\":\"x\"}/]Go[/a] B", result -> new android.text.style.ClickableSpan() {
             public void onClick(android.view.View widget) { }

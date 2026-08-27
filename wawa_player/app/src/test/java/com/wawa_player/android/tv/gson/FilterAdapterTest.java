@@ -2,6 +2,7 @@ package com.wawa_player.android.tv.gson;
 
 import com.wawa_player.android.tv.bean.Filter;
 import com.wawa_player.android.tv.bean.Result;
+import com.google.gson.JsonParser;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,5 +39,44 @@ public class FilterAdapterTest {
 
         assertNotNull(result);
         assertEquals(0, result.size());
+    }
+
+    @Test
+    public void deserializeObjectWithMissingFiltersUsesEmptyMap() {
+        assertEquals(0, Result.objectFrom("{}").getFilters().size());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void deserializeNullIsRejectedByObjectAccess() {
+        new FilterAdapter().deserialize(JsonParser.parseString("null"), LinkedHashMap.class, null);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void deserializePrimitiveIsRejectedByObjectAccess() {
+        new FilterAdapter().deserialize(JsonParser.parseString("1"), LinkedHashMap.class, null);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void deserializeArrayIsRejectedByObjectAccess() {
+        new FilterAdapter().deserialize(JsonParser.parseString("[]"), LinkedHashMap.class, null);
+    }
+
+    @Test
+    public void deserializeEmptyFilterArrayPreservesEmptyEntry() {
+        LinkedHashMap<String, List<Filter>> result = Result.objectFrom("{\"filters\":{\"genre\":[]}}").getFilters();
+
+        assertEquals(List.of("genre"), List.copyOf(result.keySet()));
+        assertNotNull(result.get("genre"));
+        assertEquals(0, result.get("genre").size());
+    }
+
+    @Test
+    public void deserializeFilterPrimitiveReturnsEmptyResultOnFailure() {
+        assertEquals(0, Result.objectFrom("{\"filters\":{\"genre\":\"drama\"}}").getFilters().size());
+    }
+
+    @Test
+    public void deserializeMixedObjectAndArrayEntriesReturnsEmptyResultOnFailure() {
+        assertEquals(0, Result.objectFrom("{\"filters\":{\"genre\":{\"key\":\"genre\"},\"year\":1}}").getFilters().size());
     }
 }
