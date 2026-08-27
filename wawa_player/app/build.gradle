@@ -49,6 +49,12 @@ android {
         viewBinding = true
     }
 
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+
     signingConfigs {
         release {
             storeFile file(localProps['storeFile'])
@@ -150,6 +156,10 @@ dependencies {
     implementation project(':lib-ui')
     implementation project(':lib-extractor')
     implementation project(':lib-mpvplayer')
+
+    testImplementation libs.junit
+    testImplementation libs.truth
+    testImplementation libs.robolectric
 
     // media3 Maven 依赖（未拷贝源码的模块）。排除官方 media3 的传递依赖，避免与本地源码模块重复。
     implementation('androidx.media3:media3-session:1.11.0') {

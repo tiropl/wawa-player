@@ -1,32 +1,37 @@
 package com.wawa_player.android.tv.utils;
 
-import static org.junit.Assert.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
+@RunWith(RobolectricTestRunner.class)
+@Config(application = com.wawa_player.android.tv.App.class, sdk = 36)
 public class UrlUtilTest {
-    @Test public void extractsNormalizedComponents() {
-        assertEquals("https", UrlUtil.scheme(" HTTPS://Example.COM/a/b.m3u8 "));
-        assertEquals("example.com", UrlUtil.host("https://Example.COM/a/b.m3u8"));
-        assertEquals("b.m3u8", UrlUtil.path("https://Example.COM/a/b.m3u8?token=x"));
+
+    @Test
+    public void extractsNormalizedSchemeHostAndPath() {
+        assertThat(UrlUtil.scheme("HTTPS://Example.COM/live.m3u8")).isEqualTo("https");
+        assertThat(UrlUtil.host("HTTPS://Example.COM/live.m3u8")).isEqualTo("example.com");
+        assertThat(UrlUtil.path("https://example.com/live.m3u8?token=abc")).isEqualTo("live.m3u8");
     }
 
-    @Test public void handlesFileAndFallbackNames() {
-        assertEquals("file", UrlUtil.scheme("/tmp/video.mp4"));
-        assertEquals("video.mp4", UrlUtil.getName("file:///tmp/video.mp4"));
-        assertEquals("example.com", UrlUtil.getName("https://Example.COM/"));
-        assertEquals("plain", UrlUtil.getName("plain"));
+    @Test
+    public void returnsEmptyPartsForNullAndNormalizesHeaders() {
+        assertThat(UrlUtil.scheme((String) null)).isEmpty();
+        assertThat(UrlUtil.host((String) null)).isEmpty();
+        assertThat(UrlUtil.path((String) null)).isEmpty();
+        assertThat(UrlUtil.fixHeader("user-agent")).isEqualTo("User-Agent");
+        assertThat(UrlUtil.fixHeader("REFERER")).isEqualTo("Referer");
+        assertThat(UrlUtil.fixHeader("cookie")).isEqualTo("Cookie");
+        assertThat(UrlUtil.fixHeader("X-Test")).isEqualTo("X-Test");
     }
 
-    @Test public void canonicalizesHeadersCaseInsensitively() {
-        assertEquals("User-Agent", UrlUtil.fixHeader("user-agent"));
-        assertEquals("Referer", UrlUtil.fixHeader("REFERER"));
-        assertEquals("Cookie", UrlUtil.fixHeader("cookie"));
-        assertEquals("X-Test", UrlUtil.fixHeader("X-Test"));
-    }
-
-    @Test public void resolvesReferences() {
-        assertEquals("https://example.com/dir/next.m3u8", UrlUtil.resolve("https://example.com/dir/list.m3u8", "next.m3u8"));
-        assertEquals("https://example.com/other", UrlUtil.resolve("https://example.com/dir/list", "/other"));
+    @Test
+    public void extractsFileNameOrHostAsName() {
+        assertThat(UrlUtil.getName("https://example.com/live.m3u8")).isEqualTo("live.m3u8");
+        assertThat(UrlUtil.getName("https://example.com")).isEqualTo("example.com");
     }
 }

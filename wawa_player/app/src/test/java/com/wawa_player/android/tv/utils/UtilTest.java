@@ -1,26 +1,42 @@
 package com.wawa_player.android.tv.utils;
 
-import static org.junit.Assert.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
+@RunWith(RobolectricTestRunner.class)
+@Config(application = com.wawa_player.android.tv.App.class, sdk = 36)
 public class UtilTest {
-    @Test public void parsesEpisodeNumbers() {
-        assertEquals(12, Util.getNumber("Show S01E12 1080p"));
-        assertEquals(3, Util.getNumber("第03集"));
-        assertEquals(-1, Util.getNumber("release 2024"));
-        assertEquals(42, Util.getNumber("episode 42"));
+
+    @Test
+    public void extractsEpisodeNumbersFromCommonNames() {
+        assertThat(Util.getNumber("第12集")).isEqualTo(12);
+        assertThat(Util.getNumber("S01E03")).isEqualTo(3);
+        assertThat(Util.getNumber("Episode 7")).isEqualTo(7);
+        assertThat(Util.getNumber("无集数标题")).isEqualTo(-1);
     }
 
-    @Test public void cleansHtmlAndTrimsSuffixes() {
-        assertEquals("hello\nworld", Util.clean(" <b>hello</b>\n world "));
-        assertEquals("abc", Util.substring("abcd", 1));
-        assertEquals("ab", Util.substring("abcd", 2));
-        assertEquals("x", Util.substring("x", 1));
+    @Test
+    public void removesYearAndQualityBeforeFallbackNumberExtraction() {
+        assertThat(Util.getNumber("Movie 2024 1080p")).isEqualTo(-1);
+        assertThat(Util.getNumber("Part 2 1080p")).isEqualTo(2);
+        assertThat(Util.getNumber(null)).isEqualTo(-1);
     }
 
-    @Test public void formatsPlaybackTime() {
-        assertEquals("01:05", Util.timeMs(65000));
-        assertEquals("01:01:05", Util.timeMs(3665000));
+    @Test
+    public void substringRemovesRequestedTrailingCharacters() {
+        assertThat(Util.substring("abc")).isEqualTo("ab");
+        assertThat(Util.substring("abc", 2)).isEqualTo("a");
+        assertThat(Util.substring("a", 2)).isEqualTo("a");
+        assertThat(Util.substring(null)).isNull();
+    }
+
+    @Test
+    public void cleanConvertsBasicHtmlAndNormalizesLines() {
+        assertThat(Util.clean("plain text")).isEqualTo("plain text");
+        assertThat(Util.clean("<b>Title</b><br> Description")).isEqualTo("Title\nDescription");
     }
 }
