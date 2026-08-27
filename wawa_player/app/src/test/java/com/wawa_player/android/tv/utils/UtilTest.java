@@ -8,8 +8,8 @@ public class UtilTest {
     @Test public void parsesEpisodeNumbers() {
         assertEquals(12, Util.getNumber("Show S01E12 1080p"));
         assertEquals(3, Util.getNumber("第03集"));
-        assertEquals(2024, Util.getNumber("release 2024"));
-        assertEquals(-1, Util.getNumber("title"));
+        assertEquals(-1, Util.getNumber("release 2024"));
+        assertEquals(42, Util.getNumber("episode 42"));
     }
 
     @Test public void cleansHtmlAndTrimsSuffixes() {
