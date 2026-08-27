@@ -39,10 +39,12 @@ public class VodTest {
         Vod first = Vod.objectFrom("{\"vod_id\":\"1\",\"vod_name\":\"One\"}");
         Vod sameId = Vod.objectFrom("{\"vod_id\":\"1\",\"vod_name\":\"Different\"}");
         Vod sameName = Vod.objectFrom("{\"vod_name\":\"One\"}");
+        Vod otherName = Vod.objectFrom("{\"vod_name\":\"Other\"}");
 
         assertThat(first).isEqualTo(sameId);
         assertThat(first.isSameItem(sameId)).isTrue();
-        assertThat(first).isNotEqualTo(sameName);
+        assertThat(first).isEqualTo(sameName);
+        assertThat(first).isNotEqualTo(otherName);
         assertThat(new Vod().getId()).isEmpty();
     }
 }
