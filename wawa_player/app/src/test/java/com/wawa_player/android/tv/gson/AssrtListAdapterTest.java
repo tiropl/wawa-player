@@ -1,21 +1,21 @@
 package com.wawa_player.android.tv.gson;
 
-import com.wawa_player.android.tv.App;
 import com.wawa_player.android.tv.bean.AssrtResponse;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(RobolectricTestRunner.class)
+@Config(application = com.wawa_player.android.tv.App.class, sdk = 36)
 public class AssrtListAdapterTest {
 
-    @BeforeClass
-    public static void setUpApp() {
-        new App();
-    }
+
 
     @Test
     public void deserializeArrayAndObjectForms() {

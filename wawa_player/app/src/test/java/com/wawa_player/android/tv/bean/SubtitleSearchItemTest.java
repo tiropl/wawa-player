@@ -9,7 +9,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
+@RunWith(RobolectricTestRunner.class)
+@Config(application = com.wawa_player.android.tv.App.class, sdk = 36)
 public class SubtitleSearchItemTest {
 
     @Test

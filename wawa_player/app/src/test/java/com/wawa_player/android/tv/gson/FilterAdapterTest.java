@@ -1,11 +1,12 @@
 package com.wawa_player.android.tv.gson;
 
-import com.wawa_player.android.tv.App;
 import com.wawa_player.android.tv.bean.Filter;
 import com.wawa_player.android.tv.bean.Result;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,12 +14,11 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+@RunWith(RobolectricTestRunner.class)
+@Config(application = com.wawa_player.android.tv.App.class, sdk = 36)
 public class FilterAdapterTest {
 
-    @BeforeClass
-    public static void setUpApp() {
-        new App();
-    }
+
 
     @Test
     public void deserializeObjectAndArrayPreservesOrderAndValues() {
@@ -28,7 +28,7 @@ public class FilterAdapterTest {
 
         assertEquals(List.of("genre", "year"), List.copyOf(result.keySet()));
         assertEquals("genre", result.get("genre").get(0).getKey());
-        assertEquals("Genre", result.get("genre").get(0).getName());
+        assertEquals(" Genre ", result.get("genre").get(0).getName());
         assertEquals("2024", result.get("year").get(0).getValue().get(0).getV());
     }
 

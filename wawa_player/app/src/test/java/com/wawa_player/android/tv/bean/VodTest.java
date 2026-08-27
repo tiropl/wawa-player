@@ -18,9 +18,9 @@ public class VodTest {
         assertThat(vod.getId()).isEqualTo("id");
         assertThat(vod.getName()).isEqualTo("Movie");
         assertThat(vod.getFlags()).hasSize(2);
-        assertThat(vod.getFlags().get(0).getName()).isEqualTo("A");
+        assertThat(vod.getFlags().get(0).getFlag()).isEqualTo("A");
         assertThat(vod.getFlags().get(0).getEpisodes()).hasSize(2);
-        assertThat(vod.getFlags().get(1).getName()).isEqualTo("B");
+        assertThat(vod.getFlags().get(1).getFlag()).isEqualTo("B");
     }
 
     @Test

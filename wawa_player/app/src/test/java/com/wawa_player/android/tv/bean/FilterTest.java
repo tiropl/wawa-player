@@ -15,7 +15,7 @@ public class FilterTest {
 
     @Test
     public void arrayFromParsesValuesAndSetSelectedMarksMatchingValue() {
-        Filter filter = Filter.objectFrom(JsonParser.parseString("{\"key\":\"year\",\"name\":\"Year\",\"init\":\"2024\",\"value\":[{\"n\":\"Now\",\"v\":\"2024\"},{\"v\":\"2023\"}]"));
+        Filter filter = Filter.objectFrom(JsonParser.parseString("{\"key\":\"year\",\"name\":\"Year\",\"init\":\"2024\",\"value\":[{\"n\":\"Now\",\"v\":\"2024\"},{\"v\":\"2023\"}]}"));
 
         assertThat(filter.getKey()).isEqualTo("year");
         assertThat(filter.getName()).isEqualTo("Year");

@@ -1,22 +1,22 @@
 package com.wawa_player.android.tv.gson;
 
-import com.wawa_player.android.tv.App;
 import com.wawa_player.android.tv.bean.Danmaku;
 import com.wawa_player.android.tv.bean.Result;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(RobolectricTestRunner.class)
+@Config(application = com.wawa_player.android.tv.App.class, sdk = 36)
 public class DanmakuAdapterTest {
 
-    @BeforeClass
-    public static void setUpApp() {
-        new App();
-    }
+
 
     @Test
     public void deserializePrimitivePathCreatesDanmaku() {

@@ -7,7 +7,12 @@ import static org.junit.Assert.assertTrue;
 import android.text.Spanned;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
+@RunWith(RobolectricTestRunner.class)
+@Config(application = com.wawa_player.android.tv.App.class, sdk = 36)
 public class SnifferTest {
     @Test public void extractsPushProtocols() {
         assertEquals("magnet:?xt=urn:btih:abc", Sniffer.getUrl("watch magnet:?xt=urn:btih:abc now"));

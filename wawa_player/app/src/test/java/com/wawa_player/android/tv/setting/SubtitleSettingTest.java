@@ -5,7 +5,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
+@RunWith(RobolectricTestRunner.class)
+@Config(application = com.wawa_player.android.tv.App.class, sdk = 36)
 public class SubtitleSettingTest {
     @Test public void clampsAdjustmentsAndTracks() {
         SubtitleSetting.putScale(9); assertEquals(SubtitleSetting.MAX_SCALE, SubtitleSetting.getScale(), 0);

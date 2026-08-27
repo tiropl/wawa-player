@@ -7,7 +7,12 @@ import com.wawa_player.android.tv.bean.Flag;
 import com.wawa_player.android.tv.bean.Result;
 import java.util.Collections;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
+@RunWith(RobolectricTestRunner.class)
+@Config(application = com.wawa_player.android.tv.App.class, sdk = 36)
 public class VodPlaybackStateTest {
     @Test public void requestAndPreloadLifecycle() {
         VodPlaybackState state = new VodPlaybackState(); Flag flag = Flag.create("f", "u"); Episode ep = flag.getEpisodes().get(0);

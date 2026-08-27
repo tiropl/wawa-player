@@ -6,7 +6,12 @@ import com.wawa_player.android.tv.bean.Channel;
 import com.wawa_player.android.tv.bean.Group;
 import androidx.media3.common.MediaMetadata;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
+@RunWith(RobolectricTestRunner.class)
+@Config(application = com.wawa_player.android.tv.App.class, sdk = 36)
 public class LivePlaybackStateTest {
     @Test public void pendingAndPlayingRequestsAreExclusive() {
         LivePlaybackState state = new LivePlaybackState(); Channel channel = Channel.create("C");
