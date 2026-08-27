@@ -1,6 +1,6 @@
 # 直播来源格式说明
 
-LiveParser 依内容自动侦测格式，支援三种直播来源：
+LiveParser 根据内容自动侦测格式，支持三种直播来源：
 
 | 格式               | 判断条件                          |
 |------------------|-------------------------------|
@@ -16,14 +16,14 @@ LiveParser 依内容自动侦测格式，支援三种直播来源：
 - [M3U 格式](#m3u-格式)
 - [JSON 格式](#json-格式)
 - [频道指令](#频道指令)
-- [DRM 宣告](#drm-宣告)
+- [DRM 声明](#drm-声明)
 - [追看/时移](#追看时移)
 
 ---
 
 ## TXT 格式
 
-每行以逗号 `,` 分为两栏。含 `#genre#` 的行宣告分组，含 `://` 的行为频道。
+每行以逗号 `,` 分为两栏。含 `#genre#` 的行声明分组，含 `://` 的行为频道。
 
 ```
 分组名称,#genre#
@@ -34,13 +34,13 @@ LiveParser 依内容自动侦测格式，支援三种直播来源：
 
 | 行的形式             | 说明                              |
 |------------------|---------------------------------|
-| `名称,#genre#`     | 宣告新分组，后续频道归入此分组                 |
+| `名称,#genre#`     | 声明新分组，后续频道归入此分组                 |
 | `名称,URL`         | 频道项目（第二栏含 `://`）                |
-| `名称_密码,#genre#`  | 建立密码保护的隐藏分组                     |
+| `名称_密码,#genre#`  | 创建密码保护的隐藏分组                     |
 | 不含 `://` 的行      | 频道[指令行](#频道指令)，作用至下一个 `#genre#` |
-| 首个频道前无 `#genre#` | 自动建立无名预设分组                      |
+| 首个频道前无 `#genre#` | 自动创建未命名默认分组                      |
 
-**多线路备援**：以 `#` 分隔多个 URL，播放器依序尝试：
+**多线路备援**：以 `#` 分隔多个 URL，播放器依次尝试：
 
 ```
 CCTV1,http://cdn1.example.com/cctv1.m3u8#http://cdn2.example.com/cctv1.m3u8
@@ -52,12 +52,12 @@ CCTV1,http://cdn1.example.com/cctv1.m3u8#http://cdn2.example.com/cctv1.m3u8
 CCTV1,http://cdn1.example.com/cctv1.m3u8|User-Agent=okhttp#http://cdn2.example.com/cctv1.m3u8|Referer=https://example.com/
 ```
 
-**范例：**
+**示例：**
 
 ```
 新闻台,#genre#
 CCTV1,http://cdn1.example.com/cctv1.m3u8#http://cdn2.example.com/cctv1.m3u8
-凤凰资讯,http://example.com/phoenix.m3u8|User-Agent=Mozilla/5.0
+凤凰信息,http://example.com/phoenix.m3u8|User-Agent=Mozilla/5.0
 
 体育台,#genre#
 ua=Mozilla/5.0
@@ -90,11 +90,11 @@ http://example.com/stream.m3u8[|行内标头]
 
 | 属性                    | 说明                                       |
 |-----------------------|------------------------------------------|
-| `tvg-url="…"`         | XMLTV EPG 节目表 URL（仅当 Live 配置未设定 EPG 时生效） |
+| `tvg-url="…"`         | XMLTV EPG 节目表 URL（仅当 Live 配置未设置 EPG 时生效） |
 | `url-tvg="…"`         | 同 `tvg-url`，备用写法（同上条件）                   |
-| `catchup="…"`         | 全域预设追看类型                                 |
+| `catchup="…"`         | 全域默认追看类型                                 |
 | `catchup-source="…"`  | 全域追看 URL 模板                              |
-| `catchup-replace="…"` | 全域追看 URL 替换字串                            |
+| `catchup-replace="…"` | 全域追看 URL 替换字符串                            |
 
 ```m3u
 #EXTM3U tvg-url="https://epg.example.com/xmltv.xml" catchup="append" catchup-source="?playseek=${(b)yyyyMMddHHmmss}-${(e)yyyyMMddHHmmss}"
@@ -112,9 +112,9 @@ http://example.com/stream.m3u8[|行内标头]
 | `tvg-logo="…"`        | 频道 Logo URL        |
 | `group-title="…"`     | 所属分组名称             |
 | `http-user-agent="…"` | 播放请求 User-Agent    |
-| `catchup="…"`         | 此频道追看类型，覆盖全域设定     |
+| `catchup="…"`         | 此频道追看类型，覆盖全域设置     |
 | `catchup-source="…"`  | 此频道追看 URL 模板       |
-| `catchup-replace="…"` | 此频道追看替换字串          |
+| `catchup-replace="…"` | 此频道追看替换字符串          |
 
 ```m3u
 #EXTINF:-1 tvg-id="CCTV1" tvg-name="CCTV-1" tvg-chno="1" tvg-logo="https://example.com/logo/cctv1.png" group-title="央视",CCTV-1
@@ -130,7 +130,7 @@ http://example.com/stream.m3u8[|行内标头]
 | `#EXTVLCOPT:http-user-agent=…` | VLC 风格 User-Agent              |
 | `#EXTVLCOPT:http-referrer=…`   | VLC 风格 Referer                 |
 | `#EXTVLCOPT:http-origin=…`     | VLC 风格 Origin                  |
-| `#KODIPROP:…`                  | DRM 与媒体格式，详见 [DRM 宣告](#drm-宣告) |
+| `#KODIPROP:…`                  | DRM 与媒体格式，详见 [DRM 声明](#drm-声明) |
 
 **行内标头**：URL 末接 `|key=value&key2=value2`：
 
@@ -138,7 +138,7 @@ http://example.com/stream.m3u8[|行内标头]
 http://example.com/stream.m3u8|User-Agent=Mozilla/5.0&Referer=https://example.com/
 ```
 
-**范例：**
+**示例：**
 
 ```m3u
 #EXTM3U tvg-url="https://epg.example.com/xmltv.xml.gz" catchup="append" catchup-source="?playseek=${(b)yyyyMMddHHmmss}-${(e)yyyyMMddHHmmss}"
@@ -166,7 +166,7 @@ parse=1
 click=https://example.com/click
 http://example.com/parse-needed.m3u8
 
-#EXTINF:-1 group-title="带标头频道",自订标头
+#EXTINF:-1 group-title="带标头频道",自定义标头
 #EXTHTTP:{"Authorization":"Bearer mytoken","X-Custom":"value"}
 http://example.com/auth-stream.m3u8
 ```
@@ -175,7 +175,7 @@ http://example.com/auth-stream.m3u8
 
 ## JSON 格式
 
-内容以 `[` 开头时，直接反序列化为 `List<Group>`，结构与 Live 配置的 `groups` 栏位相同。
+内容以 `[` 开头时，直接反串行化为 `List<Group>`，结构与 Live 配置的 `groups` 字段相同。
 
 ```json
 [
@@ -222,7 +222,7 @@ http://example.com/auth-stream.m3u8
 ]
 ```
 
-> 完整栏位定义见 [CONFIG.md — channel 频道项目](CONFIG.md#channel--频道项目)。
+> 完整字段定义见 [CONFIG.md — channel 频道项目](CONFIG.md#channel--频道项目)。
 
 ---
 
@@ -233,14 +233,14 @@ http://example.com/auth-stream.m3u8
 - **TXT**：指令行写在频道行前，作用至下一个 `#genre#`（包含该分组内所有后续频道及其多线路 URL）。
 - **M3U**：指令行写在 `#EXTINF:` 与 URL 行之间，仅作用于紧接的下一个 URL（每个 URL 处理后立即清除）。
 
-| 指令          | 范例                             | 说明                                    |
+| 指令          | 示例                             | 说明                                    |
 |-------------|--------------------------------|---------------------------------------|
 | `ua=`       | `ua=Mozilla/5.0`               | 播放请求 User-Agent                       |
 | `origin=`   | `origin=https://example.com`   | 请求 Origin 标头                          |
 | `referer=`  | `referer=https://example.com/` | 请求 Referer 标头（`referrer=` 双 r 写法同样接受） |
 | `header=`   | `header={"X-Token":"abc"}`     | 任意 HTTP 标头（JSON 格式）                   |
 | `format=`   | `format=mpd`                   | 强制指定媒体格式                              |
-| `parse=`    | `parse=1`                      | `1` = 需透过解析器处理此 URL                   |
+| `parse=`    | `parse=1`                      | `1` = 需通过解析器处理此 URL                   |
 | `click=`    | `click=https://example.com/c`  | 点击拦截处理 URL                            |
 | `forceKey=` | `forceKey=true`                | 强制使用 DRM 金钥                           |
 
@@ -253,20 +253,20 @@ http://example.com/auth-stream.m3u8
 
 ---
 
-## DRM 宣告
+## DRM 声明
 
-仅 M3U 格式支援，透过 `#KODIPROP:` 行宣告，写在 `#EXTINF:` 与 URL 行之间。
+仅 M3U 格式支持，通过 `#KODIPROP:` 行声明，写在 `#EXTINF:` 与 URL 行之间。
 
 | 指令                                                  | 说明                                           |
 |-----------------------------------------------------|----------------------------------------------|
 | `#KODIPROP:inputstream.adaptive.license_type=…`     | DRM 类型：`widevine` / `playready` / `clearkey` |
-| `#KODIPROP:inputstream.adaptive.license_key=…`      | DRM 授权伺服器 URL（或 ClearKey JSON）               |
-| `#KODIPROP:inputstream.adaptive.drm_legacy=类型\|URL` | 快速宣告，类型与授权 URL 合一                            |
+| `#KODIPROP:inputstream.adaptive.license_key=…`      | DRM 授权服务器 URL（或 ClearKey JSON）               |
+| `#KODIPROP:inputstream.adaptive.drm_legacy=类型\|URL` | 快速声明，类型与授权 URL 合一                            |
 | `#KODIPROP:inputstream.adaptive.manifest_type=…`    | 媒体格式：`mpd` / `dash` / `hls`                  |
 | `#KODIPROP:inputstream.adaptive.stream_headers=…`   | 串流请求标头（`key=val&key2=val2`）                  |
 | `#KODIPROP:inputstream.adaptive.common_headers=…`   | 通用请求标头（同上格式）                                 |
 
-**授权伺服器标头**：附加于 `license_key` URL 后，以 `|` 分隔：
+**授权服务器标头**：附加于 `license_key` URL 后，以 `|` 分隔：
 
 ```m3u
 #KODIPROP:inputstream.adaptive.license_key=https://license.example.com/widevine|User-Agent=Mozilla/5.0&token=abc
@@ -307,7 +307,7 @@ http://example.com/clearkey.mpd
 http://example.com/clearkey.mpd
 ```
 
-**`stream_headers` 也支援 `drmScheme` / `drmLicense` 键名：**
+**`stream_headers` 也支持 `drmScheme` / `drmLicense` 键名：**
 
 ```m3u
 #KODIPROP:inputstream.adaptive.stream_headers=drmScheme=widevine&drmLicense=https://license.example.com/
@@ -317,11 +317,11 @@ http://example.com/clearkey.mpd
 
 ## 追看/时移
 
-在 `#EXTM3U`、`#EXTINF` 或 Live 配置的 `catchup` 栏位中设定，频道层级设定覆盖全域。
+在 `#EXTM3U`、`#EXTINF` 或 Live 配置的 `catchup` 字段中设置，频道层级设置覆盖全域。
 
 `type`、`source` 模板变数、`replace` 的完整说明见 [CONFIG.md — catchup 追看/时移](CONFIG.md#catchup--追看时移)。
 
-**范例（`append` 类型）：**
+**示例（`append` 类型）：**
 
 ```
 catchup="append" catchup-source="?playseek=${(b)yyyyMMddHHmmss}-${(e)yyyyMMddHHmmss}"
@@ -329,7 +329,7 @@ catchup="append" catchup-source="?playseek=${(b)yyyyMMddHHmmss}-${(e)yyyyMMddHHm
 
 **`catchup-replace` 用途**：
 
-组合时移 URL 前，先对原始 URL 执行字串替换。格式为 `原字串,新字串`（逗号分隔）：
+组合时移 URL 前，先对原始 URL 执行字符串替换。格式为 `原字符串,新字符串`（逗号分隔）：
 
 ```
 catchup-replace="/PLTV/,/TVOD/"
