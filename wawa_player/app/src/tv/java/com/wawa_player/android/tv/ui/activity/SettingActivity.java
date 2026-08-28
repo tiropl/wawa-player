@@ -5,27 +5,27 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.viewbinding.ViewBinding;
 
-import com.wawa_player.android.tv.App;
 import com.wawa_player.android.tv.R;
 import com.wawa_player.android.tv.databinding.ActivitySettingBinding;
 import com.wawa_player.android.tv.event.RefreshEvent;
-import com.wawa_player.android.tv.setting.PlayerSetting;
+import com.wawa_player.android.tv.impl.LockListener;
+import com.wawa_player.android.tv.setting.PasswordLock;
 import com.wawa_player.android.tv.setting.Setting;
+import com.wawa_player.android.tv.ui.adapter.LockActionAdapter;
 import com.wawa_player.android.tv.ui.base.BaseActivity;
-import com.wawa_player.android.tv.ui.dialog.FontDialog;
+import com.wawa_player.android.tv.ui.dialog.LockActionDialog;
+import com.wawa_player.android.tv.ui.dialog.LockChangeDialog;
+import com.wawa_player.android.tv.ui.dialog.LockSetDialog;
+import com.wawa_player.android.tv.ui.dialog.LockVerifyDialog;
 import com.wawa_player.android.tv.ui.dialog.ModeDialog;
 import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.ResUtil;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-public class SettingActivity extends BaseActivity implements FontDialog.Listener, ModeDialog.Listener {
+public class SettingActivity extends BaseActivity implements ModeDialog.Listener, LockActionDialog.Listener, LockSetDialog.Listener {
 
     private ActivitySettingBinding mBinding;
-    private String[] size;
-    private String[] fonts;
     private final String[] modes = new String[3];
 
     public static void start(Activity activity) {
@@ -41,6 +41,7 @@ public class SettingActivity extends BaseActivity implements FontDialog.Listener
     protected void initView(Bundle savedInstanceState) {
         mBinding.lineConfig.requestFocus();
         setOtherText();
+        setLockText();
     }
 
     private void setOtherText() {
@@ -48,24 +49,24 @@ public class SettingActivity extends BaseActivity implements FontDialog.Listener
         modes[Setting.MODE_ELDER] = ResUtil.getString(R.string.setting_mode_elder);
         modes[Setting.MODE_CHILD] = ResUtil.getString(R.string.setting_mode_child);
         mBinding.modeText.setText(modes[Setting.getMode()]);
-        mBinding.soundText.setText(Setting.getSwitch(Setting.isSound()));
-        mBinding.sizeText.setText((size = ResUtil.getStringArray(R.array.select_size))[PlayerSetting.getSize()]);
-        mBinding.fontText.setText((fonts = ResUtil.getStringArray(R.array.select_font))[Setting.getFont()]);
     }
 
     @Override
     protected void initEvent() {
         mBinding.lineConfig.setOnClickListener(this::onLineConfig);
-        mBinding.size.setOnClickListener(this::setSize);
-        mBinding.font.setOnClickListener(this::setFont);
         mBinding.mode.setOnClickListener(this::setMode);
         mBinding.player.setOnClickListener(this::onPlayer);
-        mBinding.sound.setOnClickListener(this::setSound);
+        mBinding.personal.setOnClickListener(this::onPersonal);
+        mBinding.lock.setOnClickListener(this::onLock);
         mBinding.more.setOnClickListener(this::onMore);
     }
 
     private void onLineConfig(View view) {
         SettingLineActivity.start(this);
+    }
+
+    private void onPersonal(View view) {
+        SettingPersonalActivity.start(this);
     }
 
     private void onMore(View view) {
@@ -92,34 +93,37 @@ public class SettingActivity extends BaseActivity implements FontDialog.Listener
         RefreshEvent.mode();
     }
 
-    private void setSound(View view) {
-        Setting.putSound(!Setting.isSound());
-        mBinding.soundText.setText(Setting.getSwitch(Setting.isSound()));
-        Notify.show(ResUtil.getString(R.string.setting_sound_state, Setting.getSwitch(Setting.isSound())));
+    private void setLockText() {
+        mBinding.lockText.setText(Setting.getSwitch(PasswordLock.isSet()));
     }
 
-    private void setSize(View view) {
-        new MaterialAlertDialogBuilder(this).setTitle(R.string.setting_size).setNegativeButton(R.string.dialog_negative, null).setSingleChoiceItems(size, PlayerSetting.getSize(), (dialog, which) -> {
-            mBinding.sizeText.setText(size[which]);
-            PlayerSetting.putSize(which);
-            RefreshEvent.size();
-            dialog.dismiss();
-        }).show();
-    }
-
-    private void setFont(View view) {
-        FontDialog.create().show(this);
+    private void onLock(View view) {
+        if (PasswordLock.isSet()) LockActionDialog.create().show(this);
+        else LockSetDialog.create().listener(this).show(this);
     }
 
     @Override
-    public void onFontChanged() {
-        mBinding.fontText.setText(fonts[Setting.getFont()]);
-        showRestartDialog();
+    public void onLockAction(int action) {
+        if (action == LockActionAdapter.ACTION_CHANGE) LockChangeDialog.create().show(this);
+        else LockVerifyDialog.create().listener(clearLockListener).show(this);
     }
 
-    private void showRestartDialog() {
-        AlertDialog dialog = new MaterialAlertDialogBuilder(this).setTitle(R.string.restart_app_title).setMessage(R.string.restart_app_content).setPositiveButton(R.string.restart_now, (d, w) -> App.restart()).setNegativeButton(R.string.restart_later, null).show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).requestFocus();
+    @Override
+    public void onLockSet() {
+        setLockText();
     }
+
+    private final LockListener clearLockListener = new LockListener() {
+        @Override
+        public void onLockVerified() {
+            PasswordLock.clear();
+            Notify.show(R.string.lock_clear_success);
+            setLockText();
+        }
+
+        @Override
+        public void onLockCancelled() {
+        }
+    };
 
 }

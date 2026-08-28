@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewbinding.ViewBinding;
 
+import com.wawa_player.android.tv.App;
 import com.wawa_player.android.tv.R;
 import com.wawa_player.android.tv.api.config.LiveConfig;
 import com.wawa_player.android.tv.api.config.VodConfig;
@@ -24,6 +25,7 @@ import com.wawa_player.android.tv.databinding.DialogConfigBinding;
 import com.wawa_player.android.tv.impl.ConfigListener;
 import com.wawa_player.android.tv.ui.custom.CustomTextListener;
 import com.wawa_player.android.tv.utils.FileChooser;
+import com.wawa_player.android.tv.utils.Task;
 import com.wawa_player.android.tv.utils.ViewUtil;
 import com.github.catvod.utils.Path;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -148,9 +150,13 @@ public class ConfigDialog extends BaseAlertDialog {
             showError(binding.error, R.string.dialog_config_error);
             return;
         }
-        if (edit) Config.find(ori, type).url(url).name(name).update();
-        getConfigListener().setConfig(Config.find(url, type));
+        ConfigListener listener = getConfigListener();
         dismiss();
+        Task.submit(() -> {
+            if (edit) Config.find(ori, type).url(url).name(name).update();
+            Config config = Config.find(url, type);
+            App.post(() -> listener.setConfig(config));
+        });
     }
 
     private ConfigListener getConfigListener() {

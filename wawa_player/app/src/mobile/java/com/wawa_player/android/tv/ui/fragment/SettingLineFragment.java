@@ -183,6 +183,7 @@ public class SettingLineFragment extends BaseFragment implements ConfigListener,
     }
 
     private void setWallRefresh(View view) {
+        if (TextUtils.isEmpty(WallConfig.getUrl())) return;
         Setting.putWall(0);
         WallConfig.get().load(getCallback());
     }

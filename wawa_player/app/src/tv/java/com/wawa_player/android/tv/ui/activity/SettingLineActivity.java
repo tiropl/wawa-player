@@ -186,6 +186,7 @@ public class SettingLineActivity extends BaseActivity implements ConfigListener,
     }
 
     private void setWallRefresh(View view) {
+        if (TextUtils.isEmpty(WallConfig.getUrl())) return;
         Setting.putWall(0);
         WallConfig.get().load(getCallback());
     }
