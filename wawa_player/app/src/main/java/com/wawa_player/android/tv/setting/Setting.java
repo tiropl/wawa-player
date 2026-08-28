@@ -118,7 +118,7 @@ public class Setting {
     }
 
     public static boolean isSound() {
-        return Prefers.getBoolean("sound", true);
+        return Prefers.getBoolean("sound", false);
     }
 
     public static void putSound(boolean sound) {

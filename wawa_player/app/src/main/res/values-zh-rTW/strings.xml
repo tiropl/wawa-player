@@ -257,6 +257,7 @@
     <string name="setting_mode_coming_soon">敬請期待</string>
     <string name="setting_mode_changed">操作模式：%s</string>
     <string name="setting_line_name">線路：<xliff:g name="name">%s</xliff:g></string>
+    <string name="setting_line_config">線路設定</string>
     <string name="setting_vod">點播</string>
     <string name="setting_live">直播</string>
     <string name="setting_wall">壁紙</string>
@@ -367,7 +368,7 @@
     <string name="player_preload_time_state">預載時間：%1$d 秒</string>
 
     <!-- Danmaku -->
-    <string name="danmaku_api">彈幕接口</string>
+    <string name="danmaku_api">彈幕</string>
 
     <!-- Search -->
     <string name="search_keyword">關鍵字…</string>

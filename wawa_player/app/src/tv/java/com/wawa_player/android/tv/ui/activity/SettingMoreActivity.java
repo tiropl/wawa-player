@@ -3,7 +3,6 @@ package com.wawa_player.android.tv.ui.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 
 import androidx.viewbinding.ViewBinding;
@@ -14,13 +13,10 @@ import com.wawa_player.android.tv.api.config.VodConfig;
 import com.wawa_player.android.tv.databinding.ActivitySettingMoreBinding;
 import com.wawa_player.android.tv.db.AppDatabase;
 import com.wawa_player.android.tv.impl.Callback;
-import com.wawa_player.android.tv.impl.DanmakuListener;
 import com.wawa_player.android.tv.impl.LockListener;
-import com.wawa_player.android.tv.setting.DanmakuSetting;
 import com.wawa_player.android.tv.setting.PasswordLock;
 import com.wawa_player.android.tv.setting.Setting;
 import com.wawa_player.android.tv.ui.base.BaseActivity;
-import com.wawa_player.android.tv.ui.dialog.DanmakuApiDialog;
 import com.wawa_player.android.tv.ui.dialog.DohDialog;
 import com.wawa_player.android.tv.ui.dialog.LockActionDialog;
 import com.wawa_player.android.tv.ui.dialog.LockChangeDialog;
@@ -40,7 +36,7 @@ import java.util.List;
 
 import com.wawa_player.android.tv.Updater;
 
-public class SettingMoreActivity extends BaseActivity implements DohDialog.Listener, LockActionDialog.Listener, LockSetDialog.Listener, DanmakuListener {
+public class SettingMoreActivity extends BaseActivity implements DohDialog.Listener, LockActionDialog.Listener, LockSetDialog.Listener {
 
     private ActivitySettingMoreBinding mBinding;
     public static void start(Activity activity) {
@@ -68,7 +64,6 @@ public class SettingMoreActivity extends BaseActivity implements DohDialog.Liste
         mBinding.versionText.setText(BuildConfig.VERSION_NAME);
         mBinding.dohText.setText(getDohList()[getDohIndex()]);
         mBinding.incognitoText.setText(Setting.getSwitch(Setting.isIncognito()));
-        mBinding.danmakuText.setText(getDanmakuStatus());
         setLockText();
         setCacheText();
     }
@@ -86,26 +81,11 @@ public class SettingMoreActivity extends BaseActivity implements DohDialog.Liste
     protected void initEvent() {
         mBinding.lock.setOnClickListener(this::onLock);
         mBinding.incognito.setOnClickListener(this::setIncognito);
-        mBinding.danmaku.setOnClickListener(this::onDanmaku);
         mBinding.doh.setOnClickListener(this::setDoh);
         mBinding.backup.setOnClickListener(this::onBackup);
         mBinding.restore.setOnClickListener(this::onRestore);
         mBinding.cache.setOnClickListener(this::onCache);
         mBinding.version.setOnClickListener(this::onVersion);
-    }
-
-    private String getDanmakuStatus() {
-        return getString(TextUtils.isEmpty(DanmakuSetting.getEffectiveApiUrl()) ? R.string.none : R.string.yes);
-    }
-
-    private void onDanmaku(View view) {
-        DanmakuApiDialog.show(this);
-    }
-
-    @Override
-    public void setDanmakuApi(String url) {
-        DanmakuSetting.putApiUrl(url);
-        mBinding.danmakuText.setText(getDanmakuStatus());
     }
 
     private void onVersion(View view) {

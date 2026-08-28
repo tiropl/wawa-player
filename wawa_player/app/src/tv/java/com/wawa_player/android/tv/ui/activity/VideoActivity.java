@@ -1413,7 +1413,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
 
     private View getFocus2() {
         if (Setting.isElderMode()) return mBinding.control.seek;
-        return mFocus2 == null || mFocus2.getVisibility() != View.VISIBLE || mFocus2 == mBinding.control.action.opening || mFocus2 == mBinding.control.action.ending ? mBinding.control.action.next : mFocus2;
+        return mFocus2 == null || mFocus2.getVisibility() != View.VISIBLE || mFocus2 == mBinding.control.action.opening || mFocus2 == mBinding.control.action.ending ? mBinding.control.seek : mFocus2;
     }
 
     @Override

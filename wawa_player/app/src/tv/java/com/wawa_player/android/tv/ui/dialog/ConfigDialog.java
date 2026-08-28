@@ -76,7 +76,7 @@ public class ConfigDialog extends BaseAlertDialog {
 
     @Override
     protected MaterialAlertDialogBuilder getBuilder() {
-        return builder().setView(getBinding().getRoot());
+        return builder().setTitle(R.string.setting_line_config).setView(getBinding().getRoot());
     }
 
     @Override
