@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 public class Updater implements Download.Callback, UpdateListener {
 
     private static final Pattern VERSION = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)");
+    public static final String APK = "update.apk";
 
     private Download download;
     private UpdateDialog dialog;
@@ -38,7 +39,7 @@ public class Updater implements Download.Callback, UpdateListener {
     }
 
     private File getFile() {
-        return Path.cache("update.apk");
+        return Path.cache(APK);
     }
 
     public Updater force() {
@@ -55,6 +56,7 @@ public class Updater implements Download.Callback, UpdateListener {
 
     private void doInBackground(FragmentActivity activity) {
         try {
+            Path.clear(getFile());
             JSONObject object = new JSONObject(OkHttp.string(Github.getRelease()));
             String version = getVersion(object.optString("tag_name"));
             String apk = Github.findApk(object, BuildConfig.FLAVOR_mode, BuildConfig.FLAVOR_abi);
@@ -70,20 +72,21 @@ public class Updater implements Download.Callback, UpdateListener {
         }
     }
 
-    private String getVersion(String tag) {
+    static String getVersion(String tag) {
         Matcher matcher = VERSION.matcher(tag);
         return matcher.find() ? matcher.group() : "";
     }
 
     private boolean isNewer(String remote) {
-        String[] rs = remote.split("\\.");
-        String[] ls = BuildConfig.VERSION_NAME.split("\\.");
-        for (int i = 0; i < 3; i++) {
-            int r = i < rs.length ? Integer.parseInt(rs[i]) : 0;
-            int l = i < ls.length ? Integer.parseInt(ls[i]) : 0;
-            if (r != l) return r > l;
-        }
-        return false;
+        return getVersionCode(remote) > getVersionCode(BuildConfig.VERSION_NAME);
+    }
+
+    static int getVersionCode(String version) {
+        String[] parts = version.split("\\.");
+        int major = parts.length > 0 ? Integer.parseInt(parts[0]) : 0;
+        int minor = parts.length > 1 ? Integer.parseInt(parts[1]) : 0;
+        int patch = parts.length > 2 ? Integer.parseInt(parts[2]) : 0;
+        return major * 10000 + minor * 100 + patch;
     }
 
     private void show(FragmentActivity activity, String version, String desc) {
