@@ -12,16 +12,18 @@ public class ConstantTest {
     public void timeout_constants() {
         assertThat(Constant.INTERVAL_SEEK).isEqualTo(10_000);
         assertThat(Constant.INTERVAL_HIDE).isEqualTo(5_000);
-        assertThat(Constant.TIMEOUT_VOD).isEqualTo(30_000);
-        assertThat(Constant.TIMEOUT_LIVE).isEqualTo(30_000);
+        assertThat(Constant.TIMEOUT_VOD).isEqualTo(10_000);
+        assertThat(Constant.TIMEOUT_LIVE).isEqualTo(10_000);
         assertThat(Constant.TIMEOUT_EPG).isEqualTo(5_000);
         assertThat(Constant.TIMEOUT_XML).isEqualTo(15_000);
         assertThat(Constant.TIMEOUT_PLAY).isEqualTo(15_000);
         assertThat(Constant.TIMEOUT_SYNC).isEqualTo(2_000);
-        assertThat(Constant.TIMEOUT_SEARCH).isEqualTo(30_000);
+        assertThat(Constant.TIMEOUT_SEARCH).isEqualTo(10_000);
         assertThat(Constant.TIMEOUT_PARSE_DEF).isEqualTo(15_000);
         assertThat(Constant.TIMEOUT_PARSE_WEB).isEqualTo(15_000);
         assertThat(Constant.TIMEOUT_PARSE_LIVE).isEqualTo(10_000);
+        assertThat(Constant.TIMEOUT_CONFIG).isEqualTo(15_000);
+        assertThat(Constant.TIMEOUT_SCAN).isEqualTo(1_000);
         assertThat(Constant.HISTORY_TIME).isEqualTo(TimeUnit.DAYS.toMillis(60));
     }
 

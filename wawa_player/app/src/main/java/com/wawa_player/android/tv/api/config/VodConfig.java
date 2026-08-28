@@ -46,6 +46,7 @@ public class VodConfig extends BaseConfig {
     private List<String> flags;
     private List<Parse> parses;
     private boolean configuring;
+    private volatile boolean switching;
 
     public static VodConfig get() {
         return Loader.INSTANCE;
@@ -82,6 +83,7 @@ public class VodConfig extends BaseConfig {
     public static void switchLine(Depot line, Callback callback) {
         Snapshot snapshot = get().new Snapshot();
         get().silent(true);
+        get().switching = true;
         load(Config.find(line.getUrl(), line.getName(), VOD), new Callback() {
             @Override
             public void start() {
@@ -90,6 +92,7 @@ public class VodConfig extends BaseConfig {
 
             @Override
             public void success() {
+                get().switching = false;
                 get().silent(false);
                 ConfigEvent.common();
                 ConfigEvent.vod();
@@ -98,6 +101,7 @@ public class VodConfig extends BaseConfig {
 
             @Override
             public void error(String msg) {
+                get().switching = false;
                 get().silent(false);
                 get().restore(snapshot);
                 App.post(() -> Notify.show(R.string.line_load_fail));
@@ -187,7 +191,7 @@ public class VodConfig extends BaseConfig {
     private void checkJson(Config config, JsonObject object) throws Throwable {
         if (object.has("msg")) {
             throw new Exception(object.get("msg").getAsString());
-        } else if (object.has("urls")) {
+        } else if (object.has("urls") && !switching) {
             parseDepot(config, object);
         } else {
             configuring = false;
