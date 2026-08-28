@@ -92,11 +92,14 @@ public class VideoSettingTest {
     }
 
     @Test
-    public void putPresetClampsValue() {
-        // putPreset clamps to OFF but doesn't store the preset when OFF,
-        // so getPreset returns the default (NATURAL). The enabled flag is the observable effect.
+    public void putPresetOff_clearsEnabledFlagButDoesNotStorePreset() {
+        // putPreset(OFF) sets video_enabled=false but does NOT store video_preset,
+        // so getPreset() returns the default (NATURAL), not OFF.
         VideoSetting.putPreset(-1);
         assertFalse(VideoSetting.isEnabled());
+        // Note: getPreset() returns NATURAL (default) because OFF is never stored.
+        // This is the actual code behavior — the test documents it, not endorses it.
+        assertEquals(VideoEffectPreset.NATURAL, VideoSetting.getPreset());
     }
 
     @Test

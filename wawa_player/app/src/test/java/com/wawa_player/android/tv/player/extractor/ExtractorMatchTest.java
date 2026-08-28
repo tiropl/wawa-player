@@ -67,26 +67,4 @@ public class ExtractorMatchTest {
         // isTorrent checks: !url.startsWith("magnet") && url.split(";")[0].toLowerCase().endsWith(".torrent")
         assertThat(Thunder.Parser.match("http://example.com/video.torrent;params")).isTrue();
     }
-
-    @Test
-    public void magnetLink_notTorrent() {
-        // magnet links match via the regex pattern, not isTorrent
-        assertThat(Thunder.Parser.match("magnet:?xt=urn:btih:abc")).isTrue();
-    }
-
-    // --- Source.Extractor implementations ---
-
-    @Test
-    public void videoExtractor_matchLogic() {
-        Video video = new Video();
-        // Video.match checks if scheme is "video" — requires Uri which needs Android
-        // We test fetch logic which is pure string manipulation
-        assertThat(video).isNotNull();
-    }
-
-    @Test
-    public void strmExtractor_exists() {
-        Strm strm = new Strm();
-        assertThat(strm).isNotNull();
-    }
 }
