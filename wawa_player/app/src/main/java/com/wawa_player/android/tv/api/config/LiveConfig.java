@@ -26,6 +26,7 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -139,6 +140,12 @@ public class LiveConfig extends BaseConfig {
     }
 
     @Override
+    protected void loadConfig(int id, Config config, Callback callback) {
+        LineConfig.refreshSync(LIVE);
+        super.loadConfig(id, config, callback);
+    }
+
+    @Override
     protected void load(Config config) throws Throwable {
         String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), getTag(), TIMEOUT);
         if (Json.isObj(json)) checkJson(config, Json.parse(json).getAsJsonObject());
@@ -168,10 +175,6 @@ public class LiveConfig extends BaseConfig {
     }
 
     private void parseText(Config config, String text) {
-        if (configuring) {
-            for (Depot old : LineConfig.getLines(LIVE)) Config.delete(old.getUrl(), LIVE);
-            LineConfig.clear(LIVE);
-        }
         configuring = false;
         Live live = new Live(UrlUtil.getName(config.getUrl()), config.getUrl()).sync();
         lives = new ArrayList<>(List.of(live));
@@ -185,10 +188,6 @@ public class LiveConfig extends BaseConfig {
         } else if (object.has("urls")) {
             parseDepot(config, object);
         } else {
-            if (configuring) {
-                for (Depot old : LineConfig.getLines(LIVE)) Config.delete(old.getUrl(), LIVE);
-                LineConfig.clear(LIVE);
-            }
             configuring = false;
             parseConfig(config, object);
         }
@@ -198,6 +197,11 @@ public class LiveConfig extends BaseConfig {
         List<Depot> items = Depot.arrayFrom(object.getAsJsonArray("urls").toString());
         if (items.isEmpty()) throw new Exception("Depot urls is empty");
         configuring = false;
+        Set<String> activeUrls = new HashSet<>();
+        for (Depot d : items) activeUrls.add(d.getUrl());
+        for (Config c : Config.getAll(LIVE)) {
+            if (!activeUrls.contains(c.getUrl())) Config.delete(c.getUrl(), LIVE);
+        }
         LineConfig.save(LIVE, config.getUrl(), items);
         load(this.config = Config.find(items.get(0), LIVE));
         Config.delete(config.getUrl());

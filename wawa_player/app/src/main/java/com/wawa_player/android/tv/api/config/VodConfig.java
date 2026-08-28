@@ -25,8 +25,10 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -166,6 +168,12 @@ public class VodConfig extends BaseConfig {
     }
 
     @Override
+    protected void loadConfig(int id, Config config, Callback callback) {
+        LineConfig.refreshSync(VOD);
+        super.loadConfig(id, config, callback);
+    }
+
+    @Override
     protected void load(Config config) throws Throwable {
         String json = Decoder.getJson(UrlUtil.convert(config.getUrl()), getTag(), TIMEOUT);
         checkJson(config, Json.parse(json).getAsJsonObject());
@@ -182,10 +190,6 @@ public class VodConfig extends BaseConfig {
         } else if (object.has("urls")) {
             parseDepot(config, object);
         } else {
-            if (configuring) {
-                for (Depot old : LineConfig.getLines(VOD)) Config.delete(old.getUrl(), VOD);
-                LineConfig.clear(VOD);
-            }
             configuring = false;
             parseConfig(config, object);
         }
@@ -195,6 +199,11 @@ public class VodConfig extends BaseConfig {
         List<Depot> items = Depot.arrayFrom(object.getAsJsonArray("urls").toString());
         if (items.isEmpty()) throw new Exception("Depot urls is empty");
         configuring = false;
+        Set<String> activeUrls = new HashSet<>();
+        for (Depot d : items) activeUrls.add(d.getUrl());
+        for (Config c : Config.getAll(VOD)) {
+            if (!activeUrls.contains(c.getUrl())) Config.delete(c.getUrl(), VOD);
+        }
         LineConfig.save(VOD, config.getUrl(), items);
         load(this.config = Config.find(items.get(0), VOD));
         Config.delete(config.getUrl());
