@@ -3,6 +3,7 @@ package com.wawa_player.android.tv.api.config;
 import android.text.TextUtils;
 
 import com.wawa_player.android.tv.App;
+import com.wawa_player.android.tv.Constant;
 import com.wawa_player.android.tv.R;
 import com.wawa_player.android.tv.api.Decoder;
 import com.wawa_player.android.tv.bean.Config;
@@ -60,7 +61,7 @@ public class LineConfig {
         try {
             clear(type);
             Server.get().start();
-            String json = Decoder.getJson(UrlUtil.convert(source), "LineConfig", 15000);
+            String json = Decoder.getJson(UrlUtil.convert(source), "LineConfig", Constant.TIMEOUT_CONFIG);
             JsonObject object = Json.parse(json).getAsJsonObject();
             if (!object.has("urls")) throw new Exception("Line urls is empty");
             List<Depot> items = Depot.arrayFrom(object.getAsJsonArray("urls").toString());

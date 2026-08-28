@@ -111,6 +111,18 @@ public class OkHttp {
         }
     }
 
+    public static String string(String url, long timeout) {
+        if (!url.startsWith("http")) return "";
+        Call call = newCall(url);
+        call.timeout().timeout(timeout, TimeUnit.MILLISECONDS);
+        try (Response res = call.execute()) {
+            return res.body().string();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
     public static String string(String url, Map<String, String> headers) {
         if (!url.startsWith("http")) return "";
         try (Response res = newCall(url, headers).execute()) {
