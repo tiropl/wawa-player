@@ -59,7 +59,6 @@ public class LineConfig {
         String source = getSource(type);
         if (TextUtils.isEmpty(source)) return;
         try {
-            clear(type);
             Server.get().start();
             String json = Decoder.getJson(UrlUtil.convert(source), "LineConfig", Constant.TIMEOUT_CONFIG);
             JsonObject object = Json.parse(json).getAsJsonObject();

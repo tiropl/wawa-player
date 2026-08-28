@@ -1,7 +1,6 @@
 package com.wawa_player.android.tv.utils;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -16,7 +15,6 @@ import com.bumptech.glide.module.AppGlideModule;
 import com.github.catvod.net.OkHttp;
 
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 
 @GlideModule
 public class OkGlideModule extends AppGlideModule {
@@ -29,7 +27,5 @@ public class OkGlideModule extends AppGlideModule {
     @Override
     public void registerComponents(@NonNull Context context, @NonNull Glide glide, Registry registry) {
         registry.replace(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(OkHttp.client()));
-        // Prepend SafeBitmapDecoder to handle DRM decoder failures (e.g. MediaTek DcfDecoder)
-        registry.prepend(ByteBuffer.class, Bitmap.class, new SafeBitmapDecoder());
     }
 }

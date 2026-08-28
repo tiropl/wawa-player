@@ -110,7 +110,6 @@ public class SettingPersonalFragment extends BaseFragment implements FontDialog.
     }
 
     private void setWallDefault(View view) {
-        if (TextUtils.isEmpty(WallConfig.getUrl())) return;
         Setting.putWall(Setting.getWall() == 4 ? 1 : Setting.getWall() + 1);
         Setting.putWallType(0);
         ConfigEvent.wall();

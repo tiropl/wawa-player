@@ -216,18 +216,21 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     }
 
     private void initConfig(Bundle savedInstanceState) {
-        Server.get().start();
         if (TextUtils.isEmpty(VodConfig.getUrl())) {
+            // 配置对话框需要本地服务地址（二维码/推送），同步启动服务
+            Server.get().start();
             // 未配置线路，冷启动时弹出配置窗口
             if (savedInstanceState == null) ConfigDialog.create().vod().show(this);
             return;
         }
         // 重建时配置已加载，避免重复拉取
         if (savedInstanceState != null) return;
-        mBinding.progressLayout.showProgress();
-        VodConfig.get().init().load(getCallback());
-        LiveConfig.get().init().load();
-        WallConfig.get().init();
+        // 加载配置期间不遮罩全屏，功能按钮行保持可见可点，仅在推荐区显示进度行
+        if (mAdapter.indexOf("progress") == -1) mAdapter.add("progress");
+        // 异步读取数据库配置，避免主线程查询阻塞首帧；服务由 loadConfig 在后台线程启动
+        VodConfig.get().initAsync(vodConfig -> vodConfig.load(getCallback()));
+        LiveConfig.get().initAsync(liveConfig -> liveConfig.load());
+        WallConfig.get().initAsync(wallConfig -> {});
     }
 
     @Override

@@ -120,7 +120,7 @@
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/setting_wall_switch"
+                    android:text="@string/setting_wall_reset"
                     android:textColor="@color/white"
                     android:textSize="18sp" />
 
@@ -140,7 +140,7 @@
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/setting_wall_reset"
+                    android:text="@string/setting_wall_switch"
                     android:textColor="@color/white"
                     android:textSize="18sp" />
 
