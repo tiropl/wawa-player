@@ -11,6 +11,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.media3.common.C;
 import androidx.viewbinding.ViewBinding;
 
 import com.wawa_player.android.tv.App;
@@ -21,11 +22,9 @@ import com.wawa_player.android.tv.databinding.DialogControlBinding;
 import com.wawa_player.android.tv.playback.PlaybackAction;
 import com.wawa_player.android.tv.player.PlayerManager;
 import com.wawa_player.android.tv.setting.Setting;
-import com.wawa_player.android.tv.setting.SpeedSetting;
 import com.wawa_player.android.tv.ui.adapter.ParseAdapter;
 import com.wawa_player.android.tv.ui.custom.SpaceItemDecoration;
 import com.wawa_player.android.tv.utils.ResUtil;
-import com.wawa_player.android.tv.utils.SliderUtil;
 import com.wawa_player.android.tv.utils.Timer;
 import com.wawa_player.android.tv.utils.Util;
 
@@ -60,7 +59,7 @@ public final class ControlDialog {
     public void show(FragmentActivity activity) {
         FragmentManager manager = activity.getSupportFragmentManager();
         for (Fragment fragment : manager.getFragments()) if (fragment instanceof BottomSheet || fragment instanceof SideSheet) return;
-        if (Util.isFullscreen(activity)) new SideSheet(parent, parse, player).show(manager, null);
+        if (Util.isFullscreenLand(activity)) new SideSheet(parent, parse, player).show(manager, null);
         else new BottomSheet(parent, parse, player).show(manager, null);
     }
 
@@ -80,17 +79,13 @@ public final class ControlDialog {
         b.opening.setText(p.control.action.opening.getText());
         b.repeat.setSelected(p.control.action.repeat.isSelected());
         b.timer.setSelected(Timer.get().isRunning());
-        SpeedSetting.setup(b.speed);
         setMediaOptionVisible(b, player);
-        setTrackVisible(b, p);
+        setTrackVisible(b, p, player);
         setScaleText(b, p, scales, scale);
         setPlayer(b, p, player);
         setParse(b, parse, listener);
         b.info.setOnClickListener(v -> dismiss(dialog, p.control.info));
         b.timer.setOnClickListener(v -> onTimer(dialog));
-        b.speed.addOnChangeListener((slider, value, fromUser) -> {
-            if (fromUser) SpeedSetting.putPlayback(player.setSpeed(value));
-        });
         for (TextView view : scales) view.setOnClickListener(v -> setScale(v, scales, activity));
         b.text.setOnClickListener(v -> dismiss(dialog, p.control.action.text));
         b.audio.setOnClickListener(v -> dismiss(dialog, p.control.action.audio));
@@ -100,6 +95,8 @@ public final class ControlDialog {
         b.edition.setOnClickListener(v -> dismiss(dialog, p.control.action.edition));
         b.chapter.setOnClickListener(v -> dismiss(dialog, p.control.action.chapter));
         b.repeat.setOnClickListener(v -> active(b.repeat, p.control.action.repeat));
+        b.replay.setOnClickListener(v -> dismiss(dialog, p.control.action.replay));
+        b.reset.setOnClickListener(v -> dismiss(dialog, p.control.action.reset));
         b.decode.setOnClickListener(v -> click(b.decode, p.control.action.decode));
         b.ending.setOnClickListener(v -> click(b.ending, p.control.action.ending));
         b.opening.setOnClickListener(v -> click(b.opening, p.control.action.opening));
@@ -156,9 +153,9 @@ public final class ControlDialog {
     }
 
     private static void setPlayer(DialogControlBinding b, ActivityVideoBinding p, PlayerManager player) {
-        SliderUtil.setValue(b.speed, player.getSpeed());
         b.player.setText(p.control.action.player.getText());
         b.decode.setVisibility(Setting.isElderMode() ? View.GONE : View.VISIBLE);
+        b.replay.setVisibility(Setting.isElderMode() ? View.GONE : View.VISIBLE);
         b.danmaku.setVisibility(View.VISIBLE);
     }
 
@@ -167,10 +164,10 @@ public final class ControlDialog {
         b.parseText.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
-    private static void setTrackVisible(DialogControlBinding b, ActivityVideoBinding p) {
+    private static void setTrackVisible(DialogControlBinding b, ActivityVideoBinding p, PlayerManager player) {
         b.text.setVisibility(p.control.action.text.getVisibility());
-        b.audio.setVisibility(p.control.action.audio.getVisibility());
         b.video.setVisibility(p.control.action.video.getVisibility());
+        b.audio.setVisibility(Setting.isElderMode() || player.haveTrack(C.TRACK_TYPE_AUDIO) ? View.VISIBLE : View.GONE);
         b.track.setVisibility(b.text.getVisibility() == View.GONE && b.audio.getVisibility() == View.GONE && b.video.getVisibility() == View.GONE ? View.GONE : View.VISIBLE);
     }
 

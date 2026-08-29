@@ -18,14 +18,25 @@
             android:id="@+id/play"
             android:layout_width="44dp"
             android:layout_height="44dp"
-            android:layout_marginEnd="2dp"
+            android:layout_marginEnd="0dp"
             android:background="@drawable/shape_control"
             android:src="@drawable/exo_icon_play" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/danmaku"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="12dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/danmaku"
+            android:scaleType="center"
+            android:src="@drawable/ic_control_danmaku_on" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/danmakuSetting"
             android:layout_width="44dp"
             android:layout_height="44dp"
+            android:layout_marginStart="12dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/danmaku"
             android:scaleType="center"
@@ -34,6 +45,7 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/episodes"
             style="@style/Control"
+            android:layout_marginStart="12dp"
             android:text="@string/detail_episode" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -58,24 +70,20 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/reset"
             style="@style/Control"
-            android:text="@string/play_reset" />
+            android:layout_marginStart="12dp"
+            android:text="@string/play_reset"
+            android:visibility="gone" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/replay"
             style="@style/Control"
-            android:text="@string/play_replay" />
+            android:text="@string/play_replay"
+            android:visibility="gone" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/repeat"
             style="@style/Control"
             android:text="@string/play_repeat"
-            android:visibility="gone" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/speed"
-            style="@style/Control"
-            android:fontFeatureSettings="tnum"
-            android:text="@string/play_speed"
             android:visibility="gone" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -92,18 +100,28 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/text"
             style="@style/Control"
+            android:layout_marginStart="12dp"
             android:tag="3"
             android:text="@string/play_track_text" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/speed"
+            style="@style/Control"
+            android:layout_marginStart="12dp"
+            android:fontFeatureSettings="tnum"
+            android:text="@string/play_speed" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/audio"
             style="@style/Control"
             android:tag="1"
-            android:text="@string/play_track_audio" />
+            android:text="@string/play_track_audio"
+            android:visibility="gone" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/video"
             style="@style/Control"
+            android:layout_marginStart="12dp"
             android:tag="2"
             android:text="@string/play_track_video" />
 
