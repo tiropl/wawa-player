@@ -11,7 +11,25 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/play"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginEnd="2dp"
+            android:background="@drawable/shape_control"
+            android:src="@drawable/exo_icon_play" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/danmakuSetting"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/danmaku"
+            android:scaleType="center"
+            android:src="@drawable/ic_control_danmaku_setting" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/episodes"
@@ -28,12 +46,14 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/player"
             style="@style/Control"
-            android:text="@string/play_exo" />
+            android:text="@string/play_exo"
+            android:visibility="gone" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/decode"
             style="@style/Control"
-            android:text="@string/play_decode" />
+            android:text="@string/play_decode"
+            android:visibility="gone" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/reset"
@@ -48,18 +68,21 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/repeat"
             style="@style/Control"
-            android:text="@string/play_repeat" />
+            android:text="@string/play_repeat"
+            android:visibility="gone" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/speed"
             style="@style/Control"
             android:fontFeatureSettings="tnum"
-            android:text="@string/play_speed" />
+            android:text="@string/play_speed"
+            android:visibility="gone" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/scale"
             style="@style/Control"
-            android:text="@string/play_scale" />
+            android:text="@string/play_scale"
+            android:visibility="gone" />
 
         <View
             android:layout_width="0dp"
@@ -101,12 +124,14 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/opening"
             style="@style/Control"
-            android:text="@string/play_op" />
+            android:text="@string/play_op"
+            android:visibility="gone" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/ending"
             style="@style/Control"
-            android:text="@string/play_ed" />
+            android:text="@string/play_ed"
+            android:visibility="gone" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </HorizontalScrollView>
