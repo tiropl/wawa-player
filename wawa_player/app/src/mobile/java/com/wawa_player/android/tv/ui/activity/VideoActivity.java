@@ -294,6 +294,10 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (v, insets) -> setStatusBar(insets));
         mKeyDown = CustomKeyDown.create(this, mBinding.player);
         mFrameParams = mBinding.video.getLayoutParams();
+        if (isPort()) {
+            mFrameParams.height = ResUtil.getScreenHeight() * 3 / 10;
+            mBinding.video.setLayoutParams(mFrameParams);
+        }
         mBinding.progressLayout.showProgress();
         mBinding.swipeLayout.setEnabled(false);
         mClock = Clock.create();
@@ -322,18 +326,19 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mBinding.director.setOnClickListener(view -> onDirector());
         mBinding.name.setOnLongClickListener(view -> onChange());
         mBinding.content.setOnLongClickListener(view -> onCopy());
+        mBinding.control.home.setOnClickListener(view -> onHome());
         mBinding.control.back.setOnClickListener(view -> onBack());
         mBinding.control.cast.setOnClickListener(view -> onCast());
         mBinding.control.info.setOnClickListener(view -> onInfo());
         mBinding.control.keep.setOnClickListener(view -> onKeep());
         mBinding.control.play.setOnClickListener(view -> checkPlay());
-        mBinding.control.next.setOnClickListener(view -> checkNext());
-        mBinding.control.prev.setOnClickListener(view -> checkPrev());
+        mBinding.control.centerPlay.setOnClickListener(view -> checkPlay());
         mBinding.control.setting.setOnClickListener(view -> onSetting());
         mBinding.control.title.setOnLongClickListener(view -> onChange());
         mBinding.control.right.lock.setOnClickListener(view -> onLock());
         mBinding.control.right.rotate.setOnClickListener(view -> onRotate());
         mBinding.control.danmaku.setOnClickListener(view -> onDanmakuShow());
+        mBinding.control.danmakuSetting.setOnClickListener(view -> onDanmaku());
         mBinding.control.fullscreen.setOnClickListener(view -> onFullscreen());
         mBinding.control.action.text.setOnClickListener(this::onTrack);
         mBinding.control.action.audio.setOnClickListener(this::onTrack);
@@ -348,7 +353,6 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mBinding.control.action.ending.setOnClickListener(view -> onEnding());
         mBinding.control.action.repeat.setOnClickListener(view -> onRepeat());
         mBinding.control.action.opening.setOnClickListener(view -> onOpening());
-        mBinding.control.danmakuSetting.setOnClickListener(view -> onDanmaku());
         mBinding.control.action.edition.setOnClickListener(view -> onEdition());
         mBinding.control.action.chapter.setOnClickListener(view -> onChapter());
         mBinding.control.action.episodes.setOnClickListener(view -> onEpisodes());
@@ -879,8 +883,6 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
 
     private void setEpisodeAdapter(List<Episode> items) {
         mBinding.control.action.episodes.setVisibility(items.size() < 2 ? View.GONE : View.VISIBLE);
-        mBinding.control.next.setVisibility(items.size() < 2 ? View.GONE : View.VISIBLE);
-        mBinding.control.prev.setVisibility(items.size() < 2 ? View.GONE : View.VISIBLE);
         mBinding.reverse.setVisibility((items.size() < 2 || Setting.isElderMode()) ? View.GONE : View.VISIBLE);
         mBinding.episode.setVisibility(items.isEmpty() ? View.GONE : View.VISIBLE);
         mBinding.more.setVisibility((items.size() < 10 || Setting.isElderMode()) ? View.GONE : View.VISIBLE);
@@ -932,6 +934,12 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     private void onBack() {
         if (isFullscreen()) exitFullscreen();
         else finish();
+    }
+
+    private void onHome() {
+        if (isFullscreen()) exitFullscreen();
+        startActivity(new Intent(this, HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+        finish();
     }
 
     private void onCast() {
@@ -1200,24 +1208,28 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
 
     private void showControl() {
         if (service() == null || isInPictureInPictureMode()) return;
-        mBinding.control.danmaku.setVisibility(isLock() ? View.GONE : View.VISIBLE);
-        mBinding.control.danmakuSetting.setVisibility(isLock() ? View.GONE : View.VISIBLE);
-        mBinding.control.setting.setVisibility(mHistory == null || isFullscreen() ? View.GONE : View.VISIBLE);
-        mBinding.control.right.rotate.setVisibility(isFullscreen() && !isLock() ? View.VISIBLE : View.GONE);
-        mBinding.control.keep.setVisibility(mHistory == null || isFullscreen() ? View.GONE : View.VISIBLE);
-        mBinding.control.action.getRoot().setVisibility(isFullscreen() ? View.VISIBLE : View.GONE);
-        mBinding.control.right.lock.setVisibility(isFullscreen() ? View.VISIBLE : View.GONE);
+        boolean lock = isLock();
+        boolean fs = isFullscreen();
+        mBinding.control.danmaku.setVisibility(lock ? View.GONE : View.VISIBLE);
+        mBinding.control.danmakuSetting.setVisibility(fs && !lock ? View.VISIBLE : View.GONE);
+        mBinding.control.setting.setVisibility(mHistory == null || fs ? View.GONE : View.VISIBLE);
+        mBinding.control.home.setVisibility(fs ? View.GONE : View.VISIBLE);
+        mBinding.control.right.rotate.setVisibility(fs && !lock ? View.VISIBLE : View.GONE);
+        mBinding.control.keep.setVisibility(mHistory == null || fs ? View.GONE : View.VISIBLE);
+        mBinding.control.action.getRoot().setVisibility(fs ? View.VISIBLE : View.GONE);
+        mBinding.control.right.lock.setVisibility(fs ? View.VISIBLE : View.GONE);
         mBinding.control.action.parse.setVisibility(Setting.isElderMode() ? View.GONE : (isUseParse() ? View.VISIBLE : View.GONE));
         if (Setting.isElderMode()) {
             mBinding.control.action.edition.setVisibility(View.GONE);
             mBinding.control.action.chapter.setVisibility(View.GONE);
         }
-        mBinding.control.info.setVisibility(player().isEmpty() ? View.GONE : View.VISIBLE);
+        mBinding.control.info.setVisibility((fs && !player().isEmpty()) ? View.VISIBLE : View.GONE);
         mBinding.control.cast.setVisibility(player().isEmpty() ? View.GONE : View.VISIBLE);
-        mBinding.control.center.setVisibility(isLock() ? View.GONE : View.VISIBLE);
-        mBinding.control.bottom.setVisibility(isLock() ? View.GONE : View.VISIBLE);
-        mBinding.control.back.setVisibility(isLock() ? View.GONE : View.VISIBLE);
-        mBinding.control.top.setVisibility(isLock() ? View.GONE : View.VISIBLE);
+        mBinding.control.center.setVisibility(fs && !lock ? View.VISIBLE : View.GONE);
+        mBinding.control.play.setVisibility(fs ? View.GONE : View.VISIBLE);
+        mBinding.control.bottom.setVisibility(lock ? View.GONE : View.VISIBLE);
+        mBinding.control.back.setVisibility(lock ? View.GONE : View.VISIBLE);
+        mBinding.control.top.setVisibility(lock ? View.GONE : View.VISIBLE);
         checkFullscreenImg();
         mBinding.control.getRoot().setVisibility(View.VISIBLE);
         setR1Callback();
@@ -1414,7 +1426,9 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     }
 
     private void updatePlayControl(boolean isPlaying) {
-        mBinding.control.play.setImageResource(isPlaying ? androidx.media3.ui.R.drawable.exo_icon_pause : androidx.media3.ui.R.drawable.exo_icon_play);
+        int icon = isPlaying ? androidx.media3.ui.R.drawable.exo_icon_pause : androidx.media3.ui.R.drawable.exo_icon_play;
+        mBinding.control.play.setImageResource(icon);
+        mBinding.control.centerPlay.setImageResource(icon);
         mPiP.update(this, isPlaying);
     }
 
@@ -1467,19 +1481,6 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
 
     private void changeHeight() {
         if (isLand() || isFullscreen() || isInPictureInPictureMode()) return;
-        int videoWidth = player().getVideoWidth();
-        int videoHeight = player().getVideoHeight();
-        if (videoWidth == 0 || videoHeight == 0) return;
-        int viewWidth = ResUtil.getScreenWidth();
-        int minHeight = ResUtil.dp2px(150);
-        int maxHeight = ResUtil.getScreenHeight() / 2;
-        int calculated = (int) (viewWidth * ((float) videoHeight / videoWidth));
-        int finalHeight = Math.clamp(calculated, minHeight, Math.max(minHeight, maxHeight));
-        if (finalHeight == mBinding.video.getHeight()) return;
-        if (mAnimator.isRunning()) mAnimator.cancel();
-        mAnimator.setIntValues(mBinding.video.getHeight(), finalHeight);
-        mAnimator.setDuration(300);
-        mAnimator.start();
     }
 
     private void setTrackVisible() {
@@ -1624,9 +1625,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     @Override
     public void onDoubleTap() {
         if (isLock()) return;
-        if (!isFullscreen()) {
-            enterFullscreen();
-        } else if (player().isPlaying()) {
+        if (player().isPlaying()) {
             showControl();
             onPaused();
         } else {

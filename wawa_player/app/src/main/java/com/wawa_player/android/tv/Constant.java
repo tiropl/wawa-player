@@ -7,7 +7,7 @@ public class Constant {
     /** 快进/快退防抖间隔 */
     public static final long INTERVAL_SEEK = TimeUnit.SECONDS.toMillis(10);
     /** 控件自动隐藏延迟 */
-    public static final long INTERVAL_HIDE = TimeUnit.SECONDS.toMillis(5);
+    public static final long INTERVAL_HIDE = TimeUnit.SECONDS.toMillis(3);
     /** 点播 API 请求超时（首页、分类、详情、播放地址解析） */
     public static final long TIMEOUT_VOD = TimeUnit.SECONDS.toMillis(10);
     /** 直播频道列表解析超时 */
