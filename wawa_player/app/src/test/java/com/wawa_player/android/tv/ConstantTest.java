@@ -11,7 +11,7 @@ public class ConstantTest {
     @Test
     public void timeout_constants() {
         assertThat(Constant.INTERVAL_SEEK).isEqualTo(10_000);
-        assertThat(Constant.INTERVAL_HIDE).isEqualTo(5_000);
+        assertThat(Constant.INTERVAL_HIDE).isEqualTo(3_000);
         assertThat(Constant.TIMEOUT_VOD).isEqualTo(10_000);
         assertThat(Constant.TIMEOUT_LIVE).isEqualTo(10_000);
         assertThat(Constant.TIMEOUT_EPG).isEqualTo(5_000);
