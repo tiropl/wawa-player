@@ -17,4 +17,11 @@
     <string name="push_clip">推送剪贴板内容</string>
     <string name="push_info">使用手机扫描二维码，或于浏览器访问地址\n<xliff:g name="name">%s</xliff:g></string>
 
+    <!-- Control -->
+    <string name="control_scale">缩放</string>
+    <string name="control_track">轨道</string>
+    <string name="control_other">其它</string>
+    <string name="control_danmaku_on">弹幕开</string>
+    <string name="control_danmaku_off">弹幕关</string>
+
 </resources>

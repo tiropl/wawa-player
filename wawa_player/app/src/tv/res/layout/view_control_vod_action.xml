@@ -16,7 +16,7 @@
             android:id="@+id/next"
             style="@style/Control"
             android:layout_marginEnd="8dp"
-            android:nextFocusLeft="@id/ending"
+            android:nextFocusLeft="@id/setting"
             android:text="@string/play_next" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -37,72 +37,94 @@
             android:id="@+id/player"
             style="@style/Control"
             android:layout_marginEnd="8dp"
-            android:text="@string/play_exo" />
+            android:text="@string/play_exo"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/decode"
             style="@style/Control"
             android:layout_marginEnd="8dp"
-            android:text="@string/play_decode" />
+            android:text="@string/play_decode"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/reset"
             style="@style/Control"
             android:layout_marginEnd="8dp"
-            android:text="@string/play_reset" />
+            android:text="@string/play_reset"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/replay"
             style="@style/Control"
             android:layout_marginEnd="8dp"
-            android:text="@string/play_replay" />
+            android:text="@string/play_replay"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/repeat"
             style="@style/Control"
             android:layout_marginEnd="8dp"
-            android:text="@string/play_repeat" />
+            android:text="@string/play_repeat"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <com.wawa_player.android.tv.ui.custom.CustomUpDownView
             android:id="@+id/speed"
             style="@style/Control"
             android:layout_marginEnd="8dp"
             android:fontFeatureSettings="tnum"
-            android:text="@string/play_speed" />
+            android:text="@string/play_speed"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/scale"
             style="@style/Control"
             android:layout_marginEnd="8dp"
-            android:text="@string/play_scale" />
+            android:text="@string/play_scale"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <com.wawa_player.android.tv.ui.custom.CustomUpDownView
             android:id="@+id/text"
             style="@style/Control"
             android:layout_marginEnd="8dp"
             android:tag="3"
-            android:text="@string/play_track_text" />
+            android:text="@string/play_track_text"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/audio"
             style="@style/Control"
             android:layout_marginEnd="8dp"
             android:tag="1"
-            android:text="@string/play_track_audio" />
+            android:text="@string/play_track_audio"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/video"
             style="@style/Control"
             android:layout_marginEnd="8dp"
             android:tag="2"
-            android:text="@string/play_track_video" />
+            android:text="@string/play_track_video"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/danmakuShow"
             style="@style/Control"
             android:layout_marginEnd="8dp"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_control_danmaku_on" />
+            android:src="@drawable/ic_control_danmaku_on"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/danmaku"
@@ -134,13 +156,23 @@
             android:id="@+id/opening"
             style="@style/Control"
             android:layout_marginEnd="8dp"
-            android:text="@string/play_op" />
+            android:text="@string/play_op"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <com.wawa_player.android.tv.ui.custom.CustomUpDownView
             android:id="@+id/ending"
             style="@style/Control"
+            android:layout_marginEnd="8dp"
+            android:text="@string/play_ed"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/setting"
+            style="@style/Control"
             android:nextFocusRight="@id/next"
-            android:text="@string/play_ed" />
+            android:text="@string/home_setting" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </HorizontalScrollView>

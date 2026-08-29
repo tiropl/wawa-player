@@ -21,6 +21,8 @@
         <item name="android:windowDisablePreview">true</item>
     </style>
 
+    <style name="DialogControlTheme" parent="Theme.Material3.Light.NoActionBar" />
+
     <style name="NoAnim">
         <item name="android:activityOpenEnterAnimation">@null</item>
         <item name="android:activityOpenExitAnimation">@null</item>

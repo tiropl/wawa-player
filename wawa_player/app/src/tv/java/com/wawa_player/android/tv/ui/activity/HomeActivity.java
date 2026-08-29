@@ -327,11 +327,9 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     private void setFunc() {
         List<Func> items = new ArrayList<>();
-        if (!TextUtils.isEmpty(VodConfig.getUrl())) {
-            items.add(Func.create(R.string.home_vod));
-            if (LiveConfig.hasUrl()) items.add(Func.create(R.string.home_live));
-            items.add(Func.create(R.string.home_keep));
-        }
+        items.add(Func.create(R.string.home_vod));
+        items.add(Func.create(R.string.home_live));
+        items.add(Func.create(R.string.home_keep));
         items.add(Func.create(R.string.home_search));
         if (ModePolicy.showPush()) {
             items.add(Func.create(R.string.home_push));
