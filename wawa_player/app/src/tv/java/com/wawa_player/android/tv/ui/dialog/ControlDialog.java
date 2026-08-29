@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -172,19 +171,6 @@ public final class ControlDialog {
         @Override
         protected ViewBinding getBinding(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
             return binding = DialogControlBinding.inflate(inflater.cloneInContext(new ContextThemeWrapper(requireContext(), R.style.DialogControlTheme)), container, false);
-        }
-
-        @Override
-        public void onStart() {
-            super.onStart();
-            FrameLayout sheet = getDialog().findViewById(com.google.android.material.R.id.m3_side_sheet);
-            if (sheet == null) return;
-            ViewGroup.LayoutParams lp = sheet.getLayoutParams();
-            if (lp instanceof ViewGroup.MarginLayoutParams) {
-                ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) lp;
-                mlp.setMargins(0, mlp.topMargin, 0, mlp.bottomMargin);
-                sheet.setLayoutParams(mlp);
-            }
         }
 
         @Override

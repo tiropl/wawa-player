@@ -53,11 +53,20 @@ public class DanmakuSetting {
     }
 
     public static boolean isShow() {
-        return Prefers.getBoolean("danmaku_show", true);
+        return Prefers.getBoolean("danmaku_show", false);
     }
 
     public static void putShow(boolean danmakuShow) {
         Prefers.put("danmaku_show", danmakuShow);
+    }
+
+    public static void migrate() {
+        // 旧版本加载弹幕时会把 danmaku_show 自动写为 true（putLoad 已移除），
+        // 污染了历史安装的偏好；本次弹幕默认改为关闭，升级时一次性重置，之后以用户手动开关为准。
+        if (!Prefers.getBoolean("danmaku_show_migrated", false)) {
+            putShow(false);
+            Prefers.put("danmaku_show_migrated", true);
+        }
     }
 
     public static float getTextScale() {

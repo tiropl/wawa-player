@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.IBinder;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.media3.common.C;
 import androidx.media3.common.Player;
 
@@ -58,7 +59,12 @@ public class DLNARendererService extends AndroidUpnpServiceImpl implements Servi
     private boolean bound;
 
     public static void start(Context context) {
-        context.startService(new Intent(context, DLNARendererService.class));
+        try {
+            // 前台服务必须用 startForegroundService 启动；后台受限时（API 26+ 后台 startService、API 31+ 后台 FGS）会抛异常
+            ContextCompat.startForegroundService(context, new Intent(context, DLNARendererService.class));
+        } catch (IllegalStateException ignored) {
+            // 应用处于后台时不允许启动前台服务，本次跳过，下次前台启动时再拉起
+        }
     }
 
     public static void stop(Context context) {
