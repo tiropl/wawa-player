@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewbinding.ViewBinding;
 
+import com.wawa_player.android.tv.App;
 import com.wawa_player.android.tv.R;
 import com.wawa_player.android.tv.api.config.LiveConfig;
 import com.wawa_player.android.tv.api.config.VodConfig;
@@ -25,6 +26,7 @@ import com.wawa_player.android.tv.ui.custom.CustomTextListener;
 import com.wawa_player.android.tv.utils.FileChooser;
 import com.wawa_player.android.tv.utils.QRCode;
 import com.wawa_player.android.tv.utils.ResUtil;
+import com.wawa_player.android.tv.utils.Task;
 import com.wawa_player.android.tv.utils.ViewUtil;
 import com.github.catvod.utils.Path;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -76,7 +78,7 @@ public class ConfigDialog extends BaseAlertDialog {
 
     @Override
     protected MaterialAlertDialogBuilder getBuilder() {
-        return builder().setView(getBinding().getRoot());
+        return builder().setTitle(R.string.setting_line_config).setView(getBinding().getRoot());
     }
 
     @Override
@@ -143,10 +145,13 @@ public class ConfigDialog extends BaseAlertDialog {
             showError(binding.error, R.string.dialog_config_error);
             return;
         }
-        if (edit) Config.find(url, type).url(text).update();
-        if (name.isEmpty()) ((ConfigListener) requireActivity()).setConfig(Config.find(text, type));
-        else ((ConfigListener) requireActivity()).setConfig(Config.find(text, name, type));
+        ConfigListener listener = (ConfigListener) requireActivity();
         dismiss();
+        Task.submit(() -> {
+            if (edit) Config.find(url, type).url(text).update();
+            Config config = name.isEmpty() ? Config.find(text, type) : Config.find(text, name, type);
+            App.post(() -> listener.setConfig(config));
+        });
     }
 
     private void onNegative(View view) {

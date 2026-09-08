@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    tools:background="@color/white">
+    android:scrollbars="vertical">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/control_speed"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="16sp" />
-
-    <com.google.android.material.slider.Slider
-        android:id="@+id/speed"
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="-12dp"
-        android:layout_marginEnd="-12dp"
-        app:tickVisible="false" />
+        android:orientation="vertical"
+        android:padding="24dp"
+        tools:background="@color/white">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/info"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:scaleType="center"
+        android:src="@drawable/ic_control_info" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/parseText"
@@ -57,23 +56,18 @@
         android:textColor="?attr/colorOnSurface"
         android:textSize="16sp" />
 
-    <HorizontalScrollView
+    <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fillViewport="true"
-        android:scrollbars="none">
+        app:flexWrap="wrap">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/scale_0"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/scale_0"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/shape_accent"
+            android:layout_marginBottom="8dp"
                 android:tag="0"
                 android:textColor="@color/selector_control"
                 android:textSize="14sp"
@@ -85,6 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/shape_accent"
+            android:layout_marginBottom="8dp"
                 android:tag="1"
                 android:textColor="@color/selector_control"
                 android:textSize="14sp"
@@ -96,6 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/shape_accent"
+            android:layout_marginBottom="8dp"
                 android:tag="2"
                 android:textColor="@color/selector_control"
                 android:textSize="14sp"
@@ -107,6 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/shape_accent"
+            android:layout_marginBottom="8dp"
                 android:tag="3"
                 android:textColor="@color/selector_control"
                 android:textSize="14sp"
@@ -117,13 +114,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/shape_accent"
+            android:layout_marginBottom="8dp"
                 android:tag="4"
                 android:textColor="@color/selector_control"
                 android:textSize="14sp"
                 tools:text="裁剪" />
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
-    </HorizontalScrollView>
+    </com.google.android.flexbox.FlexboxLayout>
 
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="wrap_content"
@@ -134,23 +131,18 @@
         android:textColor="?attr/colorOnSurface"
         android:textSize="16sp" />
 
-    <HorizontalScrollView
+    <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fillViewport="true"
-        android:scrollbars="none">
+        app:flexWrap="wrap">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/player"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/player"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/shape_accent"
+            android:layout_marginBottom="8dp"
                 android:textColor="@color/selector_control"
                 android:textSize="14sp"
                 tools:text="EXO" />
@@ -161,6 +153,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/shape_accent"
+            android:layout_marginBottom="8dp"
                 android:textColor="@color/selector_control"
                 android:textSize="14sp"
                 tools:text="硬解" />
@@ -171,6 +164,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/shape_accent"
+            android:layout_marginBottom="8dp"
                 android:textColor="@color/selector_control"
                 android:textSize="14sp"
                 tools:text="片頭" />
@@ -181,6 +175,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/shape_accent"
+            android:layout_marginBottom="8dp"
                 android:textColor="@color/selector_control"
                 android:textSize="14sp"
                 tools:text="片尾" />
@@ -191,6 +186,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/shape_accent"
+            android:layout_marginBottom="8dp"
                 android:text="@string/play_edition"
                 android:textColor="@color/selector_control"
                 android:textSize="14sp"
@@ -202,14 +198,45 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/shape_accent"
+            android:layout_marginBottom="8dp"
                 android:text="@string/play_chapter"
                 android:textColor="@color/selector_control"
                 android:textSize="14sp"
                 android:visibility="gone"
                 tools:visibility="visible" />
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
-    </HorizontalScrollView>
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/repeat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/shape_accent"
+            android:layout_marginBottom="8dp"
+                android:text="@string/play_repeat"
+                android:textColor="@color/selector_control"
+                android:textSize="14sp" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/replay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_accent"
+            android:layout_marginBottom="8dp"
+                android:text="@string/play_replay"
+                android:textColor="@color/selector_control"
+                android:textSize="14sp" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/reset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_accent"
+            android:layout_marginBottom="8dp"
+                android:text="@string/play_reset"
+                android:textColor="@color/selector_control"
+                android:textSize="14sp" />
+
+    </com.google.android.flexbox.FlexboxLayout>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/track"
@@ -223,10 +250,10 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="wrap_content"
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        app:flexWrap="wrap">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/text"
@@ -234,6 +261,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:background="@drawable/shape_accent"
+            android:layout_marginBottom="8dp"
             android:tag="3"
             android:text="@string/play_track_text"
             android:textColor="@color/selector_control"
@@ -247,6 +275,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:background="@drawable/shape_accent"
+            android:layout_marginBottom="8dp"
             android:tag="1"
             android:text="@string/play_track_audio"
             android:textColor="@color/selector_control"
@@ -259,6 +288,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/shape_accent"
+            android:layout_marginBottom="8dp"
             android:tag="2"
             android:text="@string/play_track_video"
             android:textColor="@color/selector_control"
@@ -266,7 +296,7 @@
             android:visibility="gone"
             tools:visibility="visible" />
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+    </com.google.android.flexbox.FlexboxLayout>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/other"
@@ -278,10 +308,10 @@
         android:textColor="?attr/colorOnSurface"
         android:textSize="16sp" />
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="wrap_content"
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        app:flexWrap="wrap">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/danmaku"
@@ -289,6 +319,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:background="@drawable/shape_accent"
+            android:layout_marginBottom="8dp"
             android:text="@string/danmaku"
             android:textColor="@color/selector_control"
             android:textSize="14sp"
@@ -296,23 +327,15 @@
             tools:visibility="visible" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/repeat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/shape_accent"
-            android:text="@string/play_repeat"
-            android:textColor="@color/selector_control"
-            android:textSize="14sp" />
-
-        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/shape_accent"
+            android:layout_marginBottom="8dp"
             android:text="@string/play_timer"
             android:textColor="@color/selector_control"
             android:textSize="14sp" />
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+    </com.google.android.flexbox.FlexboxLayout>
 </androidx.appcompat.widget.LinearLayoutCompat>
+</ScrollView>

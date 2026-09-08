@@ -1,6 +1,7 @@
 package com.wawa_player.android.tv.utils;
 
 import com.wawa_player.android.tv.App;
+import com.wawa_player.android.tv.Constant;
 import com.wawa_player.android.tv.bean.Device;
 import com.wawa_player.android.tv.server.Server;
 import com.github.catvod.net.OkHttp;
@@ -20,7 +21,7 @@ public class ScanTask {
     private Listener listener;
 
     public ScanTask(Listener listener) {
-        this.client = OkHttp.client(1000);
+        this.client = OkHttp.client(Constant.TIMEOUT_SCAN);
         this.future = new CopyOnWriteArrayList<>();
         this.listener = listener;
     }

@@ -44,7 +44,9 @@ import com.wawa_player.android.tv.ui.dialog.ConfigDialog;
 import com.wawa_player.android.tv.ui.dialog.LockVerifyDialog;
 import com.wawa_player.android.tv.ui.fragment.SettingDecodeFragment;
 import com.wawa_player.android.tv.ui.fragment.SettingFragment;
+import com.wawa_player.android.tv.ui.fragment.SettingLineFragment;
 import com.wawa_player.android.tv.ui.fragment.SettingMoreFragment;
+import com.wawa_player.android.tv.ui.fragment.SettingPersonalFragment;
 import com.wawa_player.android.tv.ui.fragment.SettingPlayerFragment;
 import com.wawa_player.android.tv.ui.fragment.SettingPreloadFragment;
 import com.wawa_player.android.tv.ui.fragment.VodFragment;
@@ -124,17 +126,20 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
             case 0 -> VodFragment.newInstance();
             case 1 -> SettingFragment.newInstance();
             case 2 -> SettingPlayerFragment.newInstance();
+            case 3 -> SettingPersonalFragment.newInstance();
             case 4 -> SettingPreloadFragment.newInstance();
             case 5 -> SettingDecodeFragment.newInstance();
             case 6 -> SettingMoreFragment.newInstance();
+            case 7 -> SettingLineFragment.newInstance();
             default -> null;
         });
         if (savedInstanceState == null) change(0);
     }
 
     private void initConfig(Bundle savedInstanceState) {
-        Server.get().start();
         if (TextUtils.isEmpty(VodConfig.getUrl())) {
+            // 配置对话框依赖本地服务地址，同步启动服务
+            Server.get().start();
             // 未配置线路，冷启动时弹出配置窗口
             if (savedInstanceState == null) ConfigDialog.create().vod().show(this);
             return;
@@ -150,7 +155,8 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
         } else {
             // Use async init to avoid Room DB queries on main thread
             // Run VodConfig and LiveConfig in parallel for faster loading
-            mBinding.progressLayout.showProgress();
+            // 不遮罩全屏：仅让 VodFragment 在内容区显示加载，toolbar 与底部导航保持可见可点
+            StateEvent.progress();
             VodConfig.get().initAsync(vodConfig -> vodConfig.load(getCallback()));
             LiveConfig.get().initAsync(liveConfig -> liveConfig.load());
             WallConfig.get().initAsync(wallConfig -> {});
@@ -329,6 +335,8 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
             }
         } else if (mManager.isVisible(6)) {
             mPreviousPosition = -1;
+            change(1);
+        } else if (mManager.isVisible(7)) {
             change(1);
         } else if (mManager.isVisible(1)) {
             change(0);

@@ -28,7 +28,6 @@ import com.wawa_player.android.tv.bean.Track;
 import com.wawa_player.android.tv.databinding.DialogTrackBinding;
 import com.wawa_player.android.tv.player.PlayerManager;
 import com.wawa_player.android.tv.player.track.TrackUtil;
-import com.wawa_player.android.tv.setting.ModePolicy;
 import com.wawa_player.android.tv.ui.adapter.TrackAdapter;
 import com.wawa_player.android.tv.ui.custom.SpaceItemDecoration;
 import com.wawa_player.android.tv.utils.FileChooser;
@@ -85,7 +84,6 @@ public final class TrackDialog extends BaseBottomSheetDialog implements TrackAda
     }
 
     private boolean hasSetting() {
-        if (!ModePolicy.showTrackSetting()) return false;
         return type == C.TRACK_TYPE_AUDIO || type == C.TRACK_TYPE_VIDEO || type == C.TRACK_TYPE_TEXT;
     }
 

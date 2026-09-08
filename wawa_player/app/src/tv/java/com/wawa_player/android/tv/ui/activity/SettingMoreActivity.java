@@ -3,7 +3,6 @@ package com.wawa_player.android.tv.ui.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 
 import androidx.viewbinding.ViewBinding;
@@ -14,24 +13,14 @@ import com.wawa_player.android.tv.api.config.VodConfig;
 import com.wawa_player.android.tv.databinding.ActivitySettingMoreBinding;
 import com.wawa_player.android.tv.db.AppDatabase;
 import com.wawa_player.android.tv.impl.Callback;
-import com.wawa_player.android.tv.impl.DanmakuListener;
-import com.wawa_player.android.tv.impl.LockListener;
-import com.wawa_player.android.tv.setting.DanmakuSetting;
-import com.wawa_player.android.tv.setting.PasswordLock;
 import com.wawa_player.android.tv.setting.Setting;
 import com.wawa_player.android.tv.ui.base.BaseActivity;
-import com.wawa_player.android.tv.ui.dialog.DanmakuApiDialog;
 import com.wawa_player.android.tv.ui.dialog.DohDialog;
-import com.wawa_player.android.tv.ui.dialog.LockActionDialog;
-import com.wawa_player.android.tv.ui.dialog.LockChangeDialog;
-import com.wawa_player.android.tv.ui.dialog.LockSetDialog;
-import com.wawa_player.android.tv.ui.dialog.LockVerifyDialog;
 import com.wawa_player.android.tv.ui.dialog.RestoreDialog;
 import com.wawa_player.android.tv.utils.FileUtil;
 import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.PermissionUtil;
 import com.wawa_player.android.tv.utils.ResUtil;
-import com.wawa_player.android.tv.ui.adapter.LockActionAdapter;
 import com.github.catvod.bean.Doh;
 import com.github.catvod.net.OkHttp;
 
@@ -40,7 +29,7 @@ import java.util.List;
 
 import com.wawa_player.android.tv.Updater;
 
-public class SettingMoreActivity extends BaseActivity implements DohDialog.Listener, LockActionDialog.Listener, LockSetDialog.Listener, DanmakuListener {
+public class SettingMoreActivity extends BaseActivity implements DohDialog.Listener {
 
     private ActivitySettingMoreBinding mBinding;
     public static void start(Activity activity) {
@@ -64,12 +53,10 @@ public class SettingMoreActivity extends BaseActivity implements DohDialog.Liste
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        mBinding.lock.requestFocus();
+        mBinding.incognito.requestFocus();
         mBinding.versionText.setText(BuildConfig.VERSION_NAME);
         mBinding.dohText.setText(getDohList()[getDohIndex()]);
         mBinding.incognitoText.setText(Setting.getSwitch(Setting.isIncognito()));
-        mBinding.danmakuText.setText(getDanmakuStatus());
-        setLockText();
         setCacheText();
     }
 
@@ -84,28 +71,12 @@ public class SettingMoreActivity extends BaseActivity implements DohDialog.Liste
 
     @Override
     protected void initEvent() {
-        mBinding.lock.setOnClickListener(this::onLock);
         mBinding.incognito.setOnClickListener(this::setIncognito);
-        mBinding.danmaku.setOnClickListener(this::onDanmaku);
         mBinding.doh.setOnClickListener(this::setDoh);
         mBinding.backup.setOnClickListener(this::onBackup);
         mBinding.restore.setOnClickListener(this::onRestore);
         mBinding.cache.setOnClickListener(this::onCache);
         mBinding.version.setOnClickListener(this::onVersion);
-    }
-
-    private String getDanmakuStatus() {
-        return getString(TextUtils.isEmpty(DanmakuSetting.getEffectiveApiUrl()) ? R.string.none : R.string.yes);
-    }
-
-    private void onDanmaku(View view) {
-        DanmakuApiDialog.show(this);
-    }
-
-    @Override
-    public void setDanmakuApi(String url) {
-        DanmakuSetting.putApiUrl(url);
-        mBinding.danmakuText.setText(getDanmakuStatus());
     }
 
     private void onVersion(View view) {
@@ -117,39 +88,6 @@ public class SettingMoreActivity extends BaseActivity implements DohDialog.Liste
         mBinding.incognitoText.setText(Setting.getSwitch(Setting.isIncognito()));
         Notify.show(ResUtil.getString(R.string.setting_incognito_state, Setting.getSwitch(Setting.isIncognito())));
     }
-
-    private void setLockText() {
-        mBinding.lockText.setText(Setting.getSwitch(PasswordLock.isSet()));
-    }
-
-    private void onLock(View view) {
-        if (PasswordLock.isSet()) LockActionDialog.create().show(this);
-        else LockSetDialog.create().listener(this).show(this);
-    }
-
-    @Override
-    public void onLockAction(int action) {
-        if (action == LockActionAdapter.ACTION_CHANGE) LockChangeDialog.create().show(this);
-        else LockVerifyDialog.create().listener(clearLockListener).show(this);
-    }
-
-    @Override
-    public void onLockSet() {
-        setLockText();
-    }
-
-    private final LockListener clearLockListener = new LockListener() {
-        @Override
-        public void onLockVerified() {
-            PasswordLock.clear();
-            Notify.show(R.string.lock_clear_success);
-            setLockText();
-        }
-
-        @Override
-        public void onLockCancelled() {
-        }
-    };
 
     private void setDoh(View view) {
         DohDialog.create().index(getDohIndex()).show(this);

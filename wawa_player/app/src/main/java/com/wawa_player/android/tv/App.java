@@ -95,6 +95,8 @@ public class App extends Application implements Application.ActivityLifecycleCal
         super.onCreate();
         Notify.createChannel();
         registerActivityLifecycleCallbacks(this);
+        // 一次性迁移：把旧版本自动写入的弹幕开关重置为关闭，配合默认关闭弹幕
+        com.wawa_player.android.tv.setting.DanmakuSetting.migrate();
         // Pre-warm database on background thread to avoid blocking main thread
         com.wawa_player.android.tv.db.AppDatabase.warmUp();
     }

@@ -1,14 +1,14 @@
 # 本地 HTTP API
 
-应用程式启动后会在本地绑定一个 HTTP 伺服器，埠号从 **9978** 开始依序尝试至 **9998**，取得第一个可用埠。
+应用程序启动后会在本地绑定一个 HTTP 服务器，端口号从 **9978** 开始依次尝试至 **9998**，取得第一个可用端口。
 
 ```
 http://127.0.0.1:{port}
 ```
 
-> 实际埠号依系统可用情况而定，预设起始为 9978。
+> 实际端口号依系统可用情况而定，默认起始为 9978。
 
-所有端点支援 GET 与 POST（除特别标注外），参数可放在 Query String 中。回应若无特别说明皆为 `text/plain`，成功回传 `OK`，失败回传 `500` 与错误讯息。
+所有端点支持 GET 与 POST（除特别标注外），参数可放在 Query String 中。响应若无特别说明皆为 `text/plain`，成功返回 `OK`，失败返回 `500` 与错误信息。
 
 ---
 
@@ -18,28 +18,28 @@ http://127.0.0.1:{port}
     - [do=control — 播放控制](#docontrol--播放控制)
     - [do=refresh — 刷新指令](#dorefresh--刷新指令)
     - [do=push — 推送播放](#dopush--推送播放)
-    - [do=file — 开启档案](#dofile--开启档案)
-    - [do=search — 触发搜寻](#dosearch--触发搜寻)
-    - [do=setting — 载入配置](#dosetting--载入配置)
+    - [do=file — 开启文件](#dofile--开启文件)
+    - [do=search — 触发搜索](#dosearch--触发搜索)
+    - [do=setting — 加载配置](#dosetting--加载配置)
     - [do=cast — 投放媒体](#docast--投放媒体)
-    - [do=sync — 同步资料](#dosync--同步资料)
-- [/cache — 快取操作](#cache--快取操作)
+    - [do=sync — 同步数据](#dosync--同步数据)
+- [/cache — 缓存操作](#cache--缓存操作)
 - [/media — 播放状态](#media--播放状态)
-- [/file — 本地档案系统](#file--本地档案系统)
-- [/upload — 上传档案](#upload--上传档案)
-- [/newFolder — 新增资料夹](#newfolder--新增资料夹)
-- [/delFolder — 删除资料夹](#delfolder--删除资料夹)
-- [/delFile — 删除档案](#delfile--删除档案)
+- [/file — 本地文件系统](#file--本地文件系统)
+- [/upload — 上传文件](#upload--上传文件)
+- [/newFolder — 添加文件夹](#newfolder--添加文件夹)
+- [/delFolder — 删除文件夹](#delfolder--删除文件夹)
+- [/delFile — 删除文件](#delfile--删除文件)
 - [/parse — 解析页面](#parse--解析页面)
 - [/proxy — 爬虫代理](#proxy--爬虫代理)
-- [/device — 装置资讯](#device--装置资讯)
+- [/device — 装置信息](#device--装置信息)
 - [端点总览](#端点总览)
 
 ---
 
 ## /action — 动作指令
 
-透过 `do` 参数分派不同动作。
+通过 `do` 参数分派不同动作。
 
 ```
 GET/POST http://127.0.0.1:9978/action?do={do}&...
@@ -71,7 +71,7 @@ http://127.0.0.1:9978/action?do=control&type={type}
 | `next`   | 下一集      |
 | `repeat` | 切换循环播放模式 |
 
-**范例：**
+**示例：**
 
 ```
 http://127.0.0.1:9978/action?do=control&type=play
@@ -83,7 +83,7 @@ http://127.0.0.1:9978/action?do=control&type=next
 
 ### do=danmaku — 发送弹幕
 
-即时发送一条弹幕文字至目前播放器（需播放器支援弹幕）。
+即时发送一条弹幕文本至目前播放器（需播放器支持弹幕）。
 
 ```
 http://127.0.0.1:9978/action?do=danmaku&text={text}
@@ -91,9 +91,9 @@ http://127.0.0.1:9978/action?do=danmaku&text={text}
 
 | 参数     | 说明          |
 |--------|-------------|
-| `text` | 要发送的弹幕文字内容。 |
+| `text` | 要发送的弹幕文本内容。 |
 
-**范例：**
+**示例：**
 
 ```
 http://127.0.0.1:9978/action?do=danmaku&text=Hello
@@ -103,7 +103,7 @@ http://127.0.0.1:9978/action?do=danmaku&text=Hello
 
 ### do=refresh — 刷新指令
 
-触发应用程式重新载入指定页面资料，或推送内容至播放器。
+触发应用程序重新加载指定页面数据，或推送内容至播放器。
 
 ```
 http://127.0.0.1:9978/action?do=refresh&type={type}&...
@@ -113,14 +113,14 @@ http://127.0.0.1:9978/action?do=refresh&type={type}&...
 
 | `type`     | 额外参数   | 说明                                |
 |------------|--------|-----------------------------------|
-| `live`     | —      | 重新整理直播页面。                         |
-| `detail`   | —      | 重新整理影片详情页。                        |
-| `player`   | —      | 重新整理播放页面。                         |
-| `subtitle` | `path` | 推送字幕至目前播放器，`path` 为字幕档 URL。       |
-| `danmaku`  | `path` | 推送弹幕至目前播放器，`path` 为弹幕档 URL。       |
-| `vod`      | `json` | 推送 Vod 物件更新，`json` 为 Vod JSON 字串。 |
+| `live`     | —      | 刷新直播页面。                         |
+| `detail`   | —      | 刷新视频详情页。                        |
+| `player`   | —      | 刷新播放页面。                         |
+| `subtitle` | `path` | 推送字幕至目前播放器，`path` 为字幕文件 URL。       |
+| `danmaku`  | `path` | 推送弹幕至目前播放器，`path` 为弹幕文件 URL。       |
+| `vod`      | `json` | 推送 Vod 对象更新，`json` 为 Vod JSON 字符串。 |
 
-**范例：**
+**示例：**
 
 ```
 http://127.0.0.1:9978/action?do=refresh&type=detail
@@ -132,7 +132,7 @@ http://127.0.0.1:9978/action?do=refresh&type=danmaku&path=http://example.com/dan
 
 ### do=push — 推送播放
 
-推送一个 URL 至应用程式进行播放。
+推送一个 URL 至应用程序进行播放。
 
 ```
 http://127.0.0.1:9978/action?do=push&url={url}
@@ -142,7 +142,7 @@ http://127.0.0.1:9978/action?do=push&url={url}
 |-------|-----------------------|
 | `url` | 要播放的媒体 URL（需 URL 编码）。 |
 
-**范例：**
+**示例：**
 
 ```
 http://127.0.0.1:9978/action?do=push&url=http%3A%2F%2Fexample.com%2Fvideo.m3u8
@@ -150,9 +150,9 @@ http://127.0.0.1:9978/action?do=push&url=http%3A%2F%2Fexample.com%2Fvideo.m3u8
 
 ---
 
-### do=file — 开启档案
+### do=file — 开启文件
 
-指定本地档案路径，依副档名执行对应动作。
+指定本地文件路径，依副文件名执行对应动作。
 
 ```
 http://127.0.0.1:9978/action?do=file&path={path}
@@ -160,21 +160,21 @@ http://127.0.0.1:9978/action?do=file&path={path}
 
 | 参数     | 说明         |
 |--------|------------|
-| `path` | 本地档案的绝对路径。 |
+| `path` | 本地文件的绝对路径。 |
 
-**依副档名的行为：**
+**依副文件名的行为：**
 
-| 副档名                  | 行为            |
+| 副文件名                  | 行为            |
 |----------------------|---------------|
 | `.apk`               | 触发 APK 安装流程。  |
 | `.srt` `.ssa` `.ass` | 注入字幕至目前播放器。   |
-| 其他                   | 触发设定页面开启对应档案。 |
+| 其他                   | 触发设置页面开启对应文件。 |
 
 ---
 
-### do=search — 触发搜寻
+### do=search — 触发搜索
 
-在应用程式介面触发关键字搜寻。
+在应用程序接口触发关键字搜索。
 
 ```
 http://127.0.0.1:9978/action?do=search&word={word}
@@ -182,9 +182,9 @@ http://127.0.0.1:9978/action?do=search&word={word}
 
 | 参数     | 说明     |
 |--------|--------|
-| `word` | 搜寻关键字。 |
+| `word` | 搜索关键字。 |
 
-**范例：**
+**示例：**
 
 ```
 http://127.0.0.1:9978/action?do=search&word=%E9%A3%9F%E7%A5%9E
@@ -192,9 +192,9 @@ http://127.0.0.1:9978/action?do=search&word=%E9%A3%9F%E7%A5%9E
 
 ---
 
-### do=setting — 载入配置
+### do=setting — 加载配置
 
-载入配置内容或指定名称的配置。
+加载配置内容或指定名称的配置。
 
 ```
 http://127.0.0.1:9978/action?do=setting&text={text}&name={name}
@@ -202,7 +202,7 @@ http://127.0.0.1:9978/action?do=setting&text={text}&name={name}
 
 | 参数     | 说明             |
 |--------|----------------|
-| `text` | 配置内容字串或配置 URL。 |
+| `text` | 配置内容字符串或配置 URL。 |
 | `name` | 配置显示名称（选填）。    |
 
 ---
@@ -217,15 +217,15 @@ http://127.0.0.1:9978/action?do=cast&config={config}&device={device}&history={hi
 
 | 参数        | 说明                                 |
 |-----------|------------------------------------|
-| `config`  | Config 物件的 JSON 字串，指定要投放的配置。       |
-| `device`  | 目标装置的 Device 物件 JSON 字串（含 IP 等资讯）。 |
-| `history` | History 物件的 JSON 字串，包含播放历史。        |
+| `config`  | Config 对象的 JSON 字符串，指定要投放的配置。       |
+| `device`  | 目标装置的 Device 对象 JSON 字符串（含 IP 等信息）。 |
+| `history` | History 对象的 JSON 字符串，包含播放历史。        |
 
 ---
 
-### do=sync — 同步资料
+### do=sync — 同步数据
 
-在多个装置间同步观看纪录（`history`）或收藏清单（`keep`）。
+在多个装置间同步观看纪录（`history`）或收藏列表（`keep`）。
 
 ```
 POST http://127.0.0.1:9978/action?do=sync&type={type}&device={device}&force={force}&mode={mode}
@@ -236,23 +236,23 @@ POST http://127.0.0.1:9978/action?do=sync&type={type}&device={device}&force={for
 | 参数       | 说明                                         |
 |----------|--------------------------------------------|
 | `type`   | 同步类型：`"history"`（观看纪录）或 `"keep"`（收藏）。      |
-| `device` | 目标装置的 Device 物件 JSON 字串。                   |
+| `device` | 目标装置的 Device 对象 JSON 字符串。                   |
 | `force`  | `"true"` = 先删除后合并；其他 = 直接合并。               |
 | `mode`   | `"0"` = 双向（发送+接收）；`"1"` = 仅接收；`"2"` = 仅发送。 |
-| `config` | （`history` 用）Config 物件 JSON 字串。            |
+| `config` | （`history` 用）Config 对象 JSON 字符串。            |
 
 **POST Body（`application/x-www-form-urlencoded`）：**
 
 | 参数        | 说明                                |
 |-----------|-----------------------------------|
-| `targets` | History 或 Keep 物件阵列的 JSON 字串。     |
-| `configs` | （`keep` 用）Config URL 阵列的 JSON 字串。 |
+| `targets` | History 或 Keep 对象数组的 JSON 字符串。     |
+| `configs` | （`keep` 用）Config URL 数组的 JSON 字符串。 |
 
 ---
 
-## /cache — 快取操作
+## /cache — 缓存操作
 
-存取应用程式的键值快取（基于 SharedPreferences），可用于爬虫在不同请求间共享资料。
+访问应用程序的键值缓存（基于 SharedPreferences），可用于爬虫在不同请求间共享数据。
 
 ```
 GET/POST http://127.0.0.1:9978/cache?do={do}&...
@@ -262,7 +262,7 @@ GET/POST http://127.0.0.1:9978/cache?do={do}&...
 
 ---
 
-### do=get — 读取快取
+### do=get — 读取缓存
 
 ```
 http://127.0.0.1:9978/cache?do=get&key={key}&rule={rule}
@@ -270,14 +270,14 @@ http://127.0.0.1:9978/cache?do=get&key={key}&rule={rule}
 
 | 参数     | 说明                      |
 |--------|-------------------------|
-| `key`  | 快取键名。                   |
-| `rule` | 命名空间前缀，用于隔离不同爬虫的快取（选填）。 |
+| `key`  | 缓存键名。                   |
+| `rule` | 命名空间前缀，用于隔离不同爬虫的缓存（选填）。 |
 
-**回应：** `200 OK`，回传储存的字串值（若不存在则为空字串）。
+**响应：** `200 OK`，返回储存的字符串值（若不存在则为空字符串）。
 
 ---
 
-### do=set — 写入快取
+### do=set — 写入缓存
 
 ```
 http://127.0.0.1:9978/cache?do=set&key={key}&value={value}&rule={rule}
@@ -285,13 +285,13 @@ http://127.0.0.1:9978/cache?do=set&key={key}&value={value}&rule={rule}
 
 | 参数      | 说明          |
 |---------|-------------|
-| `key`   | 快取键名。       |
-| `value` | 要储存的字串值。    |
+| `key`   | 缓存键名。       |
+| `value` | 要储存的字符串值。    |
 | `rule`  | 命名空间前缀（选填）。 |
 
 ---
 
-### do=del — 删除快取
+### do=del — 删除缓存
 
 ```
 http://127.0.0.1:9978/cache?do=del&key={key}&rule={rule}
@@ -299,20 +299,20 @@ http://127.0.0.1:9978/cache?do=del&key={key}&rule={rule}
 
 | 参数     | 说明          |
 |--------|-------------|
-| `key`  | 要删除的快取键名。   |
+| `key`  | 要删除的缓存键名。   |
 | `rule` | 命名空间前缀（选填）。 |
 
 ---
 
 ## /media — 播放状态
 
-取得目前播放器的媒体资讯与播放状态。
+取得目前播放器的媒体信息与播放状态。
 
 ```
 GET http://127.0.0.1:9978/media
 ```
 
-**回应格式：** `application/json`
+**响应格式：** `application/json`
 
 **播放器未启动时：**
 
@@ -327,7 +327,7 @@ GET http://127.0.0.1:9978/media
   "url": "https://cdn.example.com/video.m3u8",
   "state": 3,
   "speed": 1.0,
-  "title": "范例电影",
+  "title": "示例电影",
   "artist": "来源名称",
   "artwork": "https://example.com/cover.jpg",
   "duration": 7200000,
@@ -335,9 +335,9 @@ GET http://127.0.0.1:9978/media
 }
 ```
 
-**栏位说明：**
+**字段说明：**
 
-| 栏位         | 类型        | 说明                                                       |
+| 字段         | 类型        | 说明                                                       |
 |------------|-----------|----------------------------------------------------------|
 | `url`      | `string`  | 目前串流 URL，无则为 `""`。                                       |
 | `state`    | `integer` | PlaybackStateCompat 状态码。`1`=缓冲中，`2`=暂停，`3`=播放中，无则为 `-1`。 |
@@ -350,9 +350,9 @@ GET http://127.0.0.1:9978/media
 
 ---
 
-## /file — 本地档案系统
+## /file — 本地文件系统
 
-浏览或下载应用程式的本地储存空间。
+浏览或下载应用程序的本地储存空间。
 
 ```
 GET http://127.0.0.1:9978/file/{path}
@@ -360,9 +360,9 @@ GET http://127.0.0.1:9978/file/{path}
 
 | 参数     | 说明                      |
 |--------|-------------------------|
-| `path` | 相对于应用程式根目录的路径。省略时列出根目录。 |
+| `path` | 相对于应用程序根目录的路径。省略时列出根目录。 |
 
-**目录回应（JSON）：**
+**目录响应（JSON）：**
 
 ```json
 {
@@ -384,16 +384,16 @@ GET http://127.0.0.1:9978/file/{path}
 }
 ```
 
-**`files` 阵列栏位说明：**
+**`files` 数组字段说明：**
 
-| 栏位     | 类型        | 说明                               |
+| 字段     | 类型        | 说明                               |
 |--------|-----------|----------------------------------|
-| `name` | `string`  | 档案或目录名称。                         |
+| `name` | `string`  | 文件或目录名称。                         |
 | `path` | `string`  | 相对于根目录的路径。                       |
 | `time` | `string`  | 最后修改时间，格式 `yyyy/MM/dd HH:mm:ss`。 |
-| `dir`  | `integer` | `1` = 目录，`0` = 档案。               |
+| `dir`  | `integer` | `1` = 目录，`0` = 文件。               |
 
-**`parent` 栏位说明：**
+**`parent` 字段说明：**
 
 | 值                  | 意义             |
 |--------------------|----------------|
@@ -401,13 +401,13 @@ GET http://127.0.0.1:9978/file/{path}
 | `""`               | 上一层为根目录。       |
 | `"path/to/parent"` | 上一层目录的相对路径。    |
 
-**档案回应：** 直接串流档案内容，支援 Range 请求（`206 Partial Content`）与 ETag 快取（`304 Not Modified`）。
+**文件响应：** 直接串流文件内容，支持 Range 请求（`206 Partial Content`）与 ETag 缓存（`304 Not Modified`）。
 
 ---
 
-## /upload — 上传档案
+## /upload — 上传文件
 
-上传档案至指定目录，`.zip` 档案会自动解压缩。
+上传文件至指定目录，`.zip` 文件会自动解压缩。
 
 ```
 POST http://127.0.0.1:9978/upload?path={path}
@@ -416,18 +416,18 @@ Content-Type: multipart/form-data
 
 | 参数     | 说明               |
 |--------|------------------|
-| `path` | 目标目录，相对于应用程式根目录。 |
+| `path` | 目标目录，相对于应用程序根目录。 |
 
-| 档案类型   | 行为                   |
+| 文件类型   | 行为                   |
 |--------|----------------------|
 | `.zip` | 解压缩至 `path` 目录。      |
 | 其他     | 复制至 `path/filename`。 |
 
 ---
 
-## /newFolder — 新增资料夹
+## /newFolder — 添加文件夹
 
-在指定路径下建立新目录。
+在指定路径下创建新目录。
 
 ```
 GET http://127.0.0.1:9978/newFolder?path={path}&name={name}
@@ -435,12 +435,12 @@ GET http://127.0.0.1:9978/newFolder?path={path}&name={name}
 
 | 参数     | 说明                |
 |--------|-------------------|
-| `path` | 父目录路径，相对于应用程式根目录。 |
-| `name` | 要建立的资料夹名称。        |
+| `path` | 父目录路径，相对于应用程序根目录。 |
+| `name` | 要创建的文件夹名称。        |
 
 ---
 
-## /delFolder — 删除资料夹
+## /delFolder — 删除文件夹
 
 删除指定目录及其所有内容。
 
@@ -450,13 +450,13 @@ GET http://127.0.0.1:9978/delFolder?path={path}
 
 | 参数     | 说明                   |
 |--------|----------------------|
-| `path` | 要删除的目录路径，相对于应用程式根目录。 |
+| `path` | 要删除的目录路径，相对于应用程序根目录。 |
 
 ---
 
-## /delFile — 删除档案
+## /delFile — 删除文件
 
-删除指定档案。
+删除指定文件。
 
 ```
 GET http://127.0.0.1:9978/delFile?path={path}
@@ -464,13 +464,13 @@ GET http://127.0.0.1:9978/delFile?path={path}
 
 | 参数     | 说明                   |
 |--------|----------------------|
-| `path` | 要删除的档案路径，相对于应用程式根目录。 |
+| `path` | 要删除的文件路径，相对于应用程序根目录。 |
 
 ---
 
 ## /parse — 解析页面
 
-将解析器脚本与目标 URL 嵌入 HTML 范本后回传，通常供 WebView 内使用。
+将解析器脚本与目标 URL 嵌入 HTML 范本后返回，通常供 WebView 内使用。
 
 ```
 GET http://127.0.0.1:9978/parse?jxs={jxs}&url={url}
@@ -481,46 +481,46 @@ GET http://127.0.0.1:9978/parse?jxs={jxs}&url={url}
 | `jxs` | 解析器脚本识别码或内容。  |
 | `url` | 待解析的媒体页面 URL。 |
 
-**回应格式：** `text/html`，回传渲染后的 `parse.html` 页面。
+**响应格式：** `text/html`，返回渲染后的 `parse.html` 页面。
 
 ---
 
 ## /proxy — 爬虫代理
 
-将请求转发至爬虫的 `proxy()` 方法处理，供爬虫自订回应（如转发串流、修改标头等）。
+将请求转发至爬虫的 `proxy()` 方法处理，供爬虫自定义响应（如转发串流、修改标头等）。
 
 ```
 GET/POST http://127.0.0.1:9978/proxy?...
 ```
 
-所有 Query String 参数、请求标头与 POST Body 会合并后传入 `BaseLoader.get().proxy(params)`。回应由爬虫 `proxy()` 决定，框架原封不动地转发爬虫回传的串流与标头。
+所有 Query String 参数、请求标头与 POST Body 会合并后传入 `BaseLoader.get().proxy(params)`。响应由爬虫 `proxy()` 决定，框架原封不动地转发爬虫返回的串流与标头。
 
-爬虫如何实作 `proxy()` 方法及取得代理 URL，见 [SPIDER.md — 爬虫本地代理 URL](SPIDER.md#爬虫本地代理-url)。
+爬虫如何实现 `proxy()` 方法及取得代理 URL，见 [SPIDER.md — 爬虫本地代理 URL](SPIDER.md#爬虫本地代理-url)。
 
 ---
 
-## /device — 装置资讯
+## /device — 装置信息
 
-取得本机装置资讯。
+取得本机装置信息。
 
 ```
 GET http://127.0.0.1:9978/device
 ```
 
-**回应格式：** `text/plain`，内容为装置资讯的 JSON 字串。
+**响应格式：** `text/plain`，内容为装置信息的 JSON 字符串。
 
-**回应栏位：**
+**响应字段：**
 
-| 栏位       | 类型        | 说明                    |
+| 字段       | 类型        | 说明                    |
 |----------|-----------|-----------------------|
 | `uuid`   | `string`  | 装置唯一识别码（Android ID）。  |
 | `name`   | `string`  | 装置显示名称。               |
-| `ip`     | `string`  | 装置区域网路 IP 位址（含 port）。 |
+| `ip`     | `string`  | 装置区域网络 IP 地址（含 port）。 |
 | `type`   | `integer` | 装置类型（0=手机, 1=电视）。     |
 | `serial` | `string`  | 装置序号。                 |
-| `eth`    | `string`  | 有线网路 MAC 位址。          |
-| `wlan`   | `string`  | 无线网路 MAC 位址。          |
-| `time`   | `long`    | 回应时间戳（毫秒）。            |
+| `eth`    | `string`  | 有线网络 MAC 地址。          |
+| `wlan`   | `string`  | 无线网络 MAC 地址。          |
+| `time`   | `long`    | 响应时间戳（毫秒）。            |
 
 ---
 
@@ -532,20 +532,20 @@ GET http://127.0.0.1:9978/device
 | `/action?do=danmaku` | GET/POST | `text`                            | 即时发送一条弹幕至目前播放器                                |
 | `/action?do=refresh` | GET/POST | `type`, `path`, `json`            | 刷新页面或推送字幕/弹幕                                  |
 | `/action?do=push`    | GET/POST | `url`                             | 推送 URL 播放                                     |
-| `/action?do=file`    | GET/POST | `path`                            | 开启本地档案                                        |
-| `/action?do=search`  | GET/POST | `word`                            | 触发关键字搜寻                                       |
-| `/action?do=setting` | GET/POST | `text`, `name`                    | 载入配置                                          |
+| `/action?do=file`    | GET/POST | `path`                            | 开启本地文件                                        |
+| `/action?do=search`  | GET/POST | `word`                            | 触发关键字搜索                                       |
+| `/action?do=setting` | GET/POST | `text`, `name`                    | 加载配置                                          |
 | `/action?do=cast`    | GET/POST | `config`, `device`, `history`     | 投放媒体至远端装置                                     |
-| `/action?do=sync`    | POST     | `type`, `device`, `force`, `mode` | 多装置资料同步                                       |
-| `/cache?do=get`      | GET/POST | `key`, `rule`                     | 读取快取值                                         |
-| `/cache?do=set`      | GET/POST | `key`, `value`, `rule`            | 写入快取值                                         |
-| `/cache?do=del`      | GET/POST | `key`, `rule`                     | 删除快取值                                         |
+| `/action?do=sync`    | POST     | `type`, `device`, `force`, `mode` | 多装置数据同步                                       |
+| `/cache?do=get`      | GET/POST | `key`, `rule`                     | 读取缓存值                                         |
+| `/cache?do=set`      | GET/POST | `key`, `value`, `rule`            | 写入缓存值                                         |
+| `/cache?do=del`      | GET/POST | `key`, `rule`                     | 删除缓存值                                         |
 | `/media`             | GET      | —                                 | 取得播放状态 JSON                                   |
-| `/file/{path}`       | GET      | —                                 | 浏览目录或下载档案（支援 Range）                           |
-| `/upload`            | POST     | `path`（multipart）                 | 上传档案（支援 .zip 解压）                              |
-| `/newFolder`         | GET      | `path`, `name`                    | 建立资料夹                                         |
-| `/delFolder`         | GET      | `path`                            | 删除资料夹                                         |
-| `/delFile`           | GET      | `path`                            | 删除档案                                          |
+| `/file/{path}`       | GET      | —                                 | 浏览目录或下载文件（支持 Range）                           |
+| `/upload`            | POST     | `path`（multipart）                 | 上传文件（支持 .zip 解压）                              |
+| `/newFolder`         | GET      | `path`, `name`                    | 创建文件夹                                         |
+| `/delFolder`         | GET      | `path`                            | 删除文件夹                                         |
+| `/delFile`           | GET      | `path`                            | 删除文件                                          |
 | `/parse`             | GET      | `jxs`, `url`                      | 取得渲染后的解析 HTML 页面                              |
-| `/proxy`             | GET/POST | 自订（转发至爬虫）                         | 爬虫代理转发                                        |
-| `/device`            | GET      | —                                 | 取得装置资讯                                        |
+| `/proxy`             | GET/POST | 自定义（转发至爬虫）                         | 爬虫代理转发                                        |
+| `/device`            | GET      | —                                 | 取得装置信息                                        |

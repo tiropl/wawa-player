@@ -257,10 +257,14 @@
     <string name="setting_mode_coming_soon">敬请期待</string>
     <string name="setting_mode_changed">操作模式：%s</string>
     <string name="setting_line_name">线路：<xliff:g name="name">%s</xliff:g></string>
+    <string name="setting_line_config">线路设置</string>
     <string name="setting_vod">点播</string>
     <string name="setting_live">直播</string>
     <string name="setting_wall">壁纸</string>
+    <string name="setting_wall_switch">切换壁纸</string>
+    <string name="setting_wall_reset">重置壁纸</string>
     <string name="setting_player">播放设置</string>
+    <string name="setting_personal">个性设置</string>
     <string name="setting_incognito">无痕模式</string>
 
     <string name="setting_sound">提示音</string>
@@ -367,7 +371,8 @@
     <string name="player_preload_time_state">预载时间：%1$d 秒</string>
 
     <!-- Danmaku -->
-    <string name="danmaku_api">弹幕接口</string>
+    <string name="danmaku_api">弹幕</string>
+    <string name="danmaku_api_hint">弹幕接口地址</string>
 
     <!-- Search -->
     <string name="search_keyword">关键字…</string>

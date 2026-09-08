@@ -2,6 +2,7 @@ package com.wawa_player.android.tv.api;
 
 import androidx.annotation.NonNull;
 
+import com.wawa_player.android.tv.Constant;
 import com.wawa_player.android.tv.R;
 import com.wawa_player.android.tv.api.config.LiveConfig;
 import com.wawa_player.android.tv.api.parser.EpgParser;
@@ -70,6 +71,6 @@ public class LiveApi {
         String date = LocalDate.now(zoneId).plusDays(offset).format(Formatters.DATE);
         String url = item.getEpg().replace("{date}", date);
         boolean need = url.startsWith("http") && item.getDataList().stream().noneMatch(epg -> epg.equal(date));
-        if (need) item.setData(Epg.objectFrom(OkHttp.string(url), item.getTvgId(), zoneId));
+        if (need) item.setData(Epg.objectFrom(OkHttp.string(url, Constant.TIMEOUT_EPG), item.getTvgId(), zoneId));
     }
 }

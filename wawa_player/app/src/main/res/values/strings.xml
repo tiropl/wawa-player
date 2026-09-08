@@ -258,10 +258,14 @@
     <string name="setting_mode_coming_soon">Coming soon</string>
     <string name="setting_mode_changed">Operation Mode: %s</string>
     <string name="setting_line_name">Line: <xliff:g name="name">%s</xliff:g></string>
+    <string name="setting_line_config">Line Config</string>
     <string name="setting_vod">Vod</string>
     <string name="setting_live">Live</string>
     <string name="setting_wall">Wallpaper</string>
+    <string name="setting_wall_switch">Switch wallpaper</string>
+    <string name="setting_wall_reset">Reset wallpaper</string>
     <string name="setting_player">Player setting</string>
+    <string name="setting_personal">Personal setting</string>
     <string name="setting_incognito">Incognito mode</string>
 
     <string name="setting_sound">Sound</string>
@@ -368,7 +372,8 @@
     <string name="player_preload_time_state">Preload time: %1$d seconds</string>
 
     <!-- Danmaku -->
-    <string name="danmaku_api">Danmaku API</string>
+    <string name="danmaku_api">Danmaku</string>
+    <string name="danmaku_api_hint">Danmaku API URL</string>
 
     <!-- Search -->
     <string name="search_keyword">Keywords…</string>

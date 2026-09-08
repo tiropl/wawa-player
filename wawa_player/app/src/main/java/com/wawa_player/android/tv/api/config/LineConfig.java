@@ -3,6 +3,7 @@ package com.wawa_player.android.tv.api.config;
 import android.text.TextUtils;
 
 import com.wawa_player.android.tv.App;
+import com.wawa_player.android.tv.Constant;
 import com.wawa_player.android.tv.R;
 import com.wawa_player.android.tv.api.Decoder;
 import com.wawa_player.android.tv.bean.Config;
@@ -16,9 +17,7 @@ import com.github.catvod.utils.Prefers;
 import com.google.gson.JsonObject;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class LineConfig {
 
@@ -44,46 +43,36 @@ public class LineConfig {
     }
 
     public static void save(int type, String source, List<Depot> items) {
-        // 清理已失效的子线路 Config 残留记录
-        cleanupOrphan(type, items);
         Prefers.put(sourceKey(type), source);
         Prefers.put(urlsKey(type), App.gson().toJson(items));
-    }
-
-    private static void cleanupOrphan(int type, List<Depot> items) {
-        Set<String> activeUrls = new HashSet<>();
-        for (Depot d : items) {
-            if (d != null && d.getUrl() != null) activeUrls.add(d.getUrl());
-        }
-        for (Config c : Config.getAll(type)) {
-            String url = c.getUrl();
-            if (url != null && !activeUrls.contains(url)) {
-                Config.delete(url, type);
-            }
-        }
     }
 
     public static void clear(int type) {
         Prefers.remove(sourceKey(type));
         Prefers.remove(urlsKey(type));
+        for (Config c : Config.getAll(type)) {
+            Config.delete(c.getUrl(), type);
+        }
+    }
+
+    public static void refreshSync(int type) {
+        String source = getSource(type);
+        if (TextUtils.isEmpty(source)) return;
+        try {
+            Server.get().start();
+            String json = Decoder.getJson(UrlUtil.convert(source), "LineConfig", Constant.TIMEOUT_CONFIG);
+            JsonObject object = Json.parse(json).getAsJsonObject();
+            if (!object.has("urls")) throw new Exception("Line urls is empty");
+            List<Depot> items = Depot.arrayFrom(object.getAsJsonArray("urls").toString());
+            if (items.isEmpty()) throw new Exception("Line urls is empty");
+            save(type, source, items);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            App.post(() -> Notify.show(R.string.line_update_fail));
+        }
     }
 
     public static void refresh(int type) {
-        String source = getSource(type);
-        if (TextUtils.isEmpty(source)) return;
-        Task.submit(() -> {
-            try {
-                Server.get().start();
-                String json = Decoder.getJson(UrlUtil.convert(source), "LineConfig", 15000);
-                JsonObject object = Json.parse(json).getAsJsonObject();
-                if (!object.has("urls")) throw new Exception("Line urls is empty");
-                List<Depot> items = Depot.arrayFrom(object.getAsJsonArray("urls").toString());
-                if (items.isEmpty()) throw new Exception("Line urls is empty");
-                save(type, source, items);
-            } catch (Throwable e) {
-                e.printStackTrace();
-                App.post(() -> Notify.show(R.string.line_update_fail));
-            }
-        });
+        Task.submit(() -> refreshSync(type));
     }
 }

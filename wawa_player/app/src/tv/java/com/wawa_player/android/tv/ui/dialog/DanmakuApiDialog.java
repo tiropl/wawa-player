@@ -47,6 +47,7 @@ public class DanmakuApiDialog extends BaseAlertDialog {
     @Override
     protected void initView() {
         String text;
+        binding.text.setHint(R.string.danmaku_api_hint);
         binding.text.setText(text = DanmakuSetting.getEffectiveApiUrl());
         binding.text.setSelection(TextUtils.isEmpty(text) ? 0 : text.length());
         binding.code.setImageBitmap(QRCode.getBitmap(Server.get().getAddress(4), 200, 0));

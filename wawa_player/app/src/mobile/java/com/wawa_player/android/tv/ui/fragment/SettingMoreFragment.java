@@ -1,6 +1,5 @@
 package com.wawa_player.android.tv.ui.fragment;
 
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,20 +14,10 @@ import com.wawa_player.android.tv.Updater;
 import com.wawa_player.android.tv.api.config.VodConfig;
 import com.wawa_player.android.tv.databinding.FragmentSettingMoreBinding;
 import com.wawa_player.android.tv.db.AppDatabase;
-import com.wawa_player.android.tv.event.RefreshEvent;
 import com.wawa_player.android.tv.impl.Callback;
-import com.wawa_player.android.tv.impl.DanmakuListener;
-import com.wawa_player.android.tv.impl.LockListener;
-import com.wawa_player.android.tv.setting.DanmakuSetting;
-import com.wawa_player.android.tv.setting.PasswordLock;
 import com.wawa_player.android.tv.setting.Setting;
 import com.wawa_player.android.tv.ui.base.BaseFragment;
-import com.wawa_player.android.tv.ui.dialog.DanmakuApiDialog;
-import com.wawa_player.android.tv.ui.dialog.LockChangeDialog;
-import com.wawa_player.android.tv.ui.dialog.LockSetDialog;
-import com.wawa_player.android.tv.ui.dialog.LockVerifyDialog;
 import com.wawa_player.android.tv.ui.dialog.RestoreDialog;
-import com.wawa_player.android.tv.ui.dialog.ThemeDialog;
 import com.wawa_player.android.tv.utils.FileUtil;
 import com.wawa_player.android.tv.utils.Notify;
 import com.wawa_player.android.tv.utils.PermissionUtil;
@@ -40,7 +29,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SettingMoreFragment extends BaseFragment implements LockSetDialog.Listener, LockListener, DanmakuListener, ThemeDialog.Listener {
+public class SettingMoreFragment extends BaseFragment {
 
     private FragmentSettingMoreBinding mBinding;
     public static SettingMoreFragment newInstance() {
@@ -57,12 +46,6 @@ public class SettingMoreFragment extends BaseFragment implements LockSetDialog.L
         return list.toArray(new String[0]);
     }
 
-    private String getThemeText() {
-        int color = Setting.getThemeColor();
-        if (color == -1) return getString(R.string.setting_off);
-        return getString(color == 0 ? R.string.setting_auto : R.string.setting_custom);
-    }
-
     @Override
     protected ViewBinding getBinding(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
         return mBinding = FragmentSettingMoreBinding.inflate(inflater, container, false);
@@ -73,9 +56,6 @@ public class SettingMoreFragment extends BaseFragment implements LockSetDialog.L
         mBinding.versionText.setText(BuildConfig.VERSION_NAME);
         mBinding.dohText.setText(getDohList()[getDohIndex()]);
         mBinding.incognitoText.setText(Setting.getSwitch(Setting.isIncognito()));
-        mBinding.danmakuText.setText(getDanmakuStatus());
-        mBinding.themeColorText.setText(getThemeText());
-        setLockText();
         setCacheText();
     }
 
@@ -90,29 +70,12 @@ public class SettingMoreFragment extends BaseFragment implements LockSetDialog.L
 
     @Override
     protected void initEvent() {
-        mBinding.themeColor.setOnClickListener(this::onThemeColor);
-        mBinding.lock.setOnClickListener(this::onLock);
         mBinding.incognito.setOnClickListener(this::setIncognito);
-        mBinding.danmaku.setOnClickListener(this::onDanmaku);
         mBinding.doh.setOnClickListener(this::setDoh);
         mBinding.cache.setOnClickListener(this::onCache);
         mBinding.backup.setOnClickListener(this::onBackup);
         mBinding.restore.setOnClickListener(this::onRestore);
         mBinding.version.setOnClickListener(this::onVersion);
-    }
-
-    private String getDanmakuStatus() {
-        return getString(TextUtils.isEmpty(DanmakuSetting.getEffectiveApiUrl()) ? R.string.none : R.string.yes);
-    }
-
-    private void onDanmaku(View view) {
-        DanmakuApiDialog.show(this);
-    }
-
-    @Override
-    public void setDanmakuApi(String url) {
-        DanmakuSetting.putApiUrl(url);
-        mBinding.danmakuText.setText(getDanmakuStatus());
     }
 
     private void onVersion(View view) {
@@ -123,49 +86,6 @@ public class SettingMoreFragment extends BaseFragment implements LockSetDialog.L
         Setting.putIncognito(!Setting.isIncognito());
         mBinding.incognitoText.setText(Setting.getSwitch(Setting.isIncognito()));
         Notify.show(ResUtil.getString(R.string.setting_incognito_state, Setting.getSwitch(Setting.isIncognito())));
-    }
-
-    private void onThemeColor(View view) {
-        ThemeDialog.show(this);
-    }
-
-    @Override
-    public void setTheme(int color) {
-        Setting.putThemeColor(color);
-        RefreshEvent.theme();
-        Notify.show(ResUtil.getString(R.string.setting_theme_changed, getThemeText()));
-    }
-
-    private void setLockText() {
-        mBinding.lockText.setText(Setting.getSwitch(PasswordLock.isSet()));
-    }
-
-    private void onLock(View view) {
-        if (PasswordLock.isSet()) showLockActions();
-        else LockSetDialog.create().listener(this).show(this);
-    }
-
-    private void showLockActions() {
-        new MaterialAlertDialogBuilder(requireActivity()).setTitle(R.string.setting_lock).setItems(new String[]{getString(R.string.lock_action_change), getString(R.string.lock_action_clear)}, (dialog, which) -> {
-            if (which == 0) LockChangeDialog.create().show(this);
-            else LockVerifyDialog.create().listener(this).show(this);
-        }).setNegativeButton(R.string.dialog_negative, null).show();
-    }
-
-    @Override
-    public void onLockSet() {
-        setLockText();
-    }
-
-    @Override
-    public void onLockVerified() {
-        PasswordLock.clear();
-        Notify.show(R.string.lock_clear_success);
-        setLockText();
-    }
-
-    @Override
-    public void onLockCancelled() {
     }
 
     private void setDoh(View view) {
@@ -211,7 +131,6 @@ public class SettingMoreFragment extends BaseFragment implements LockSetDialog.L
                 mBinding.versionText.setText(BuildConfig.VERSION_NAME);
                 mBinding.dohText.setText(getDohList()[getDohIndex()]);
                 mBinding.incognitoText.setText(Setting.getSwitch(Setting.isIncognito()));
-                mBinding.themeColorText.setText(getThemeText());
                 setCacheText();
             }
 

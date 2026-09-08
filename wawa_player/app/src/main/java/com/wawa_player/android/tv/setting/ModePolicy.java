@@ -10,7 +10,4 @@ public class ModePolicy {
         return !Setting.isElderMode();
     }
 
-    public static boolean showTrackSetting() {
-        return !Setting.isElderMode();
-    }
 }

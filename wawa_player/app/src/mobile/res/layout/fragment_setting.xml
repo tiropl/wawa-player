@@ -28,169 +28,18 @@
             android:paddingBottom="16dp">
 
             <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/lineConfig"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
+                android:background="@drawable/shape_item"
                 android:orientation="horizontal">
 
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/vod"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/shape_item"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:text="@string/setting_vod"
-                        android:textColor="@color/white"
-                        android:textSize="16sp" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/vodUrl"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="middle"
-                        android:gravity="end"
-                        android:singleLine="true"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        tools:text="https://" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/vodHome"
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    android:background="@drawable/shape_item"
-                    android:padding="7dp"
-                    android:src="@drawable/ic_setting_home" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/vodHistory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/shape_item"
-                    android:padding="7dp"
-                    android:src="@drawable/ic_setting_history" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/live"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/shape_item"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:text="@string/setting_live"
-                        android:textColor="@color/white"
-                        android:textSize="16sp" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/liveUrl"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="middle"
-                        android:gravity="end"
-                        android:singleLine="true"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        tools:text="https://" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/liveHome"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    android:background="@drawable/shape_item"
-                    android:padding="7dp"
-                    android:src="@drawable/ic_setting_home" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/liveHistory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/shape_item"
-                    android:padding="7dp"
-                    android:src="@drawable/ic_setting_history" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/wall"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/shape_item"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:text="@string/setting_wall"
-                        android:textColor="@color/white"
-                        android:textSize="16sp" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/wallUrl"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="middle"
-                        android:gravity="end"
-                        android:singleLine="true"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        tools:text="https://" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/wallDefault"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    android:background="@drawable/shape_item"
-                    android:padding="7dp"
-                    android:src="@drawable/ic_setting_home" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/wallRefresh"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/shape_item"
-                    android:padding="7dp"
-                    android:src="@drawable/ic_setting_refresh" />
+                    android:text="@string/setting_line_config"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -239,7 +88,7 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/sound"
+                android:id="@+id/personal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -249,24 +98,14 @@
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:text="@string/setting_sound"
+                    android:text="@string/setting_personal"
                     android:textColor="@color/white"
                     android:textSize="16sp" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/soundText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    tools:text="On" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/font"
+                android:id="@+id/lock"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -277,45 +116,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
-                    android:text="@string/setting_font"
+                    android:text="@string/setting_lock"
                     android:textColor="@color/white"
                     android:textSize="16sp" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/fontText"
+                    android:id="@+id/lockText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="end"
                     android:textColor="@color/white"
                     android:textSize="16sp"
-                    tools:text="Default" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/size"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/shape_item"
-                android:orientation="horizontal">
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:text="@string/setting_size"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/sizeText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    tools:text="Medium" />
+                    tools:text="Off" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 

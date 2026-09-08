@@ -60,6 +60,11 @@ public abstract class BaseSideSheetDialog extends AppCompatDialogFragment {
         if (sheet == null) return;
         ViewGroup.LayoutParams params = sheet.getLayoutParams();
         params.width = getWidth();
+        if (params instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) params;
+            // 与屏幕右边边缘对齐：清掉左右外边距（Material 侧边弹窗默认带间距）
+            mlp.setMargins(0, mlp.topMargin, 0, mlp.bottomMargin);
+        }
         sheet.setLayoutParams(params);
     }
 }

@@ -75,6 +75,7 @@ import com.wawa_player.android.tv.ui.custom.CustomKeyDownVod;
 import com.wawa_player.android.tv.ui.custom.CustomMovement;
 import com.wawa_player.android.tv.ui.dialog.ChapterDialog;
 import com.wawa_player.android.tv.ui.dialog.ContentDialog;
+import com.wawa_player.android.tv.ui.dialog.ControlDialog;
 import com.wawa_player.android.tv.ui.dialog.DanmakuDialog;
 import com.wawa_player.android.tv.ui.dialog.EditionDialog;
 import com.wawa_player.android.tv.ui.dialog.ParseDialog;
@@ -103,7 +104,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, CustomKeyDownVod.Listener, ParseDialog.Listener, ArrayAdapter.OnClickListener, FlagAdapter.OnClickListener, EpisodeAdapter.OnClickListener, QualityAdapter.OnClickListener, QuickAdapter.OnClickListener, Clock.Callback {
+public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, CustomKeyDownVod.Listener, ParseDialog.Listener, ControlDialog.Listener, ArrayAdapter.OnClickListener, FlagAdapter.OnClickListener, EpisodeAdapter.OnClickListener, QualityAdapter.OnClickListener, QuickAdapter.OnClickListener, Clock.Callback {
 
     private ActivityVideoBinding mBinding;
     private VideoViewModel mViewModel;
@@ -118,7 +119,6 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
     private CustomKeyDownVod mKeyDown;
     private Clock mClock;
     private View mFocus1;
-    private View mFocus2;
     private Runnable mR1;
     private Runnable mR2;
     private Runnable mR3;
@@ -315,6 +315,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
         mBinding.control.action.danmakuShow.setOnClickListener(view -> onDanmakuShow());
         mBinding.control.action.edition.setOnClickListener(view -> onEdition());
         mBinding.control.action.chapter.setOnClickListener(view -> onChapter());
+        mBinding.control.action.setting.setOnClickListener(view -> onSetting());
         mBinding.control.action.opening.setOnClickListener(view -> onOpening());
         mBinding.control.action.speed.setOnLongClickListener(view -> onSpeedLong());
         mBinding.control.action.ending.setOnLongClickListener(view -> onEndingReset());
@@ -365,7 +366,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
         setSeekNextFocusDown(R.id.next);
         setActionFocusBoundary(mBinding.control.action.getRoot());
         PlayerEngineDialog.setText(mBinding.control.action.player);
-        mBinding.control.action.danmaku.setVisibility(View.VISIBLE);
+        mBinding.control.action.danmaku.setVisibility(View.GONE);
         checkDanmakuImg();
         updateElderModeUI();
     }
@@ -373,7 +374,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
     private void updateElderModeUI() {
         boolean elder = Setting.isElderMode();
         mBinding.change.setVisibility(elder ? View.GONE : View.VISIBLE);
-        mBinding.lineName.setVisibility(elder ? View.VISIBLE : View.GONE);
+        mBinding.flagLineName.setVisibility(elder ? View.VISIBLE : View.GONE);
         mBinding.flag.setVisibility(elder ? View.GONE : (mFlagAdapter.getItemCount() > 0 ? View.VISIBLE : View.GONE));
         mBinding.part.setVisibility(elder ? View.GONE : View.VISIBLE);
         updateControlBarForElderMode();
@@ -381,22 +382,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
 
     private void updateControlBarForElderMode() {
         boolean elder = Setting.isElderMode();
-        mBinding.control.action.next.setVisibility(View.VISIBLE);
-        mBinding.control.action.prev.setVisibility(View.VISIBLE);
-        mBinding.control.action.reset.setVisibility(View.VISIBLE);
-        mBinding.control.action.audio.setVisibility(elder ? View.VISIBLE : View.GONE);
-        mBinding.control.action.video.setVisibility(elder ? View.VISIBLE : View.GONE);
-        mBinding.control.action.player.setVisibility(elder ? View.GONE : View.VISIBLE);
-        mBinding.control.action.decode.setVisibility(elder ? View.GONE : View.VISIBLE);
-        mBinding.control.action.replay.setVisibility(elder ? View.GONE : View.VISIBLE);
-        mBinding.control.action.repeat.setVisibility(elder ? View.GONE : View.VISIBLE);
-        mBinding.control.action.speed.setVisibility(elder ? View.GONE : View.VISIBLE);
-        mBinding.control.action.scale.setVisibility(elder ? View.GONE : View.VISIBLE);
-        mBinding.control.action.text.setVisibility(elder ? View.GONE : View.VISIBLE);
-        mBinding.control.action.danmaku.setVisibility(View.VISIBLE);
-        setMediaOptionVisible();
-        mBinding.control.action.opening.setVisibility(elder ? View.GONE : View.VISIBLE);
-        mBinding.control.action.ending.setVisibility(elder ? View.GONE : View.VISIBLE);
+        mBinding.control.action.setting.setVisibility(elder ? View.GONE : View.VISIBLE);
         mBinding.array.setVisibility(elder ? View.GONE : (mArrayAdapter.getItemCount() > 0 ? View.VISIBLE : View.GONE));
     }
 
@@ -645,11 +631,11 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
 
     private void updateLineName(Flag item) {
         if (!Setting.isElderMode() || item == null) {
-            mBinding.lineName.setVisibility(View.GONE);
+            mBinding.flagLineName.setVisibility(View.GONE);
             return;
         }
-        mBinding.lineName.setVisibility(View.VISIBLE);
-        mBinding.lineName.setText(ResUtil.getString(R.string.setting_line_name, item.getShow()));
+        mBinding.flagLineName.setVisibility(View.VISIBLE);
+        mBinding.flagLineName.setText(ResUtil.getString(R.string.setting_line_name, item.getShow()));
     }
 
     @Override
@@ -694,7 +680,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
     @Override
     public void renderUseParse(boolean useParse) {
         setUseParse(useParse);
-        mBinding.control.action.parse.setVisibility(isUseParse() ? View.VISIBLE : View.GONE);
+        mBinding.control.action.parse.setVisibility(View.GONE);
     }
 
     @Override
@@ -898,7 +884,6 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
         mBinding.flag.setSelectedPosition(mFlagAdapter.getPosition());
         mKeyDown.setFull(true);
         setFullscreen(true);
-        mFocus2 = null;
     }
 
     private void exitFullscreen() {
@@ -907,7 +892,6 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
         getFocus1().requestFocus();
         mKeyDown.setFull(false);
         setFullscreen(false);
-        mFocus2 = null;
         hideInfo();
     }
 
@@ -930,6 +914,10 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
 
     private void onChange() {
         mVod.manualSwitchSource();
+    }
+
+    private void onSetting() {
+        ControlDialog.create().parent(mBinding).parse(isUseParse()).player(player()).show(this);
     }
 
     private void onRepeat() {
@@ -970,6 +958,11 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
         int index = getScale();
         String[] array = ResUtil.getStringArray(R.array.select_scale);
         setScale(index == array.length - 1 ? 0 : ++index);
+    }
+
+    @Override
+    public void onScale(int tag) {
+        setScale(tag);
     }
 
     private void onSpeed() {
@@ -1093,7 +1086,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
 
     private void onToggle() {
         if (isVisible(mBinding.control.getRoot())) hideControl();
-        else showControl(getFocus2());
+        else showControl(mBinding.control.seek);
     }
 
     private void showProgress() {
@@ -1345,20 +1338,15 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
     }
 
     private void setTrackVisible() {
-        if (Setting.isElderMode()) {
-            mBinding.control.action.text.setVisibility(View.GONE);
-        } else {
-            PlaybackAction.setTracks(player(), mBinding.control.action.text, mBinding.control.action.audio, mBinding.control.action.video);
-        }
+        PlaybackAction.setTracks(player(), mBinding.control.action.text, mBinding.control.action.audio, mBinding.control.action.video);
+        mBinding.control.action.text.setVisibility(View.GONE);
+        mBinding.control.action.audio.setVisibility(View.GONE);
+        mBinding.control.action.video.setVisibility(View.GONE);
     }
 
     private void setMediaOptionVisible() {
-        if (Setting.isElderMode() || service() == null) {
-            mBinding.control.action.edition.setVisibility(View.GONE);
-            mBinding.control.action.chapter.setVisibility(View.GONE);
-        } else {
-            PlaybackAction.setMediaOptions(player(), mBinding.control.action.edition, mBinding.control.action.chapter);
-        }
+        mBinding.control.action.edition.setVisibility(View.GONE);
+        mBinding.control.action.chapter.setVisibility(View.GONE);
     }
 
     @Override
@@ -1411,16 +1399,10 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
         return mFocus1 == null || mFocus1.getVisibility() != View.VISIBLE ? mBinding.video : mFocus1;
     }
 
-    private View getFocus2() {
-        if (Setting.isElderMode()) return mBinding.control.seek;
-        return mFocus2 == null || mFocus2.getVisibility() != View.VISIBLE || mFocus2 == mBinding.control.action.opening || mFocus2 == mBinding.control.action.ending ? mBinding.control.action.next : mFocus2;
-    }
-
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (isFullscreen() && KeyUtil.isMenuKey(event)) onToggle();
         if (isVisible(mBinding.control.getRoot())) setR1Callback();
-        if (isVisible(mBinding.control.getRoot())) mFocus2 = getCurrentFocus();
         if (isFullscreen() && isGone(mBinding.control.getRoot()) && mKeyDown.hasEvent(event) && service() != null) return mKeyDown.onKeyDown(event);
         if (KeyUtil.isMediaFastForward(event)) return onSeekForward();
         if (KeyUtil.isMediaRewind(event)) return onSeekBack();
@@ -1456,20 +1438,12 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
 
     @Override
     public void onKeyUp() {
-        long position = player().getPosition();
-        long duration = player().getDuration();
-        if (player().canSetOpening(position, duration)) {
-            showControl(mBinding.control.action.opening);
-        } else if (player().canSetEnding(position, duration)) {
-            showControl(mBinding.control.action.ending);
-        } else {
-            showControl(getFocus2());
-        }
+        showControl(mBinding.control.seek);
     }
 
     @Override
     public void onKeyDown() {
-        showControl(getFocus2());
+        showControl(mBinding.control.seek);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.wawa_player.android.tv.api.config;
 import android.text.TextUtils;
 
 import com.wawa_player.android.tv.App;
+import com.wawa_player.android.tv.Constant;
 import com.wawa_player.android.tv.R;
 import com.wawa_player.android.tv.bean.Config;
 import com.wawa_player.android.tv.event.ConfigEvent;
@@ -31,7 +32,7 @@ abstract class BaseConfig {
     public static final int LIVE = 1;
     public static final int WALL = 2;
 
-    protected static final long TIMEOUT = 15000;
+    protected static final long TIMEOUT = Constant.TIMEOUT_CONFIG;
 
     private final AtomicInteger taskId = new AtomicInteger(0);
 
@@ -142,7 +143,7 @@ abstract class BaseConfig {
 
     private JsonArray fetch(String url) {
         try {
-            JsonElement parsed = Json.parse(OkHttp.string(UrlUtil.convert(url)));
+            JsonElement parsed = Json.parse(OkHttp.string(UrlUtil.convert(url), TIMEOUT));
             return parsed.isJsonArray() ? parsed.getAsJsonArray() : new JsonArray();
         } catch (Exception e) {
             return new JsonArray();

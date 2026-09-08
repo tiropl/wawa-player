@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="vertical">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        tools:background="@color/white">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/parseText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/parse"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="16sp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/parse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/selector_dialog_chip"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:text="@string/parse"
+            android:textColor="@color/selector_control"
+            android:textSize="14sp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/scaleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/control_scale"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="16sp" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:flexWrap="wrap">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/scale_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/selector_scale_chip"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:tag="0"
+                android:textColor="@color/selector_scale_text"
+                android:textSize="14sp"
+                tools:text="預設" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/scale_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/selector_scale_chip"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:tag="1"
+                android:textColor="@color/selector_scale_text"
+                android:textSize="14sp"
+                tools:text="16:9" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/scale_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/selector_scale_chip"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:tag="2"
+                android:textColor="@color/selector_scale_text"
+                android:textSize="14sp"
+                tools:text="4:3" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/scale_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/selector_scale_chip"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:tag="3"
+                android:textColor="@color/selector_scale_text"
+                android:textSize="14sp"
+                tools:text="填充" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/scale_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/selector_scale_chip"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:tag="4"
+                android:textColor="@color/selector_scale_text"
+                android:textSize="14sp"
+                tools:text="裁剪" />
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/play"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="16sp" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:flexWrap="wrap">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/player"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/selector_dialog_chip"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:text="@string/play_exo"
+                android:textColor="@color/selector_control"
+                android:textSize="14sp" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/decode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/selector_dialog_chip"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:text="@string/play_decode"
+                android:textColor="@color/selector_control"
+                android:textSize="14sp" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/opening"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/selector_dialog_chip"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:text="@string/play_op"
+                android:textColor="@color/selector_control"
+                android:textSize="14sp" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/ending"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/selector_dialog_chip"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:text="@string/play_ed"
+                android:textColor="@color/selector_control"
+                android:textSize="14sp" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/repeat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/selector_dialog_chip"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:text="@string/play_repeat"
+                android:textColor="@color/selector_control"
+                android:textSize="14sp" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/replay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/selector_dialog_chip"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:text="@string/play_replay"
+                android:textColor="@color/selector_control"
+                android:textSize="14sp" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/reset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/selector_dialog_chip"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:text="@string/play_reset"
+                android:textColor="@color/selector_control"
+                android:textSize="14sp" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/speed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/selector_dialog_chip"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:fontFeatureSettings="tnum"
+                android:text="@string/play_speed"
+                android:textColor="@color/selector_control"
+                android:textSize="14sp" />
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/track"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/control_track"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="16sp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:flexWrap="wrap">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/selector_dialog_chip"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:tag="3"
+                android:text="@string/play_track_text"
+                android:textColor="@color/selector_control"
+                android:textSize="14sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/audio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/selector_dialog_chip"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:tag="1"
+                android:text="@string/play_track_audio"
+                android:textColor="@color/selector_control"
+                android:textSize="14sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/video"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/selector_dialog_chip"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:tag="2"
+                android:text="@string/play_track_video"
+                android:textColor="@color/selector_control"
+                android:textSize="14sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/other"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/control_other"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="16sp" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:flexWrap="wrap">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/danmakuShow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/selector_dialog_chip"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:text="@string/control_danmaku_on"
+                android:textColor="@color/selector_control"
+                android:textSize="14sp" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/danmaku"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/selector_dialog_chip"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:text="@string/danmaku_setting"
+                android:textColor="@color/selector_control"
+                android:textSize="14sp" />
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</ScrollView>
