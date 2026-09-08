@@ -374,7 +374,7 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
     private void updateElderModeUI() {
         boolean elder = Setting.isElderMode();
         mBinding.change.setVisibility(elder ? View.GONE : View.VISIBLE);
-        mBinding.lineName.setVisibility(elder ? View.VISIBLE : View.GONE);
+        mBinding.flagLineName.setVisibility(elder ? View.VISIBLE : View.GONE);
         mBinding.flag.setVisibility(elder ? View.GONE : (mFlagAdapter.getItemCount() > 0 ? View.VISIBLE : View.GONE));
         mBinding.part.setVisibility(elder ? View.GONE : View.VISIBLE);
         updateControlBarForElderMode();
@@ -631,11 +631,11 @@ public class VideoActivity extends PlaybackActivity implements VodPlaybackHost, 
 
     private void updateLineName(Flag item) {
         if (!Setting.isElderMode() || item == null) {
-            mBinding.lineName.setVisibility(View.GONE);
+            mBinding.flagLineName.setVisibility(View.GONE);
             return;
         }
-        mBinding.lineName.setVisibility(View.VISIBLE);
-        mBinding.lineName.setText(ResUtil.getString(R.string.setting_line_name, item.getShow()));
+        mBinding.flagLineName.setVisibility(View.VISIBLE);
+        mBinding.flagLineName.setText(ResUtil.getString(R.string.setting_line_name, item.getShow()));
     }
 
     @Override
