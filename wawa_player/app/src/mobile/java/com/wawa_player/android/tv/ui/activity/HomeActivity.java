@@ -228,10 +228,11 @@ public class HomeActivity extends BaseActivity implements NavigationBarView.OnIt
     private void setNavigation() {
         mBinding.navigation.getMenu().findItem(R.id.vod).setVisible(true);
         mBinding.navigation.getMenu().findItem(R.id.setting).setVisible(true);
-        mBinding.navigation.getMenu().findItem(R.id.live).setVisible(LiveConfig.hasUrl());
+        mBinding.navigation.getMenu().findItem(R.id.live).setVisible(true);
     }
 
     private boolean openLive() {
+        if (!LiveConfig.hasUrl()) return false;
         LiveActivity.start(this);
         return false;
     }
