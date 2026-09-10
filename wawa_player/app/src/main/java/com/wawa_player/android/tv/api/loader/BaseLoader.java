@@ -1,65 +1,50 @@
 package com.wawa_player.android.tv.api.loader;
 
-import android.text.TextUtils;
+import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 
+import com.github.catvod.crawler.Spider;
+import com.github.catvod.crawler.SpiderNull;
 import com.wawa_player.android.tv.api.config.LiveConfig;
 import com.wawa_player.android.tv.api.config.VodConfig;
 import com.wawa_player.android.tv.bean.Live;
 import com.wawa_player.android.tv.bean.Site;
-import com.wawa_player.android.tv.utils.Task;
-import com.github.catvod.crawler.Spider;
-import com.github.catvod.crawler.SpiderNull;
-import com.github.catvod.utils.Util;
+import com.wawa_player.android.tv.spider.RemoteSpider;
+import com.wawa_player.android.tv.spider.SpiderClient;
+import com.wawa_player.android.tv.spider.SpiderJson;
+import com.wawa_player.android.tv.spider.SpiderProtocol;
 
 import org.json.JSONObject;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import dalvik.system.DexClassLoader;
-
+/**
+ * 爬虫加载门面。
+ * <p>
+ * 改造后不再直接持有 Jar/JS/Py 三套 Loader，全部下发到 :spider 独立进程执行，
+ * 这里只保留上层（Site / Live / Proxy / ParseJob）已经依赖的方法签名，
+ * 因此上层代码零改动。
+ */
 public class BaseLoader {
 
-    private final JarLoader jarLoader;
-    private final PyLoader pyLoader;
-    private final JsLoader jsLoader;
-
     private BaseLoader() {
-        jarLoader = new JarLoader();
-        pyLoader = new PyLoader();
-        jsLoader = new JsLoader();
     }
 
     public static BaseLoader get() {
         return Loader.INSTANCE;
     }
 
-    private static boolean isJs(String api) {
-        return api.contains(".js");
-    }
-
-    private static boolean isPy(String api) {
-        return api.contains(".py");
-    }
-
-    private static boolean isCsp(String api) {
-        return api.startsWith("csp_");
-    }
-
+    /** 清理远端全部 spider。 */
     public void clear() {
-        Task.execute(() -> {
-            jarLoader.clear();
-            pyLoader.clear();
-            jsLoader.clear();
-        });
+        SpiderClient.get().stopAll();
     }
 
     public Spider getSpider(String key, String api, String ext, String jar) {
-        if (isPy(api)) return pyLoader.getSpider(key, api, ext);
-        else if (isJs(api)) return jsLoader.getSpider(key, api, ext, jar);
-        else if (isCsp(api)) return jarLoader.getSpider(key, api, ext, jar);
-        else return new SpiderNull();
+        if (api == null || api.isEmpty()) return new SpiderNull();
+        return new RemoteSpider(key, api, ext, jar);
     }
 
     public Spider getSpider(String key) {
@@ -71,35 +56,56 @@ public class BaseLoader {
     }
 
     public void setRecent(String key, String api, String jar) {
-        if (isJs(api)) jsLoader.setRecent(key);
-        else if (isPy(api)) pyLoader.setRecent(key);
-        else if (isCsp(api)) jarLoader.setRecent(Util.md5(jar));
-    }
-
-    public Object[] proxy(Map<String, String> params) throws Exception {
-        if (params.containsKey("siteKey")) return getSpider(params.get("siteKey")).proxy(params);
-        if ("js".equals(params.get("do"))) return jsLoader.proxy(params);
-        if ("py".equals(params.get("do"))) return pyLoader.proxy(params);
-        return jarLoader.proxy(params);
+        SpiderClient.get().setRecent(key, api, jar);
     }
 
     public void parseJar(String jar, boolean recent) {
-        if (TextUtils.isEmpty(jar)) return;
-        String key = Util.md5(jar);
-        jarLoader.parseJar(key, jar);
-        if (recent) jarLoader.setRecent(key);
+        SpiderClient.get().parseJar(jar, recent);
     }
 
-    public DexClassLoader dex(String jar) {
-        return jarLoader.dex(jar);
+    /** 本地 HTTP 代理，响应体经 ParcelFileDescriptor 管道回传。 */
+    public Object[] proxy(Map<String, String> params) throws Exception {
+        Bundle b = SpiderClient.get().proxy(toBundle(params));
+        if (b == null) return null;
+        int code = b.getInt(SpiderProtocol.Result.CODE, SpiderProtocol.Code.ERR_UNKNOWN);
+        if (code != SpiderProtocol.Code.OK) return null;
+        ParcelFileDescriptor pfd = b.getParcelable(SpiderProtocol.Result.PFD);
+        InputStream in = pfd != null ? new ParcelFileDescriptor.AutoCloseInputStream(pfd) : null;
+        return new Object[]{
+                b.getInt(SpiderProtocol.Result.STATUS, 200),
+                b.getString(SpiderProtocol.Result.MIME, "application/octet-stream"),
+                in,
+                toMap(b.getBundle(SpiderProtocol.Result.HEADERS))
+        };
     }
 
     public JSONObject jsonExt(String key, LinkedHashMap<String, String> jxs, String url) throws Throwable {
-        return jarLoader.jsonExt(key, jxs, url);
+        String json = SpiderClient.get().jsonExt(key, SpiderJson.fromMap(jxs), url);
+        return json == null ? null : new JSONObject(json);
     }
 
     public JSONObject jsonExtMix(String flag, String key, String name, LinkedHashMap<String, HashMap<String, String>> jxs, String url) throws Throwable {
-        return jarLoader.jsonExtMix(flag, key, name, jxs, url);
+        String json = SpiderClient.get().jsonExtMix(flag, key, name, SpiderJson.fromNestedMap(jxs), url);
+        return json == null ? null : new JSONObject(json);
+    }
+
+    private static Bundle toBundle(Map<String, String> map) {
+        Bundle b = new Bundle();
+        if (map == null) return b;
+        for (Map.Entry<String, String> e : map.entrySet()) {
+            if (e.getKey() != null && e.getValue() != null) b.putString(e.getKey(), e.getValue());
+        }
+        return b;
+    }
+
+    private static Map<String, String> toMap(Bundle bundle) {
+        Map<String, String> map = new HashMap<>();
+        if (bundle == null) return map;
+        for (String k : bundle.keySet()) {
+            Object v = bundle.get(k);
+            if (v != null) map.put(k, String.valueOf(v));
+        }
+        return map;
     }
 
     private static class Loader {
