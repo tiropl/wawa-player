@@ -16,8 +16,8 @@ android {
         applicationId "com.wawa_player.android.tv"
         minSdk libs.versions.minSdk.get().toInteger()
         targetSdk libs.versions.targetSdk.get().toInteger()
-        versionCode 69
-        versionName "0.6.9"
+        versionCode 70
+        versionName "0.6.10"
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString(), "eventBusIndex": "com.wawa_player.android.tv.event.EventIndex"]

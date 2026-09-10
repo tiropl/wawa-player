@@ -37,10 +37,9 @@
         android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/error"
+        android:layout_below="@+id/info"
         android:layout_alignStart="@+id/info"
-        android:layout_marginBottom="10dp"
-        android:hint="@string/dialog_config_hint"
+        android:layout_marginTop="10dp"
         android:imeOptions="actionDone"
         android:importantForAutofill="no"
         android:inputType="text"
@@ -52,9 +51,9 @@
         android:id="@+id/error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/bottom"
+        android:layout_below="@+id/text"
         android:layout_alignStart="@+id/info"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
         android:textColor="?attr/colorError"
         android:textSize="14sp"
         android:visibility="gone" />
@@ -63,8 +62,9 @@
         android:id="@+id/bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/error"
         android:layout_alignStart="@+id/info"
-        android:layout_alignBottom="@+id/code"
+        android:layout_marginTop="16dp"
         android:orientation="horizontal">
 
         <com.google.android.material.textview.MaterialTextView

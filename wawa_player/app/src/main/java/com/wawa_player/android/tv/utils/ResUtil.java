@@ -23,6 +23,7 @@ import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 
 import com.wawa_player.android.tv.App;
+import com.wawa_player.android.tv.setting.Setting;
 
 public class ResUtil {
 
@@ -128,7 +129,7 @@ public class ResUtil {
 
     public static int getTextWidth(String content, int size) {
         Paint paint = new Paint();
-        paint.setTextSize(sp2px(size));
+        paint.setTextSize(sp2px(size) * Setting.getFontScale());
         return (int) paint.measureText(content);
     }
 }
