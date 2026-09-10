@@ -386,8 +386,10 @@
     <string name="dialog_negative">取消</string>
     <string name="dialog_select_edition">選擇標題</string>
     <string name="dialog_select_chapter">選擇章節</string>
-    <string name="dialog_config_hint">請輸入配置…</string>
-    <string name="dialog_config_error">URL不能為空</string>
+    <string name="dialog_config_hint_vod">點播地址</string>
+    <string name="dialog_config_hint_live">直播地址</string>
+    <string name="dialog_config_hint_wall">壁紙地址</string>
+    <string name="dialog_config_error">地址不能為空</string>
     <string name="dialog_config_name">請輸入名稱…</string>
     <string name="dialog_config_url">請輸入網址…</string>
 

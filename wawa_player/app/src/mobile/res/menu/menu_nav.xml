@@ -11,7 +11,7 @@
         android:id="@+id/live"
         android:icon="@drawable/ic_nav_live"
         android:title="@string/nav_live"
-        android:visible="false" />
+        android:visible="true" />
 
     <item
         android:id="@+id/setting"
