@@ -43,8 +43,20 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Build with Gradle Wrapper
-        run: ./gradlew :app:build --stacktrace
+      # PR: verify both source sets (tv/mobile) compile + one release variant exercises R8.
+      - name: Build (pull request)
+        if: github.event_name == 'pull_request'
+        run: ./gradlew :app:assembleMobileArm64_v8aDebug :app:assembleTvArm64_v8aDebug :app:assembleMobileArm64_v8aRelease
+
+      # One variant is enough: src/test is shared across flavors/build types.
+      - name: Unit tests (pull request)
+        if: github.event_name == 'pull_request'
+        run: ./gradlew :app:testMobileArm64_v8aDebugUnitTest
+
+      # main: full matrix (both ABIs, all variants); mostly cache hits after the PR run.
+      - name: Build (push)
+        if: github.event_name == 'push'
+        run: ./gradlew :app:build
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
