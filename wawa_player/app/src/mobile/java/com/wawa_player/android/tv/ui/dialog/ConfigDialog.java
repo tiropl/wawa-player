@@ -77,11 +77,12 @@ public class ConfigDialog extends BaseAlertDialog {
 
     @Override
     protected MaterialAlertDialogBuilder getBuilder() {
-        return builder().setTitle(R.string.setting_line_config).setView(getBinding().getRoot()).setPositiveButton(edit ? R.string.dialog_edit : R.string.dialog_positive, null).setNegativeButton(R.string.dialog_negative, null);
+        return builder().setView(getBinding().getRoot()).setPositiveButton(edit ? R.string.dialog_edit : R.string.dialog_positive, null).setNegativeButton(R.string.dialog_negative, null);
     }
 
     @Override
     protected void initView() {
+        binding.choose.setHint(getHintResId());
         binding.name.setText(getConfig().getName());
         binding.url.setText(ori = getConfig().getUrl());
         binding.input.setVisibility(edit ? View.VISIBLE : View.GONE);
@@ -119,6 +120,14 @@ public class ConfigDialog extends BaseAlertDialog {
             case 1 -> LiveConfig.get().getConfig();
             case 2 -> WallConfig.get().getConfig();
             default -> null;
+        };
+    }
+
+    private int getHintResId() {
+        return switch (type) {
+            case 1 -> R.string.dialog_config_hint_live;
+            case 2 -> R.string.dialog_config_hint_wall;
+            default -> R.string.dialog_config_hint_vod;
         };
     }
 
