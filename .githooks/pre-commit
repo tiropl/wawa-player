@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+#
+# pre-commit hook —— 签名验证通过后确认可信作者
+# ============================================================================
+# 背景: 作者信息不得"未经校验直接使用"。本钩子在每次提交前用可信密钥的
+#       签名校验仓库内的可信作者清单, 仅当校验通过时才采用该清单解析出的
+#       作者, 否则回退到仓库既有作者配置 (STRICT=1 时改为阻断提交)。
+#
+# [CALL SITE] 签名验证调用位置
+#   下面 verify_signature() 中调用 `ssh-keygen -Y verify`, 校验
+#   .githooks/trusted-authors 的 detached 签名 (.githooks/trusted-authors.sig)
+#   是否由 .githooks/allowed_signers 中登记的可信密钥签发。这是整个机制的
+#   唯一信任锚。
+#
+# [VALUE SOURCE] 验证成功后作者字段的取值来源
+#   校验通过后, 可信作者 (name + email) 取自 .githooks/trusted-authors 中
+#   与已验证签名者对应的条目 (而非任何硬编码字符串)。因为该文件本身带可信
+#   签名, 取值来源也是经过密码学确认的。
+#
+# 失败处理: 校验未通过时, 不采用可信作者, 回退到 `user.name`/`user.email`;
+#           设置 VERIFY_AUTHOR_STRICT=1 可改为阻断提交。
+# ============================================================================
+
+set -uo pipefail
+
+HOOKS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ALLOWED="$HOOKS_DIR/allowed_signers"
+TRUSTED="$HOOKS_DIR/trusted-authors"
+SIG="$HOOKS_DIR/trusted-authors.sig"
+
+# 可信签名者身份 (principal); 默认与 allowed_signers 中登记的一致,
+# 可用 git config verify.signerEmail 覆盖。
+PRINCIPAL="${VERIFY_SIGNER_EMAIL:-$(git config --get verify.signerEmail || echo 984120978@qq.com)}"
+
+# STRICT=1 时校验失败阻断提交
+STRICT="${VERIFY_AUTHOR_STRICT:-0}"
+
+log() { echo "verify-author: $*" >&2; }
+
+# ---------------------------------------------------------------------------
+# [CALL SITE] 签名验证
+# 返回 0 表示 trusted-authors 的签名由可信密钥签发。
+# ---------------------------------------------------------------------------
+verify_signature() {
+  [ -f "$ALLOWED" ] && [ -f "$TRUSTED" ] && [ -f "$SIG" ] || {
+    log "缺少签名/信任文件 (allowed_signers / trusted-authors / trusted-authors.sig), 回退"; return 1
+  }
+  command -v ssh-keygen >/dev/null 2>&1 || { log "无 ssh-keygen, 回退"; return 1; }
+
+  if ssh-keygen -Y verify -f "$ALLOWED" -I "$PRINCIPAL" -n git -s "$SIG" \
+       < "$TRUSTED" >/dev/null 2>&1; then
+    return 0
+  fi
+  log "签名校验失败 (principal=$PRINCIPAL), 回退"
+  return 1
+}
+
+# ---------------------------------------------------------------------------
+# [VALUE SOURCE] 验证成功后作者字段的取值来源
+# 从 trusted-authors 中按已验证签名者解析可信作者。
+# 行格式: <signer-email>  <author-name...>  <author-email>
+# 返回 "<name>|<email>"
+# ---------------------------------------------------------------------------
+resolve_trusted_author() {
+  awk -v p="$PRINCIPAL" '
+    $1 == p {
+      name = "";
+      for (i = 2; i < NF; i++) name = name (i > 2 ? " " : "") $i;
+      print name "|" $NF;
+      exit;
+    }
+  ' "$TRUSTED" 2>/dev/null
+}
+
+main() {
+  if verify_signature; then
+    local trusted name email
+    trusted="$(resolve_trusted_author)"
+    if [ -n "$trusted" ]; then
+      name="${trusted%%|*}"
+      email="${trusted##*|}"
+      # 仅验证通过时采用可信作者 (影响本次提交的 author)
+      git config user.name "$name"
+      git config user.email "$email"
+      log "签名验证通过, 采用可信作者: $name <$email>"
+      exit 0
+    fi
+    log "签名通过但 trusted-authors 中无对应条目, 回退"
+  fi
+
+  # ---- 失败回退 ----
+  if [ "$STRICT" = "1" ]; then
+    log "签名验证未通过, 阻断提交 (STRICT=1)。如需绕过请先修复签名或设 VERIFY_AUTHOR_STRICT=0"
+    exit 1
+  fi
+  log "签名验证未通过, 回退到仓库既有作者: $(git config --get user.name) <$(git config --get user.email)>"
+  exit 0
+}
+
+main "$@"
