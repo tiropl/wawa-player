@@ -36,19 +36,8 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      # PR: verify both source sets (tv/mobile) compile + one release variant exercises R8.
-      - name: Build (pull request)
-        if: github.event_name == 'pull_request'
-        run: ./gradlew :app:assembleMobileArm64_v8aDebug :app:assembleTvArm64_v8aDebug :app:assembleMobileArm64_v8aRelease
-
-      # One variant is enough: src/test is shared across flavors/build types.
-      - name: Unit tests (pull request)
-        if: github.event_name == 'pull_request'
-        run: ./gradlew :app:testMobileArm64_v8aDebugUnitTest
-
-      # main: full matrix (both ABIs, all variants); mostly cache hits after the PR run.
-      - name: Build (push)
-        if: github.event_name == 'push'
+      # main: full matrix (both ABIs, all variants)
+      - name: Build
         env:
           ORG_GRADLE_PROJECT_org_gradle_jvmargs: "-Xmx4g"
         run: ./gradlew :app:build
