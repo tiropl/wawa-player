@@ -93,12 +93,36 @@ public class App extends Application implements Application.ActivityLifecycleCal
     @Override
     public void onCreate() {
         super.onCreate();
+        // Application 在每个进程都会跑一次。:spider 沙箱进程只需要
+        // attachBaseContext 里的 Init.set()，通知渠道 / 生命周期回调 /
+        // 数据库预热对它无意义，跳过以免重复开销。
+        if (isSpiderProcess()) return;
         Notify.createChannel();
         registerActivityLifecycleCallbacks(this);
         // 一次性迁移：把旧版本自动写入的弹幕开关重置为关闭，配合默认关闭弹幕
         com.wawa_player.android.tv.setting.DanmakuSetting.migrate();
         // Pre-warm database on background thread to avoid blocking main thread
         com.wawa_player.android.tv.db.AppDatabase.warmUp();
+    }
+
+    /** 当前是否运行在 :spider 沙箱进程。 */
+    public static boolean isSpiderProcess() {
+        App app = instance;
+        if (app == null) return false;
+        String name = currentProcessName(app);
+        return name != null && name.endsWith(com.wawa_player.android.tv.spider.SpiderProtocol.PROCESS_NAME);
+    }
+
+    private static String currentProcessName(Context context) {
+        int pid = android.os.Process.myPid();
+        android.app.ActivityManager am = (android.app.ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        if (am == null) return null;
+        java.util.List<android.app.ActivityManager.RunningAppProcessInfo> list = am.getRunningAppProcesses();
+        if (list == null) return null;
+        for (android.app.ActivityManager.RunningAppProcessInfo info : list) {
+            if (info.pid == pid) return info.processName;
+        }
+        return null;
     }
 
     @Override

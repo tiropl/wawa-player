@@ -43,6 +43,12 @@ public class PyLoader {
         });
     }
 
+    public void remove(String key) {
+        if (key == null) return;
+        Spider spider = spiders.remove(key);
+        if (spider != null) spider.destroy();
+    }
+
     public Object[] proxy(Map<String, String> params) throws Exception {
         if (recent == null) return null;
         Spider spider = spiders.get(recent);

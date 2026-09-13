@@ -15,6 +15,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -129,6 +130,20 @@ public class JarLoader {
                 return new SpiderNull();
             }
         });
+    }
+
+    /**
+     * 移除指定站点的 spider 实例。
+     * 注意：jar 缓存键是 md5(jar)+key，这里按后缀匹配，dex 本身保留复用。
+     */
+    public void remove(String key) {
+        if (key == null) return;
+        for (String k : new ArrayList<>(spiders.keySet())) {
+            if (k.endsWith(key)) {
+                Spider spider = spiders.remove(k);
+                if (spider != null) spider.destroy();
+            }
+        }
     }
 
     private DexClassLoader requireRecentLoader() {

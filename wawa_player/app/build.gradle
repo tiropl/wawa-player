@@ -47,6 +47,8 @@ android {
     buildFeatures {
         buildConfig = true
         viewBinding = true
+        // AGP 8+ 默认关闭 AIDL，spider 沙箱跨进程通信需要打开
+        aidl = true
     }
 
     testOptions {

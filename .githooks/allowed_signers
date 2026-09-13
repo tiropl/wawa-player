@@ -1,0 +1,4 @@
+# 可信签名者名单（信任锚）
+# 格式: <principal/email> namespaces="git" <keytype> <pubkey> <comment>
+# 仅此名单中的密钥签发的 trusted-authors.sig 才会被接受。
+984120978@qq.com namespaces="git" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN/6EuYU6CUNlz8vGwE3TTZBM22zrugCB4k9tkEkbfzf 984120978@qq.com

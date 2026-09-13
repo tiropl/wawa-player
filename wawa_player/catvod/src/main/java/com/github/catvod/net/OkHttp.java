@@ -22,6 +22,7 @@ import okhttp3.Call;
 import okhttp3.FormBody;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -198,10 +199,28 @@ public class OkHttp {
         return builder.build();
     }
 
+    /**
+     * 全局网络护栏。仅 :spider 进程会设置（限制第三方爬虫的联网范围），
+     * 主进程保持 null，行为与之前完全一致。
+     */
+    private static volatile Interceptor guard;
+
+    public static void setGuard(Interceptor interceptor) {
+        guard = interceptor;
+    }
+
+    private static Interceptor guardInterceptor() {
+        return chain -> {
+            Interceptor g = guard;
+            return g != null ? g.intercept(chain) : chain.proceed(chain.request());
+        };
+    }
+
     private static OkHttpClient.Builder getBuilder() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(requestInterceptor())
                 .addInterceptor(authInterceptor())
+                .addInterceptor(guardInterceptor())
                 .addNetworkInterceptor(responseInterceptor())
                 .connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS)
                 .readTimeout(TIMEOUT, TimeUnit.MILLISECONDS)

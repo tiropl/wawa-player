@@ -1,6 +1,7 @@
 package com.wawa_player.android.tv.api.loader;
 
 import com.wawa_player.android.tv.App;
+import com.wawa_player.android.tv.spider.SpiderHost;
 import com.fongmi.quickjs.crawler.Loader;
 import com.fongmi.quickjs.utils.Module;
 import com.github.catvod.crawler.Spider;
@@ -34,7 +35,7 @@ public class JsLoader {
     public Spider getSpider(String key, String api, String ext, String jar) {
         return spiders.computeIfAbsent(key, k -> {
             try {
-                Spider spider = loader.spider(api, BaseLoader.get().dex(jar));
+                Spider spider = loader.spider(api, SpiderHost.get().dex(jar));
                 spider.siteKey = key;
                 spider.init(App.get(), ext);
                 return spider;
@@ -43,6 +44,12 @@ public class JsLoader {
                 return new SpiderNull();
             }
         });
+    }
+
+    public void remove(String key) {
+        if (key == null) return;
+        Spider spider = spiders.remove(key);
+        if (spider != null) spider.destroy();
     }
 
     public Object[] proxy(Map<String, String> params) throws Exception {

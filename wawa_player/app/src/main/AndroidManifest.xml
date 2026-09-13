@@ -105,6 +105,12 @@
             </intent-filter>
         </service>
 
+        <!-- 第三方爬虫沙箱：独立进程，崩溃/卡死不影响主进程 -->
+        <service
+            android:name=".spider.SpiderService"
+            android:exported="false"
+            android:process=":spider" />
+
         <meta-data
             android:name="com.google.android.gms.car.application"
             android:resource="@xml/automotive_app_desc" />
