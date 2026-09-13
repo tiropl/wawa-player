@@ -1,0 +1,5 @@
+# 可信作者清单（验证成功后作者字段的取值来源）
+# 行格式: <signer-email>  <author-name>  <author-email>
+# 本文件由 allowed_signers 中登记的可信密钥签名，签名存于 trusted-authors.sig。
+# 钩子先验证签名，验证通过后，才按 signer-email 取对应作者，而非使用硬编码字符串。
+984120978@qq.com      a984120978     984120978@qq.com
